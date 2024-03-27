@@ -1,0 +1,24 @@
+name: 🛞 機能
+description: 機能を定義する
+title: 🛞
+labels:
+  - 機能
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: 概要
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: 詳細
+
+  - type: textarea
+    id: stories
+    attributes:
+      label: ストーリー
+      description: 機能に結びつくユーザーストーリー
+      value: "- [ ]"

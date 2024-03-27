@@ -1,0 +1,33 @@
+name: 📖 ストーリー
+description: ユーザーストーリーを記述する
+title: 📖
+labels:
+  - ストーリー
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: 概要
+      description: |
+        具体的かつ達成可能なユーザーストーリー via [ユーザーストーリー: ユーザー価値の高め方 (3 つの実例付)](https://asana.com/ja/resources/user-stories)
+        - 独立している。他のタスクに依存せず、自己完結型である。
+        - 交渉可能である。議論の余地を残している。
+        - 価値がある。エンドユーザーに価値を提供し、より大きな長期目標に近づけるものである。
+        - 見積もり可能である。スプリントに収まるよう見積もり、適切な優先順位をつけられる。
+        - 小さい。短時間で完成できる規模の仕事である。
+        - テスト可能である。受け入れテストを経て、事前に決められた受け入れ基準を満たすことができる。
+      placeholder: 誰がどんな目的でなにをしたいか
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: 詳細
+
+  - type: textarea
+    id: tasks
+    attributes:
+      label: タスク
+      description: ユーザーストーリーに結びつくタスク
+      value: "- [ ]"
