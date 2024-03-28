@@ -1,9 +1,9 @@
 ---
-name: '🐞 バグ'
-about: 'バグを報告する'
-title: '🐞 '
-labels: 'バグ'
-assignees: 'daigoro22'
+name: "バグ報告"
+about: バグを報告する
+title: "\U0001F41E "
+labels: バグ
+assignees: daigoro22
 
 ---
 
