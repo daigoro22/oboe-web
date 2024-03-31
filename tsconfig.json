@@ -29,6 +29,6 @@
       "bun-types"
     ],
     "jsx": "react-jsx",
-    "jsxImportSource": "hono/jsx"
+    "jsxImportSource": "react"
   },
 }

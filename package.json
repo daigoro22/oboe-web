@@ -4,9 +4,12 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "wrangler pages dev dist",
-    "deploy": "$npm_execpath run build && wrangler pages deploy dist"
+    "deploy": "$npm_execpath run build && wrangler pages deploy dist",
+    "fix": "biome check --apply ./src"
   },
   "dependencies": {
+    "@hono/react-renderer": "^0.1.1",
+    "@radix-ui/react-slot": "^1.0.2",
     "bun-types": "^1.0.35",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
@@ -15,6 +18,7 @@
     "drizzle-zod": "^0.5.1",
     "hono": "^4.1.4",
     "lucide-react": "^0.363.0",
+    "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.51.2",
     "tailwind-merge": "^2.2.2",
@@ -27,6 +31,8 @@
     "@hono/vite-cloudflare-pages": "^0.2.4",
     "@hono/vite-dev-server": "^0.9.0",
     "@types/node": "^20.11.30",
+    "@types/react": "^18.2.73",
+    "@types/react-dom": "^18.2.23",
     "@vitejs/plugin-react": "^4.2.1",
     "autoprefixer": "^10.4.19",
     "plop": "^4.0.1",
