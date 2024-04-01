@@ -1,11 +1,10 @@
-import { jsxRenderer } from "hono/jsx-renderer";
+import { reactRenderer } from "@hono/react-renderer";
 
-export const renderer = jsxRenderer(({ children, title }) => {
+export const renderer = reactRenderer(({ children }) => {
 	return (
-		<html lang="en">
+		<html lang="ja">
 			<head>
-				<link href="/static/style.css" rel="stylesheet" />
-				<title>{title}</title>
+				<link href="/src/globals.css" rel="stylesheet" />
 			</head>
 			<body>{children}</body>
 		</html>
