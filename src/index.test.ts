@@ -1,11 +1,7 @@
-import { applyD1Migrations, env } from "cloudflare:test";
-import { readD1Migrations } from "@cloudflare/vitest-pool-workers/config";
+import { env } from "cloudflare:test";
 import { type DrizzleD1Database, drizzle } from "drizzle-orm/d1";
-import { Miniflare } from "miniflare";
-import { beforeAll, describe, expect, test } from "vitest";
-import { getPlatformProxy } from "wrangler";
+import { beforeAll, expect, test } from "vitest";
 import { users } from "./db/schema";
-import type { Env } from "./db/seed";
 
 let db: DrizzleD1Database;
 
