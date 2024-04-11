@@ -29,5 +29,10 @@
 		"jsx": "react-jsx",
 		"jsxImportSource": "react"
 	},
-	"include": ["./**/*.ts", "../src/env.d.ts"]
+	"include": [
+		"./**/*.ts",
+		"../src/env.d.ts",
+		"generators/component/index.js",
+		"plopfile.js"
+	]
 }
