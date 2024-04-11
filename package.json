@@ -9,7 +9,8 @@
     "db:migration": "wrangler d1 migrations apply oboe --local",
     "db:seed": "vite-node src/db/seed.ts",
     "db:migration:generate": "drizzle-kit generate:sqlite --schema=./src/db/schema.ts --out src/db/migrations",
-    "test": "vitest"
+    "test": "vitest",
+    "plop:generate": "plop"
   },
   "dependencies": {
     "@hono/react-renderer": "^0.1.1",
