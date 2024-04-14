@@ -16,6 +16,9 @@ jobs:
     - name: Setup Bun
       uses: oven-sh/setup-bun@v1
 
+    - name: check lock diff
+      run:  diff <(bun bun.lockb) yarn.lock
+
     - name: Cache node modules
       uses: actions/cache@v4
       id: cache-node_module
