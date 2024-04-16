@@ -9,4 +9,4 @@ pnpm-lock.yaml
 
 src/db/migrations/meta
 *storybook.log
-.env
+.dev.vars

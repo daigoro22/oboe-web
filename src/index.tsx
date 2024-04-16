@@ -5,25 +5,25 @@ import {
 	verifyAuth,
 } from "@hono/auth-js";
 import { type Context, Hono } from "hono";
-import { env } from "hono/adapter";
+import { cors } from "hono/cors";
+
+import { env, getRuntimeKey } from "hono/adapter";
 import { Button } from "./components/ui/button";
 import { renderer } from "./renderer";
 
 import Line from "@auth/core/providers/line";
 import React from "react";
 
-const app = new Hono();
+const app = new Hono({ strict: false });
 
-app.use(renderer);
-
-app.get("/", async (c) => {
-	return c.render(
-		<div>
-			<Button>aaa</Button>
-			<h1>Hello!</h1>
-		</div>,
-	);
-});
+app.use(
+	"*",
+	cors({
+		origin: (origin) => origin,
+		allowHeaders: ["Content-Type"],
+		credentials: true,
+	}),
+);
 
 app.use("*", initAuthConfig(getAuthConfig));
 
@@ -45,11 +45,17 @@ function getAuthConfig(c: Context): AuthConfig {
 		AUTH_SECRET: string;
 		AUTH_LINE_ID: string;
 		AUTH_LINE_SECRET: string;
-	}>(c);
+	}>(c, getRuntimeKey());
 	return {
 		secret,
 		providers: [Line({ clientId, clientSecret })],
 	};
 }
+
+app.use(renderer);
+
+app.get("/", async (c) => {
+	return c.render(<div id="root" />);
+});
 
 export default app;
