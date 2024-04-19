@@ -48,7 +48,7 @@ function getAuthConfig(c: Context): AuthConfig {
 	}>(c, getRuntimeKey());
 	return {
 		secret,
-		providers: [Line({ clientId, clientSecret })],
+		providers: [Line({ clientId, clientSecret, checks: ["state"] })],
 	};
 }
 
