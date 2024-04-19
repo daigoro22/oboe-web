@@ -28,6 +28,8 @@ const Login = () => {
 	);
 };
 
-const domNode = document.getElementById("root")!;
-const root = createRoot(domNode);
-root.render(<Login />);
+const domNode = document.getElementById("root");
+if (domNode) {
+	const root = createRoot(domNode);
+	root.render(<Login />);
+}
