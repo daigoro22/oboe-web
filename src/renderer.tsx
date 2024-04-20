@@ -1,3 +1,4 @@
+import { Header } from "@/components/elements/Header";
 import { reactRenderer } from "@hono/react-renderer";
 import React, { type ReactElement } from "react";
 
@@ -17,7 +18,10 @@ export const clientRenderer = reactRenderer(({ children, title, pageSrc }) => {
 				<link href="/src/globals.css" rel="stylesheet" />
 				<script type="module" src={pageSrc} />
 			</head>
-			<body>{children}</body>
+			<body>
+				<Header />
+				{children}
+			</body>
 		</html>
 	);
 });

@@ -8,7 +8,6 @@ import { type Context, Hono } from "hono";
 import { cors } from "hono/cors";
 
 import { env, getRuntimeKey } from "hono/adapter";
-import { Button } from "./components/ui/button";
 import { clientRenderer } from "./renderer";
 
 import Line from "@auth/core/providers/line";
