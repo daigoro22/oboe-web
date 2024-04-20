@@ -9,7 +9,7 @@ import { cors } from "hono/cors";
 
 import { env, getRuntimeKey } from "hono/adapter";
 import { Button } from "./components/ui/button";
-import { renderer } from "./renderer";
+import { clientRenderer } from "./renderer";
 
 import Line from "@auth/core/providers/line";
 import React from "react";
@@ -52,10 +52,13 @@ function getAuthConfig(c: Context): AuthConfig {
 	};
 }
 
-app.use(renderer);
+app.use("/", clientRenderer);
 
 app.get("/", async (c) => {
-	return c.render(<div id="root" />);
+	return c.render(<div id="root" />, {
+		title: "ログイン",
+		pageSrc: "/src/features/auth/routes/login.tsx",
+	});
 });
 
 export default app;
