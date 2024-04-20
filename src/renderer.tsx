@@ -1,10 +1,21 @@
 import { reactRenderer } from "@hono/react-renderer";
+import React, { type ReactElement } from "react";
 
-export const renderer = reactRenderer(({ children }) => {
+declare module "@hono/react-renderer" {
+	interface Props {
+		title: string;
+		pageSrc?: string;
+	}
+}
+
+export const clientRenderer = reactRenderer(({ children, title, pageSrc }) => {
 	return (
 		<html lang="ja">
 			<head>
+				<meta charSet="utf-8" />
+				<title>{title}</title>
 				<link href="/src/globals.css" rel="stylesheet" />
+				<script type="module" src={pageSrc} />
 			</head>
 			<body>{children}</body>
 		</html>
