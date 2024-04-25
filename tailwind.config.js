@@ -1,5 +1,16 @@
+import tokens from "./.style-dictionary/build/tokens";
+
+const getKV = (obj) =>
+	Object.entries(obj).reduce(
+		(acc, [key, { value }]) => ({
+			...acc,
+			[key]: value,
+		}),
+		{},
+	);
+
 /** @type {import('tailwindcss').Config} */
-module.exports = {
+const o = {
 	darkMode: ["class"],
 	content: [
 		"./pages/**/*.{ts,tsx}",
@@ -51,11 +62,14 @@ module.exports = {
 					DEFAULT: "hsl(var(--card))",
 					foreground: "hsl(var(--card-foreground))",
 				},
+				...getKV(tokens.semantic.color),
 			},
+			spacing: { ...getKV(tokens.semantic.spacing) },
 			borderRadius: {
 				lg: "var(--radius)",
 				md: "calc(var(--radius) - 2px)",
 				sm: "calc(var(--radius) - 4px)",
+				...getKV(tokens.semantic.radius),
 			},
 			keyframes: {
 				"accordion-down": {
@@ -75,3 +89,5 @@ module.exports = {
 	},
 	plugins: [require("tailwindcss-animate")],
 };
+console.log(o.theme.extend);
+module.exports = o;
