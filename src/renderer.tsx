@@ -18,7 +18,7 @@ export const clientRenderer = reactRenderer(({ children, title, pageSrc }) => {
 				<link href="/src/globals.css" rel="stylesheet" />
 				<script type="module" src={pageSrc} />
 			</head>
-			<body>
+			<body className="bg-bg-primary">
 				<Header />
 				{children}
 			</body>
