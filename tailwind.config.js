@@ -1,10 +1,10 @@
 import tokens from "./.style-dictionary/build/tokens";
 
-const getKV = (obj) =>
+const getKV = (obj, isNum = false) =>
 	Object.entries(obj).reduce(
 		(acc, [key, { value }]) => ({
 			...acc,
-			[key]: value,
+			[key]: isNum ? `calc(${value} / 2)` : value, // Retina display 用のデザインなので大きさが実際の2倍になっている
 		}),
 		{},
 	);
@@ -64,12 +64,12 @@ const o = {
 				},
 				...getKV(tokens.semantic.color),
 			},
-			spacing: { ...getKV(tokens.semantic.spacing) },
+			spacing: { ...getKV(tokens.semantic.spacing, true) },
 			borderRadius: {
 				lg: "var(--radius)",
 				md: "calc(var(--radius) - 2px)",
 				sm: "calc(var(--radius) - 4px)",
-				...getKV(tokens.semantic.radius),
+				...getKV(tokens.semantic.radius, true),
 			},
 			keyframes: {
 				"accordion-down": {
@@ -89,5 +89,5 @@ const o = {
 	},
 	plugins: [require("tailwindcss-animate")],
 };
-console.log(o.theme.extend);
+
 module.exports = o;
