@@ -1,11 +1,11 @@
 import type { Meta, StoryFn } from "@storybook/react";
 import React from "react";
 
-import { Logo } from "./Logo";
+import { CardLayout } from "./CardLayout.1";
 
 const meta: Meta = {
-	title: "Components/Logo",
-	component: Logo,
+	title: "Components/CardLayout",
+	component: CardLayout,
 	parameters: {
 		controls: { expanded: true },
 	},
@@ -13,7 +13,7 @@ const meta: Meta = {
 
 export default meta;
 
-const Template: StoryFn = (props) => <Logo {...props}>Hello</Logo>;
+const Template: StoryFn = (props) => <CardLayout {...props}>Hello</CardLayout>;
 
 export const Default = Template.bind({});
 Default.args = {};

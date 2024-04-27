@@ -1,3 +1,6 @@
+import { CardLayout } from "@/components/elements/CardLayout";
+import { Grid } from "@/components/elements/Grid";
+import { GridContainer } from "@/components/elements/GridContainer";
 import { SessionProvider, signIn, useSession } from "@hono/auth-js/react";
 import React from "react";
 import { createRoot } from "react-dom/client";
@@ -23,7 +26,16 @@ const Content = () => {
 const Login = () => {
 	return (
 		<SessionProvider>
-			<Content />
+			<Grid>
+				<GridContainer>
+					<CardLayout
+						title="LINE でログイン"
+						desc="LINE 公式のログイン画面に移動します"
+					>
+						<Content />
+					</CardLayout>
+				</GridContainer>
+			</Grid>
 		</SessionProvider>
 	);
 };
