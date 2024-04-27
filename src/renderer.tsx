@@ -14,6 +14,7 @@ export const clientRenderer = reactRenderer(({ children, title, pageSrc }) => {
 		<html lang="ja">
 			<head>
 				<meta charSet="utf-8" />
+				<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 				<title>{title}</title>
 				<link href="/src/globals.css" rel="stylesheet" />
 				<script type="module" src={pageSrc} />
