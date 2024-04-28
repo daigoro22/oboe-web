@@ -45,6 +45,7 @@
 		"@hono/vite-cloudflare-pages": "^0.2.4",
 		"@hono/vite-dev-server": "^0.9.0",
 		"@storybook/addon-actions": "^8.0.8",
+		"@storybook/addon-backgrounds": "^8.0.9",
 		"@storybook/addon-essentials": "^8.0.8",
 		"@storybook/addon-interactions": "^8.0.8",
 		"@storybook/addon-links": "^8.0.8",
