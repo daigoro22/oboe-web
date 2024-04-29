@@ -1,4 +1,5 @@
-import { Meta, Story } from '@storybook/react';
+import type { Meta, StoryFn } from '@storybook/react';
+import React from "react";
 
 import { {{ properCase name }} } from './{{ properCase name }}';
 
@@ -12,7 +13,7 @@ const meta: Meta = {
 
 export default meta;
 
-const Template: Story = (props) => <{{ properCase name }} {...props}>Hello</{{ properCase name }}>;
+const Template: StoryFn = (props) => <{{ properCase name }} {...props}>Hello</{{ properCase name }}>;
 
 export const Default = Template.bind({});
 Default.args = {};

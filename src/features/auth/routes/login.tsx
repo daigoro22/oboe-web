@@ -1,21 +1,15 @@
-import { SessionProvider, signIn, useSession } from "@hono/auth-js/react";
+import { CardLayout } from "@/components/elements/CardLayout";
+import { Grid } from "@/components/elements/Grid";
+import { GridContainer } from "@/components/elements/GridContainer";
+import { LineLoginButton } from "@/features/auth/components/LineLoginButton";
+import { SessionProvider } from "@hono/auth-js/react";
 import React from "react";
 import { createRoot } from "react-dom/client";
-import { Button } from "../../../components/ui/button";
 
 const Content = () => {
-	const { data, update } = useSession();
-
 	return (
 		<>
-			<Button
-				onClick={() => {
-					signIn().then(console.log).catch(console.log);
-				}}
-			>
-				Login
-			</Button>
-			<h1>Hello! {data?.user?.name}</h1>
+			<LineLoginButton />
 		</>
 	);
 };
@@ -23,7 +17,16 @@ const Content = () => {
 const Login = () => {
 	return (
 		<SessionProvider>
-			<Content />
+			<Grid>
+				<GridContainer>
+					<CardLayout
+						title="LINE でログイン"
+						desc="LINE 公式のログイン画面に移動します"
+					>
+						<Content />
+					</CardLayout>
+				</GridContainer>
+			</Grid>
 		</SessionProvider>
 	);
 };

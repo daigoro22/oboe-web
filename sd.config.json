@@ -1,0 +1,19 @@
+{
+	"source": [".style-dictionary/tokens/**/*.json"],
+	"platforms": {
+		"ts": {
+			"transformGroup": "js",
+			"files": [
+				{
+					"format": "javascript/module",
+					"destination": "tokens.js"
+				},
+				{
+					"format": "typescript/module-declarations",
+					"destination": "tokens.d.ts"
+				}
+			],
+			"buildPath": ".style-dictionary/build/"
+		}
+	}
+}
