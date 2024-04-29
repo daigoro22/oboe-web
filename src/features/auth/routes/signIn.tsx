@@ -6,14 +6,6 @@ import { SessionProvider } from "@hono/auth-js/react";
 import React from "react";
 import { createRoot } from "react-dom/client";
 
-const Content = () => {
-	return (
-		<>
-			<LineSignInButton />
-		</>
-	);
-};
-
 const SignIn = () => {
 	return (
 		<SessionProvider>
@@ -23,7 +15,7 @@ const SignIn = () => {
 						title="LINE でログイン"
 						desc="LINE 公式のログイン画面に移動します"
 					>
-						<Content />
+						<LineSignInButton />
 					</CardLayout>
 				</GridContainer>
 			</Grid>
