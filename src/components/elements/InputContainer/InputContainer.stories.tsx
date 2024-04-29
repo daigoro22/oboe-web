@@ -1,14 +1,8 @@
 import type { Meta, StoryFn } from "@storybook/react";
 import React from "react";
 
+import { Select } from "@/components/elements/Select";
 import { Input } from "@/components/ui/input";
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "@/components/ui/select";
 import { InputContainer } from "./InputContainer";
 
 const meta: Meta = {
@@ -44,15 +38,14 @@ SelectInput.args = {
 	htmlFor: "selectInput",
 	label: "セレクトインプット",
 	children: (
-		<Select>
-			<SelectTrigger id="selectInput">
-				<SelectValue placeholder="オプションを選択" />
-			</SelectTrigger>
-			<SelectContent>
-				<SelectItem value="option1">オプション1</SelectItem>
-				<SelectItem value="option2">オプション2</SelectItem>
-				<SelectItem value="option3">オプション3</SelectItem>
-			</SelectContent>
-		</Select>
+		<Select
+			id="selectInput"
+			placeholder="オプションを選択"
+			items={[
+				{ label: "選択肢1", value: "1" },
+				{ label: "選択肢2", value: "2" },
+				{ label: "選択肢3", value: "3" },
+			]}
+		/>
 	),
 };
