@@ -2,10 +2,10 @@ import tokens from "./.style-dictionary/build/tokens";
 
 const getKV = (obj, isNum = false) =>
 	Object.entries(obj).reduce(
-		(acc, [key, { value }]) => ({
-			...acc,
-			[key]: isNum ? `calc(${value} / 2)` : value, // Retina display 用のデザインなので大きさが実際の2倍になっている
-		}),
+		(acc, [key, { value }]) =>
+			Object.assign(acc, {
+				[key]: isNum ? `calc(${value} / 2)` : value, // Retina display 用のデザインなので大きさが実際の2倍になっている
+			}),
 		{},
 	);
 

@@ -1,5 +1,5 @@
 import type React from "react";
-// eslint-disable-next-line @typescript-eslint/no-unused-vars export
+// biome-ignore lint/complexity/noBannedTypes: <explanation>
 export type LogoProps = {};
 import LogoSvg from "@/assets/logo.svg?react";
 
