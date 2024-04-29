@@ -2,8 +2,8 @@ import { Button } from "@/components/ui/button";
 import { signIn } from "@hono/auth-js/react";
 import * as React from "react";
 // biome-ignore lint/complexity/noBannedTypes: <explanation>
-export type LineLoginButtonProps = {};
-export const LineLoginButton = (props: LineLoginButtonProps) => {
+export type LineSignInButtonProps = {};
+export const LineSignInButton = (props: LineSignInButtonProps) => {
 	return (
 		<Button
 			onClick={() => {

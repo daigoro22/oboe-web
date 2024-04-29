@@ -56,7 +56,7 @@ app.use("/", clientRenderer);
 app.get("/", async (c) => {
 	return c.render(<div id="root" />, {
 		title: "ログイン",
-		pageSrc: "/src/features/auth/routes/login.tsx",
+		pageSrc: "/src/features/auth/routes/signIn.tsx",
 	});
 });
 
