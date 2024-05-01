@@ -11,6 +11,7 @@ const meta: Meta = {
 	parameters: {
 		controls: { expanded: true },
 	},
+	tags: ["autodocs"],
 };
 
 export default meta;
