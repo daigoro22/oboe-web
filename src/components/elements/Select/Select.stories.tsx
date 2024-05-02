@@ -19,11 +19,11 @@ const Template: StoryFn = (props) => <Select {...props} />;
 
 export const Default = Template.bind({});
 Default.args = {
-	id: "select",
 	placeholder: "選択してください",
 	items: [
 		{ label: "選択肢1", value: "1" },
 		{ label: "選択肢2", value: "2" },
 		{ label: "選択肢3", value: "3" },
 	],
+	isForm: false,
 };

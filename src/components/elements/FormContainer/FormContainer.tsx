@@ -1,21 +1,27 @@
-import { Label } from "@/components/ui/label";
+import {
+	FormDescription,
+	FormItem,
+	FormLabel,
+	FormMessage,
+} from "@/components/ui/form";
 import type * as React from "react";
 
 // biome-ignore lint/complexity/noBannedTypes: <explanation></explanation>
-export type FormContainerProps = React.PropsWithChildren<
-	Pick<React.ComponentPropsWithoutRef<"label">, "htmlFor"> & {
-		label: string;
-	}
->;
+export type FormContainerProps = React.PropsWithChildren<{
+	label: string;
+	desc?: string;
+}>;
 export const FormContainer = ({
-	htmlFor,
 	label,
+	desc,
 	children,
 }: FormContainerProps) => {
 	return (
-		<div className="grid w-full max-w-sm items-center gap-1.5">
-			<Label htmlFor={htmlFor}>{label}</Label>
+		<FormItem>
+			<FormLabel>{label}</FormLabel>
 			{children}
-		</div>
+			<FormDescription>{desc}</FormDescription>
+			<FormMessage />
+		</FormItem>
 	);
 };

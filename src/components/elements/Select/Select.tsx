@@ -10,21 +10,19 @@ import type * as React from "react";
 
 // biome-ignore lint/complexity/noBannedTypes: <explanation></explanation>
 export type SelectProps = {
-	id: string;
 	placeholder: string;
 	items: { value: string; label: string }[];
 	isForm?: boolean;
 };
 type ScSelectProps = React.ComponentProps<typeof ScSelect>;
 export const Select: React.FC<SelectProps & ScSelectProps> = ({
-	id,
 	placeholder,
 	items,
 	isForm = true,
 	...props
 }) => {
 	const Trigger = () => (
-		<SelectTrigger id={id}>
+		<SelectTrigger>
 			<SelectValue placeholder={placeholder} />
 		</SelectTrigger>
 	);
@@ -40,7 +38,9 @@ export const Select: React.FC<SelectProps & ScSelectProps> = ({
 			)}
 			<SelectContent>
 				{items.map(({ label, value }) => (
-					<SelectItem value={value}>{label}</SelectItem>
+					<SelectItem key={value} value={value}>
+						{label}
+					</SelectItem>
 				))}
 			</SelectContent>
 		</ScSelect>

@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { FormContainer } from "./FormContainer";
 
 const meta: Meta = {
-	title: "Components/Input",
+	title: "Components/FormContainer",
 	component: FormContainer,
 	parameters: {
 		controls: { expanded: true },
@@ -40,13 +40,13 @@ SelectInput.args = {
 	label: "セレクトインプット",
 	children: (
 		<Select
-			id="selectInput"
 			placeholder="オプションを選択"
 			items={[
 				{ label: "選択肢1", value: "1" },
 				{ label: "選択肢2", value: "2" },
 				{ label: "選択肢3", value: "3" },
 			]}
+			isForm={false}
 		/>
 	),
 };
