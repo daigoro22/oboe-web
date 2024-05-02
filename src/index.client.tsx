@@ -9,8 +9,9 @@ const App = () => {
 		<SessionProvider>
 			<BrowserRouter>
 				<Routes>
-					<Route path="/" element={<SignIn />} />
-					<Route path="/signUp" element={<SignUp />} />
+					<Route path="/signin" element={<SignIn />} />
+					<Route path="/register" element={<SignIn register />} />
+					<Route path="/signup" element={<SignUp />} />
 				</Routes>
 			</BrowserRouter>
 		</SessionProvider>

@@ -1,14 +1,14 @@
 import { Button } from "@/components/ui/button";
 import { signIn } from "@hono/auth-js/react";
 import * as React from "react";
-// biome-ignore lint/complexity/noBannedTypes: <explanation>
-export type LineSignInButtonProps = {};
-export const LineSignInButton = (props: LineSignInButtonProps) => {
+
+export type LineSignInButtonProps = { callbackUrl: string };
+export const LineSignInButton = ({ callbackUrl }: LineSignInButtonProps) => {
 	return (
 		<Button
 			onClick={() => {
 				(async () => {
-					await signIn();
+					await signIn(undefined, { callbackUrl });
 				})();
 			}}
 			className="p-0"
