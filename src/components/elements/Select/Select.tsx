@@ -8,7 +8,6 @@ import {
 } from "@/components/ui/select";
 import type * as React from "react";
 
-// biome-ignore lint/complexity/noBannedTypes: <explanation></explanation>
 export type SelectProps = {
 	placeholder: string;
 	items: { value: string; label: string }[];

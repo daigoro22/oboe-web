@@ -6,7 +6,6 @@ import {
 } from "@/components/ui/form";
 import type * as React from "react";
 
-// biome-ignore lint/complexity/noBannedTypes: <explanation></explanation>
 export type FormContainerProps = React.PropsWithChildren<{
 	label: string;
 	desc?: string;
