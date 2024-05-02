@@ -53,18 +53,8 @@ function getAuthConfig(c: Context): AuthConfig {
 
 app.use("*", clientRenderer);
 
-app.get("/", async (c) => {
-	return c.render(<div id="root" />, {
-		title: "ログイン",
-		pageSrc: "/src/features/auth/routes/signIn.tsx",
-	});
-});
-
-app.get("/signUp", async (c) => {
-	return c.render(<div id="root" />, {
-		title: "ユーザ登録",
-		pageSrc: "/src/features/auth/routes/signUp.tsx",
-	});
+app.get("*", async (c) => {
+	return c.render(<div id="root" />);
 });
 
 export default app;

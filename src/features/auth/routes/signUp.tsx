@@ -10,10 +10,9 @@ import { Input } from "@/components/ui/input";
 import { type SignUpSchema, signUpSchema } from "@/schemas/signUp";
 import { SessionProvider, useSession } from "@hono/auth-js/react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { createRoot } from "react-dom/client";
 import { useForm } from "react-hook-form";
 
-const Content = () => {
+export const SignUp = () => {
 	const { data, status } = useSession();
 	const form = useForm<SignUpSchema>({
 		resolver: zodResolver(signUpSchema),
@@ -113,17 +112,3 @@ const Content = () => {
 		</Form>
 	);
 };
-
-const SignUp = () => {
-	return (
-		<SessionProvider>
-			<Content />
-		</SessionProvider>
-	);
-};
-
-const domNode = document.getElementById("root");
-if (domNode) {
-	const root = createRoot(domNode);
-	root.render(<SignUp />);
-}

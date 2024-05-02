@@ -6,25 +6,17 @@ import { SessionProvider } from "@hono/auth-js/react";
 import React from "react";
 import { createRoot } from "react-dom/client";
 
-const SignIn = () => {
+export const SignIn = () => {
 	return (
-		<SessionProvider>
-			<Grid>
-				<GridContainer>
-					<CardLayout
-						title="LINE でログイン"
-						desc="LINE 公式のログイン画面に移動します"
-					>
-						<LineSignInButton />
-					</CardLayout>
-				</GridContainer>
-			</Grid>
-		</SessionProvider>
+		<Grid>
+			<GridContainer>
+				<CardLayout
+					title="LINE でログイン"
+					desc="LINE 公式のログイン画面に移動します"
+				>
+					<LineSignInButton />
+				</CardLayout>
+			</GridContainer>
+		</Grid>
 	);
 };
-
-const domNode = document.getElementById("root");
-if (domNode) {
-	const root = createRoot(domNode);
-	root.render(<SignIn />);
-}
