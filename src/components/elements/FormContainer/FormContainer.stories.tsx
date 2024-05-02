@@ -3,11 +3,11 @@ import React from "react";
 
 import { Select } from "@/components/elements/Select";
 import { Input } from "@/components/ui/input";
-import { InputContainer } from "./InputContainer";
+import { FormContainer } from "./FormContainer";
 
 const meta: Meta = {
 	title: "Components/Input",
-	component: InputContainer,
+	component: FormContainer,
 	parameters: {
 		controls: { expanded: true },
 	},
@@ -17,9 +17,9 @@ const meta: Meta = {
 export default meta;
 
 const Template: StoryFn = ({ label, ...props }) => (
-	<InputContainer label={label} {...props}>
+	<FormContainer label={label} {...props}>
 		{props.children}
-	</InputContainer>
+	</FormContainer>
 );
 
 export const Default = Template.bind({});
