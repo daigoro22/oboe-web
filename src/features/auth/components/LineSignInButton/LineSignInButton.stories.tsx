@@ -1,11 +1,11 @@
 import type { Meta, StoryFn } from "@storybook/react";
-
 import React from "react";
-import { Header } from "./Header";
+
+import { LineSignInButton } from "./LineSignInButton";
 
 const meta: Meta = {
-	title: "Components/Header",
-	component: Header,
+	title: "Components/LineSignInButton",
+	component: LineSignInButton,
 	parameters: {
 		controls: { expanded: true },
 	},
@@ -15,9 +15,7 @@ const meta: Meta = {
 export default meta;
 
 const Template: StoryFn = (props) => (
-	<Header {...props}>
-		<p>Hello</p>
-	</Header>
+	<LineSignInButton {...props}>Hello</LineSignInButton>
 );
 
 export const Default = Template.bind({});
