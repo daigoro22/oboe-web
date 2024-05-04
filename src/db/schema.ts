@@ -37,10 +37,10 @@ export const users = sqliteTable(
 
 export const occupations = sqliteTable("occupations", {
 	id: integer("id").primaryKey({ autoIncrement: true }),
-	name: text("name"),
+	name: text("name").notNull(),
 });
 
 export const objectives = sqliteTable("objectives", {
 	id: integer("id").primaryKey({ autoIncrement: true }),
-	name: text("name"),
+	name: text("name").notNull(),
 });
