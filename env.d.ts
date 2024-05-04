@@ -1,3 +1,5 @@
-interface Env {
-	DATABASE: D1Database;
+import type { Env as Ev } from "hono";
+
+export interface Env extends Ev {
+	Bindings: { DB: D1Database };
 }

@@ -10,10 +10,12 @@ import { cors } from "hono/cors";
 import { env, getRuntimeKey } from "hono/adapter";
 import { clientRenderer } from "./renderer";
 
+import { formOptions } from "@/features/auth/routes/server/formOptions/formOptions.controller";
 import Line from "@auth/core/providers/line";
+import type { Env } from "env";
 import React from "react";
 
-const app = new Hono({ strict: false });
+const app = new Hono<Env>({ strict: false });
 
 app.use(
 	"*",
@@ -29,6 +31,8 @@ app.use("*", initAuthConfig(getAuthConfig));
 app.use("/api/auth/*", authHandler());
 
 app.use("/api/*", verifyAuth());
+
+app.route("/api/", formOptions);
 
 app.get("/api/protected", (c) => {
 	const auth = c.get("authUser");
