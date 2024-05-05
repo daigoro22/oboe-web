@@ -1,6 +1,8 @@
 import { beforeAll, expect, test } from "vitest";
-import { setupAll, testDB } from "./db/fixture";
+import { prepare, testDB } from "./db/fixture";
 import { occupations } from "./db/schema";
+
+const { setupAll } = prepare();
 
 beforeAll(async () => {
 	await setupAll();

@@ -1,20 +1,19 @@
+import "reflect-metadata";
+
+import { formOptions } from "@/features/auth/routes/server/formOptions/formOptions.controller";
+import Line from "@auth/core/providers/line";
 import {
 	type AuthConfig,
 	authHandler,
 	initAuthConfig,
 	verifyAuth,
 } from "@hono/auth-js";
-import { type Context, Hono } from "hono";
-import { cors } from "hono/cors";
-import "reflect-metadata";
-
-import { env, getRuntimeKey } from "hono/adapter";
-import { clientRenderer } from "./renderer";
-
-import { formOptions } from "@/features/auth/routes/server/formOptions/formOptions.controller";
-import Line from "@auth/core/providers/line";
 import type { Env } from "env";
+import { type Context, Hono } from "hono";
+import { env, getRuntimeKey } from "hono/adapter";
+import { cors } from "hono/cors";
 import React from "react";
+import { clientRenderer } from "./renderer";
 
 const app = new Hono<Env>({ strict: false });
 
