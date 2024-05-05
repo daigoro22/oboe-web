@@ -1,5 +1,5 @@
-import { SignIn } from "@/features/auth/routes/signIn";
-import { SignUp } from "@/features/auth/routes/signUp";
+import { SignIn } from "@/features/auth/routes/client/signIn";
+import { SignUp } from "@/features/auth/routes/client/signUp";
 import { SessionProvider } from "@hono/auth-js/react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, Route, Routes } from "react-router-dom";

@@ -1,19 +1,21 @@
+import "reflect-metadata";
+
+import { formOptions } from "@/features/auth/routes/server/formOptions/formOptions.controller";
+import Line from "@auth/core/providers/line";
 import {
 	type AuthConfig,
 	authHandler,
 	initAuthConfig,
 	verifyAuth,
 } from "@hono/auth-js";
+import type { Env } from "env";
 import { type Context, Hono } from "hono";
-import { cors } from "hono/cors";
-
 import { env, getRuntimeKey } from "hono/adapter";
+import { cors } from "hono/cors";
+import React from "react";
 import { clientRenderer } from "./renderer";
 
-import Line from "@auth/core/providers/line";
-import React from "react";
-
-const app = new Hono({ strict: false });
+const app = new Hono<Env>({ strict: false });
 
 app.use(
 	"*",
@@ -29,6 +31,8 @@ app.use("*", initAuthConfig(getAuthConfig));
 app.use("/api/auth/*", authHandler());
 
 app.use("/api/*", verifyAuth());
+
+app.route("/api/register/formOptions", formOptions);
 
 app.get("/api/protected", (c) => {
 	const auth = c.get("authUser");

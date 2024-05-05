@@ -1,11 +1,11 @@
 CREATE TABLE `objectives` (
 	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
-	`name` text
+	`name` text NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE `occupations` (
 	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
-	`name` text
+	`name` text NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE `users` (

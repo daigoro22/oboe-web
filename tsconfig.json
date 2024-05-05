@@ -9,6 +9,8 @@
 		"paths": {
 			"@/*": ["./src/*"]
 		},
+		"experimentalDecorators": true,
+		"emitDecoratorMetadata": true,
 		"allowJs": true,
 		"checkJs": true,
 		"esModuleInterop": true,
