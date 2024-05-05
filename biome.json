@@ -11,5 +11,10 @@
 	},
 	"files": {
 		"ignore": [".style-dictionary/build/"]
+	},
+	"javascript": {
+		"parser": {
+			"unsafeParameterDecoratorsEnabled": true
+		}
 	}
 }

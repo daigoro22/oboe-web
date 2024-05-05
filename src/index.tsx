@@ -6,6 +6,7 @@ import {
 } from "@hono/auth-js";
 import { type Context, Hono } from "hono";
 import { cors } from "hono/cors";
+import "reflect-metadata";
 
 import { env, getRuntimeKey } from "hono/adapter";
 import { clientRenderer } from "./renderer";
@@ -32,7 +33,7 @@ app.use("/api/auth/*", authHandler());
 
 app.use("/api/*", verifyAuth());
 
-app.route("/api/", formOptions);
+app.route("/api/register/formOptions", formOptions);
 
 app.get("/api/protected", (c) => {
 	const auth = c.get("authUser");

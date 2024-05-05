@@ -1,12 +1,18 @@
 import { objectives, occupations } from "@/db/schema";
-import { drizzle } from "drizzle-orm/d1";
+import type { IFormOptions } from "@/features/auth/routes/server/formOptions/formOptions.service";
+import { type DrizzleD1Database, drizzle } from "drizzle-orm/d1";
 
-export const getOccupations = async (connection: D1Database) => {
-	const db = drizzle(connection);
-	return await db.select().from(occupations).all();
-};
+export default class FormOptionsRepository implements IFormOptions {
+	private db: DrizzleD1Database;
+	constructor(connection: D1Database) {
+		this.db = drizzle(connection);
+	}
 
-export const getObjectives = async (connection: D1Database) => {
-	const db = drizzle(connection);
-	return await db.select().from(objectives).all();
-};
+	async getObjectives() {
+		return this.db.select().from(objectives).all();
+	}
+
+	async getOccupations() {
+		return this.db.select().from(occupations).all();
+	}
+}
