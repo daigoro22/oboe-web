@@ -26,6 +26,9 @@ export const SignUp = () => {
 		const res = await fetch("api/signup", {
 			method: "POST",
 			body: JSON.stringify(data),
+			headers: {
+				"Content-Type": "application/json",
+			},
 		});
 	});
 
@@ -83,7 +86,7 @@ export const SignUp = () => {
 													placeholder="職業を選択"
 													items={[{ label: "男", value: "man" }]}
 													onValueChange={onChange}
-													defaultValue={value}
+													defaultValue={String(value)}
 												/>
 											</FormContainer>
 										)}
@@ -97,7 +100,7 @@ export const SignUp = () => {
 													placeholder="使用目的を選択"
 													items={[{ label: "男", value: "man" }]}
 													onValueChange={onChange}
-													defaultValue={value}
+													defaultValue={String(value)}
 												/>
 											</FormContainer>
 										)}
