@@ -16,3 +16,7 @@ const containerMiddleware = createMiddleware(async (c, next) => {
 });
 
 {{ name }}.use("/", containerMiddleware);
+
+{{ name }}.get("/", async (c) => {
+	const {{ name }} = container.resolve({{ properCase name }}Service);
+});

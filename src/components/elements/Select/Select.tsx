@@ -10,7 +10,7 @@ import type * as React from "react";
 
 export type SelectProps = {
 	placeholder: string;
-	items: { value: string; label: string }[];
+	items: { value: string | number; label: string }[];
 	isForm?: boolean;
 };
 type ScSelectProps = React.ComponentProps<typeof ScSelect>;
