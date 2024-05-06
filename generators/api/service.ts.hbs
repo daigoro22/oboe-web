@@ -1,0 +1,8 @@
+import { inject, injectable } from "tsyringe";
+
+export interface I{{ properCase name }} {}
+
+@injectable()
+export default class {{ properCase name }}Service {
+	constructor(@inject("I{{ properCase name }}") private  {{ name }}: I{{ properCase name }}) {}
+}
