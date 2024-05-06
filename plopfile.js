@@ -1,3 +1,4 @@
+import apiGenerator from "./generators/api/index.js";
 import componentGenerator from "./generators/component/index.js";
 
 /**
@@ -6,4 +7,5 @@ import componentGenerator from "./generators/component/index.js";
  */
 export default function (plop) {
 	plop.setGenerator("component", componentGenerator);
+	plop.setGenerator("api", apiGenerator);
 }

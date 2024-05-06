@@ -1,0 +1,15 @@
+import { DB, prepare } from "@/db/fixture";
+import {{ properCase name }}Repository from "./{{ name }}.repository";
+import { beforeAll, describe, expect, test } from "vitest";
+
+describe("{{ name }}.repository", () => {
+	let {{ name }}Repository: {{ properCase name }}Repository;
+	const { setupAll } = prepare();
+
+	beforeAll(async () => {
+		await setupAll();
+		{{ name }}Repository = new {{ properCase name }}Repository(DB);
+	});
+
+	test("{{ name }}.repository", async () => {});
+});

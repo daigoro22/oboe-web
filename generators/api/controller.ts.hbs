@@ -1,0 +1,22 @@
+import {{ properCase name }}Repository from "./{{ name }}.repository";
+import {{ properCase name }}Service from "./{{ name }}.service";
+import type { Env } from "env";
+import { Hono } from "hono";
+import { createMiddleware } from "hono/factory";
+
+import { container } from "tsyringe";
+
+export const  {{ name }} = new Hono<Env>();
+
+const containerMiddleware = createMiddleware(async (c, next) => {
+	container.register("I{{ properCase name }}", {
+		useValue: new {{ properCase name }}Repository(c.env.DB),
+	});
+	await next();
+});
+
+{{ name }}.use("/", containerMiddleware);
+
+{{ name }}.get("/", async (c) => {
+	const {{ name }} = container.resolve({{ properCase name }}Service);
+});
