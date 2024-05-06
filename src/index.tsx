@@ -14,6 +14,7 @@ import { env, getRuntimeKey } from "hono/adapter";
 import { cors } from "hono/cors";
 import React from "react";
 import { clientRenderer } from "./renderer";
+import { signUp } from "@/features/auth/routes/server/signUp/signUp.controller";
 
 const app = new Hono<Env>({ strict: false });
 
@@ -32,7 +33,8 @@ app.use("/api/auth/*", authHandler());
 
 app.use("/api/*", verifyAuth());
 
-app.route("/api/register/formOptions", formOptions);
+app.route("/api/signup/formOptions", formOptions);
+app.route("/api/signup", signUp);
 
 app.get("/api/protected", (c) => {
 	const auth = c.get("authUser");

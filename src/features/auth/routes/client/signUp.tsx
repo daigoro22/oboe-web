@@ -23,7 +23,7 @@ export const SignUp = () => {
 
 	const onSubmit = handleSubmit(async (data) => {
 		console.log(data);
-		const res = await fetch("api/auth/signUp", {
+		const res = await fetch("api/signup", {
 			method: "POST",
 			body: JSON.stringify(data),
 		});
