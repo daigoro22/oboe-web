@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Form, FormField } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { type SignUpSchema, signUpSchema } from "@/schemas/signUp";
-import { SessionProvider, useSession } from "@hono/auth-js/react";
+import { useSession } from "@hono/auth-js/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
@@ -64,12 +64,12 @@ export const SignUp = () => {
 										/>
 										<FormField
 											control={control}
-											name="sex"
+											name="gender"
 											render={({ field: { onChange, value } }) => (
 												<FormContainer label="性別">
 													<Select
 														placeholder="性別を選択"
-														items={[{ label: "男", value: "man" }]}
+														items={[{ label: "男", value: "男" }]}
 														onValueChange={onChange}
 														defaultValue={value}
 													/>
@@ -79,12 +79,12 @@ export const SignUp = () => {
 									</Flex>
 									<FormField
 										control={control}
-										name="occupation"
+										name="occupationId"
 										render={({ field: { onChange, value } }) => (
 											<FormContainer label="職業">
 												<Select
 													placeholder="職業を選択"
-													items={[{ label: "男", value: "man" }]}
+													items={[{ label: "男", value: 1 }]}
 													onValueChange={onChange}
 													defaultValue={String(value)}
 												/>
@@ -93,12 +93,12 @@ export const SignUp = () => {
 									/>
 									<FormField
 										control={control}
-										name="objective"
+										name="objectiveId"
 										render={({ field: { onChange, value } }) => (
 											<FormContainer label="使用目的">
 												<Select
 													placeholder="使用目的を選択"
-													items={[{ label: "男", value: "man" }]}
+													items={[{ label: "男", value: 1 }]}
 													onValueChange={onChange}
 													defaultValue={String(value)}
 												/>
