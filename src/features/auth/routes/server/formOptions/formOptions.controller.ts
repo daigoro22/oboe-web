@@ -7,6 +7,7 @@ import { createMiddleware } from "hono/factory";
 import { container } from "tsyringe";
 
 export const formOptions = new Hono<Env>();
+const ROUTE = "/api/signup/formOptions" as const;
 
 const containerMiddleware = createMiddleware(async (c, next) => {
 	container.register("IFormOptions", {
@@ -15,10 +16,12 @@ const containerMiddleware = createMiddleware(async (c, next) => {
 	await next();
 });
 
-formOptions.use("/", containerMiddleware);
+formOptions.use(ROUTE, containerMiddleware);
 
-formOptions.get("/", async (c) => {
+const formOptionsRoute = formOptions.get(ROUTE, async (c) => {
 	const formOptions = container.resolve(FormOptionsService);
 	const res = await formOptions.getOptions();
 	return c.json(res);
 });
+
+export type FormOptionsRoute = typeof formOptionsRoute;

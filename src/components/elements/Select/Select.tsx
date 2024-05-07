@@ -37,7 +37,7 @@ export const Select: React.FC<SelectProps & ScSelectProps> = ({
 			)}
 			<SelectContent>
 				{items.map(({ label, value }) => (
-					<SelectItem key={value} value={value}>
+					<SelectItem key={value} value={String(value)}>
 						{label}
 					</SelectItem>
 				))}

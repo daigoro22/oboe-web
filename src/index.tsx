@@ -33,7 +33,7 @@ app.use("/api/auth/*", authHandler());
 
 app.use("/api/*", verifyAuth());
 
-app.route("/api/signup/formOptions", formOptions);
+app.route("/", formOptions);
 app.route("/api/signup", signUp);
 
 app.get("/api/protected", (c) => {
