@@ -1,4 +1,4 @@
-import { sql } from "drizzle-orm";
+import { relations, sql } from "drizzle-orm";
 import {
 	foreignKey,
 	integer,
@@ -34,6 +34,33 @@ export const users = sqliteTable(
 		}),
 	}),
 );
+
+export const accounts = sqliteTable(
+	"accounts",
+	{
+		id: integer("id").primaryKey({ autoIncrement: true }),
+		userId: integer("user_id").notNull(),
+		provider: text("provider").notNull(),
+		providerAccountId: text("provider_account_id").notNull(),
+	},
+	(accounts) => ({
+		userFk: foreignKey({
+			columns: [accounts.userId],
+			foreignColumns: [users.id],
+		}),
+	}),
+);
+
+export const usersRelations = relations(users, ({ many }) => ({
+	users: many(accounts),
+}));
+
+export const accountsRelations = relations(accounts, ({ one }) => ({
+	user: one(users, {
+		fields: [accounts.userId],
+		references: [users.id],
+	}),
+}));
 
 export const occupations = sqliteTable("occupations", {
 	id: integer("id").primaryKey({ autoIncrement: true }),
