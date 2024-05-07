@@ -36,7 +36,7 @@ signUp.post(
 			await signUp.signUp({
 				...data,
 				birthDate: new Date(data.birthDate),
-				customerId: "", //TODO: Stripe API を使用して ID を取得
+				customerId: String(new Date().getTime()), //TODO: Stripe API を使用して ID を取得
 				image: auth.session.user?.image,
 			});
 		} catch (e) {
