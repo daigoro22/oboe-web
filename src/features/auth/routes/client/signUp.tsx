@@ -7,18 +7,38 @@ import { Select } from "@/components/elements/Select";
 import { Button } from "@/components/ui/button";
 import { Form, FormField } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { users } from "@/db/schema";
+import {
+	getFormOptions,
+	type FormOptionsResponse,
+} from "@/features/auth/api/formOptions";
 import { type SignUpSchema, signUpSchema } from "@/schemas/signUp";
-import { useSession } from "@hono/auth-js/react";
+import { getSession } from "@hono/auth-js/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { useLoaderData } from "react-router-dom";
+
+const toItems = (data: { id: number; name: string }[]) =>
+	data.map(({ id, name }) => ({ label: name, value: id }));
+
+const genderItems = users.gender.enumValues.map((v) => ({
+	label: v,
+	value: v,
+}));
+
+export const signUpLoader = async () => await getFormOptions();
 
 export const SignUp = () => {
-	const { data, status } = useSession();
+	const { occupations, objectives } = useLoaderData() as FormOptionsResponse; //FIXME: as を使わず型付け
+
 	const form = useForm<SignUpSchema>({
 		resolver: zodResolver(signUpSchema),
 		mode: "onSubmit",
-		defaultValues: { name: data?.user?.name ?? "" },
+		defaultValues: async () => ({
+			name: (await getSession())?.user?.name ?? "",
+		}),
 	});
+
 	const { control, handleSubmit } = form;
 
 	const onSubmit = handleSubmit(async (data) => {
@@ -69,9 +89,8 @@ export const SignUp = () => {
 												<FormContainer label="性別">
 													<Select
 														placeholder="性別を選択"
-														items={[{ label: "男", value: "男" }]}
+														items={genderItems}
 														onValueChange={onChange}
-														defaultValue={value}
 													/>
 												</FormContainer>
 											)}
@@ -84,9 +103,8 @@ export const SignUp = () => {
 											<FormContainer label="職業">
 												<Select
 													placeholder="職業を選択"
-													items={[{ label: "男", value: 1 }]}
+													items={toItems(occupations)}
 													onValueChange={onChange}
-													defaultValue={String(value)}
 												/>
 											</FormContainer>
 										)}
@@ -98,9 +116,8 @@ export const SignUp = () => {
 											<FormContainer label="使用目的">
 												<Select
 													placeholder="使用目的を選択"
-													items={[{ label: "男", value: 1 }]}
+													items={toItems(objectives)}
 													onValueChange={onChange}
-													defaultValue={String(value)}
 												/>
 											</FormContainer>
 										)}

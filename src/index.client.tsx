@@ -1,19 +1,29 @@
 import { SignIn } from "@/features/auth/routes/client/signIn";
-import { SignUp } from "@/features/auth/routes/client/signUp";
+import { SignUp, signUpLoader } from "@/features/auth/routes/client/signUp";
 import { SessionProvider } from "@hono/auth-js/react";
 import { createRoot } from "react-dom/client";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+
+const router = createBrowserRouter([
+	{
+		path: "/signin",
+		element: <SignIn />,
+	},
+	{
+		path: "/register",
+		element: <SignIn register />,
+	},
+	{
+		path: "/signup",
+		element: <SignUp />,
+		loader: signUpLoader,
+	},
+]);
 
 const App = () => {
 	return (
 		<SessionProvider>
-			<BrowserRouter>
-				<Routes>
-					<Route path="/signin" element={<SignIn />} />
-					<Route path="/register" element={<SignIn register />} />
-					<Route path="/signup" element={<SignUp />} />
-				</Routes>
-			</BrowserRouter>
+			<RouterProvider router={router} />
 		</SessionProvider>
 	);
 };
