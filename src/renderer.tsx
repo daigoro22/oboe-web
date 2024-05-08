@@ -16,7 +16,7 @@ export const clientRenderer = reactRenderer(({ children }) => {
 				<link href="/src/globals.css" rel="stylesheet" />
 				<script type="module" src="/src/index.client.tsx" />
 			</head>
-			<body className="bg-bg-primary">
+			<body className="bg-bg-primary font-UDP">
 				<Header />
 				{children}
 			</body>
