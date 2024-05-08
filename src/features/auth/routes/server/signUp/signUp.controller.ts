@@ -8,6 +8,7 @@ import { zValidator } from "@hono/zod-validator";
 import { container } from "tsyringe";
 import { signUpSchema } from "@/schemas/signUp";
 import { DrizzleError } from "drizzle-orm";
+import { JWT } from "@auth/core/jwt";
 
 export const signUp = new Hono<Env>();
 
@@ -24,6 +25,14 @@ signUp.post(
 	"/",
 	zValidator("json", signUpSchema, async (result, c) => {
 		const auth = c.get("authUser");
+		const [provider, providerAccountId] = [
+			"https://access.line.me", // FIXME: JWT token から取得, 他のプロバイダにも対応
+			auth.token?.sub,
+		];
+
+		if (!providerAccountId) {
+			return c.text("provider account not found", 400);
+		}
 
 		const { success, data } = result;
 
@@ -33,16 +42,20 @@ signUp.post(
 
 		const signUp = container.resolve(SignUpService);
 		try {
-			await signUp.signUp({
-				...data,
-				birthDate: new Date(data.birthDate),
-				customerId: "", //TODO: Stripe API を使用して ID を取得
-				image: auth.session.user?.image,
-			});
+			await signUp.signUp(
+				{
+					...data,
+					birthDate: new Date(data.birthDate),
+					customerId: String(new Date().getTime()), //TODO: Stripe API を使用して ID を取得
+					image: auth.session.user?.image,
+				},
+				{ provider, providerAccountId },
+			);
 		} catch (e) {
 			if (e instanceof DrizzleError) {
 				return c.json({ error: "cannot create user data" }, 500);
 			}
+			console.log(e);
 			return c.json({ error: "server error" }, 500);
 		}
 
