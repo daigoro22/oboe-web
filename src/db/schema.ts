@@ -4,6 +4,7 @@ import {
 	integer,
 	sqliteTable,
 	text,
+	unique,
 } from "drizzle-orm/sqlite-core";
 
 export const users = sqliteTable(
@@ -48,6 +49,7 @@ export const accounts = sqliteTable(
 			columns: [accounts.userId],
 			foreignColumns: [users.id],
 		}),
+		providerUnique: unique().on(accounts.provider, accounts.providerAccountId),
 	}),
 );
 
