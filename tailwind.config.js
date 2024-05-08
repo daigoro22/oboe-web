@@ -27,6 +27,9 @@ const o = {
 				"2xl": "1400px",
 			},
 		},
+		fontFamily: {
+			UDP: ["BIZ UDPGothic", "sans-serif"],
+		},
 		extend: {
 			colors: {
 				border: "hsl(var(--border))",
