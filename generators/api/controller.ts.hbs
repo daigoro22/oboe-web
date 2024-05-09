@@ -3,6 +3,7 @@ import {{ properCase name }}Service from "./{{ name }}.service";
 import type { Env } from "env";
 import { Hono } from "hono";
 import { createMiddleware } from "hono/factory";
+import { {{ properCase name }}FakeRepository } from "@/lib/test-helper/{{ name }}";
 
 import { container } from "tsyringe";
 
@@ -10,7 +11,7 @@ const ROUTE = "/" as const
 
 export const {{ name }}ContainerMiddleware = createMiddleware(async (c, next) => {
 	container.register("I{{ properCase name }}", {
-		useValue: new {{ properCase name }}Repository(c.env.DB),
+		useValue: new {{ properCase name }}FakeRepository(),
 	});
 	await next();
 });
