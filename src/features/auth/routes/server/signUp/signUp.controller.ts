@@ -10,18 +10,17 @@ import { signUpSchema } from "@/schemas/signUp";
 import { DrizzleError } from "drizzle-orm";
 
 export const signUp = new Hono<Env>();
+const ROUTE = "/api/signup" as const;
 
-const containerMiddleware = createMiddleware(async (c, next) => {
+export const signUpContainerMiddleware = createMiddleware(async (c, next) => {
 	container.register("ISignUp", {
 		useValue: new SignUpRepository(c.env.DB),
 	});
 	await next();
 });
 
-signUp.use("/", containerMiddleware);
-
 signUp.post(
-	"/",
+	ROUTE,
 	zValidator("json", signUpSchema, async (result, c) => {
 		const auth = c.get("authUser");
 

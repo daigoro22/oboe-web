@@ -6,17 +6,18 @@ import { createMiddleware } from "hono/factory";
 
 import { container } from "tsyringe";
 
-export const  {{ name }} = new Hono<Env>();
+const ROUTE = "/" as const
 
-const containerMiddleware = createMiddleware(async (c, next) => {
+export const {{ name }}ContainerMiddleware = createMiddleware(async (c, next) => {
 	container.register("I{{ properCase name }}", {
 		useValue: new {{ properCase name }}Repository(c.env.DB),
 	});
 	await next();
 });
 
-{{ name }}.use("/", containerMiddleware);
+// 以下を index.tsx に追加
+// {{ name }}.use(ROUTE, {{ name }}ContainerMiddleware);
 
-{{ name }}.get("/", async (c) => {
+export const {{ name }} = new Hono<Env>().get(ROUTE, async (c) => {
 	const {{ name }} = container.resolve({{ properCase name }}Service);
 });
