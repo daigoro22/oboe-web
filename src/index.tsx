@@ -39,10 +39,11 @@ app.use("/api/auth/*", authHandler());
 
 app.use("/api/*", verifyAuth());
 
-app.route("/", formOptions);
 formOptions.use("/", formOptionsContainerMiddleware);
-app.route("/", signUp);
+app.route("/", formOptions);
+
 signUp.use("/", signUpContainerMiddleware);
+app.route("/", signUp);
 
 app.get("/api/protected", (c) => {
 	const auth = c.get("authUser");
