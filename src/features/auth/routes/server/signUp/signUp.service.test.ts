@@ -1,17 +1,15 @@
 import "reflect-metadata";
 
-import SignUpService, { type ISignUp } from "./signUp.service";
-import { AbstractFakerUtil, generateFakePromise } from "@/lib/test-helper";
+import SignUpService from "./signUp.service";
 import { container } from "tsyringe";
-import { beforeAll, describe, expect, test } from "vitest";
+import { beforeAll, describe, test } from "vitest";
+import { SignUpFakeRepository } from "@/lib/test-helper/signUp";
 
 let signUp: SignUpService;
 
-class fakeRepository extends AbstractFakerUtil implements ISignUp {}
-
 beforeAll(async () => {
 	container.register("ISignUp", {
-		useClass: fakeRepository,
+		useClass: SignUpFakeRepository,
 	});
 	signUp = container.resolve(SignUpService);
 });

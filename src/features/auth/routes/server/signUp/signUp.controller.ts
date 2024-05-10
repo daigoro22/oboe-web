@@ -9,7 +9,6 @@ import { container } from "tsyringe";
 import { signUpSchema } from "@/schemas/signUp";
 import { DrizzleError } from "drizzle-orm";
 
-export const signUp = new Hono<Env>();
 const ROUTE = "/api/signup" as const;
 
 export const signUpContainerMiddleware = createMiddleware(async (c, next) => {
@@ -19,7 +18,7 @@ export const signUpContainerMiddleware = createMiddleware(async (c, next) => {
 	await next();
 });
 
-signUp.post(
+export const signUp = new Hono<Env>().post(
 	ROUTE,
 	zValidator("json", signUpSchema, async (result, c) => {
 		const auth = c.get("authUser");
