@@ -14,7 +14,7 @@ export default class SignUpRepository implements ISignUp {
 			.from(users)
 			.orderBy(desc(users.id))
 			.limit(1);
-		const targetUserId = lastUserId[0].id + 1;
+		const targetUserId = (lastUserId[0]?.id ?? 0) + 1;
 
 		await this.db.batch([
 			this.db.insert(users).values({ id: targetUserId, ...user }),

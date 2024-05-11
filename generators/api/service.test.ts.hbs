@@ -1,16 +1,14 @@
 import "reflect-metadata";
 
-import {{ properCase name }}Service, {
-	type I{{ properCase name }},
-} from "./{{ name }}.service";
-import { AbstractFakerUtil, generateFakePromise } from "@/lib/test-helper";
+import {{ properCase name }}Service from "./{{ name }}.service";
 import { container } from "tsyringe";
 import { beforeAll, describe, expect, test } from "vitest";
+import { {{ properCase name }}FakeRepository } from "@/lib/test-helper/{{ name }}";
 
 let  {{ name }}: {{ properCase name }}Service;
 
-class fakeRepository extends AbstractFakerUtil implements I{{ properCase name }} {
-}
+// 以下は src/lib/test-helper/ に移動
+// class {{ properCase name }}FakeRepository extends AbstractFakerUtil implements I{{ properCase name }} {}
 
 beforeAll(async () => {
 	container.register("I{{ properCase name }}", {

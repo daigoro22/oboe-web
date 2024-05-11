@@ -9,14 +9,14 @@ import { container } from "tsyringe";
 export const formOptions = new Hono<Env>();
 const ROUTE = "/api/signup/formOptions" as const;
 
-const containerMiddleware = createMiddleware(async (c, next) => {
-	container.register("IFormOptions", {
-		useValue: new FormOptionsRepository(c.env.DB),
-	});
-	await next();
-});
-
-formOptions.use(ROUTE, containerMiddleware);
+export const formOptionsContainerMiddleware = createMiddleware(
+	async (c, next) => {
+		container.register("IFormOptions", {
+			useValue: new FormOptionsRepository(c.env.DB),
+		});
+		await next();
+	},
+);
 
 const formOptionsRoute = formOptions.get(ROUTE, async (c) => {
 	const formOptions = container.resolve(FormOptionsService);

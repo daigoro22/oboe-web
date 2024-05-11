@@ -1,6 +1,6 @@
 import { drizzle } from "drizzle-orm/d1";
 import { getPlatformProxy } from "wrangler";
-import { objectives, occupations, users } from "./schema";
+import { accounts, objectives, occupations, users } from "./schema";
 
 export interface Env {
 	DB: D1Database;
@@ -77,6 +77,7 @@ async function main() {
 	console.log("start");
 	const { env } = await getPlatformProxy<Env>();
 	const db = drizzle(env.DB);
+	await db.delete(accounts);
 	await db.delete(users);
 	await db.delete(occupations);
 	await db.delete(objectives);

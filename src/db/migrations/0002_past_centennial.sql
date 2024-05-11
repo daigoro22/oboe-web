@@ -1,0 +1,1 @@
+ALTER TABLE accounts ADD `created_at` integer DEFAULT CURRENT_TIMESTAMP NOT NULL;
