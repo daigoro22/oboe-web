@@ -19,7 +19,7 @@ import { getSession } from "@hono/auth-js/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { hc } from "hono/client";
 import { useForm } from "react-hook-form";
-import { useLoaderData } from "react-router-dom";
+import { useLoaderData, useNavigate } from "react-router-dom";
 
 const toItems = (data: { id: number; name: string }[]) =>
   data.map(({ id, name }) => ({ label: name, value: id }));
@@ -45,12 +45,14 @@ export const SignUp = () => {
   const { control, handleSubmit } = form;
 
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const onSubmit = handleSubmit(async (data) => {
     const client = hc<SignUpRoute>("/");
     try {
       const res = await client.api.signup.$post({ json: data });
       if (res.status === 201) {
+        navigate("/");
         toast({
           title: "登録ありがとうございます！",
           description: "登録記念ポイントを付与しました！",
