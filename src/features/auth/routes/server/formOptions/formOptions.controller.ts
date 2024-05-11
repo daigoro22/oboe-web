@@ -10,18 +10,18 @@ export const formOptions = new Hono<Env>();
 const ROUTE = "/api/signup/formOptions" as const;
 
 export const formOptionsContainerMiddleware = createMiddleware(
-	async (c, next) => {
-		container.register("IFormOptions", {
-			useValue: new FormOptionsRepository(c.env.DB),
-		});
-		await next();
-	},
+  async (c, next) => {
+    container.register("IFormOptions", {
+      useValue: new FormOptionsRepository(c.env.DB),
+    });
+    await next();
+  },
 );
 
 const formOptionsRoute = formOptions.get(ROUTE, async (c) => {
-	const formOptions = container.resolve(FormOptionsService);
-	const res = await formOptions.getOptions();
-	return c.json(res);
+  const formOptions = container.resolve(FormOptionsService);
+  const res = await formOptions.getOptions();
+  return c.json(res);
 });
 
 export type FormOptionsRoute = typeof formOptionsRoute;

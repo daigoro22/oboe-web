@@ -4,12 +4,12 @@ import React from "react";
 import { Logo } from "./Logo";
 
 const meta: Meta = {
-	title: "Components/Logo",
-	component: Logo,
-	parameters: {
-		controls: { expanded: true },
-	},
-	tags: ["autodocs"],
+  title: "Components/Logo",
+  component: Logo,
+  parameters: {
+    controls: { expanded: true },
+  },
+  tags: ["autodocs"],
 };
 
 export default meta;

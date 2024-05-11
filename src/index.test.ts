@@ -5,10 +5,10 @@ import { occupations } from "./db/schema";
 const { setupAll } = prepare();
 
 beforeAll(async () => {
-	await setupAll();
+  await setupAll();
 });
 
 test("DB読み込みができる", async () => {
-	const res = await testDB.select().from(occupations).all();
-	expect(res.length).toEqual(10);
+  const res = await testDB.select().from(occupations).all();
+  expect(res.length).toEqual(10);
 });

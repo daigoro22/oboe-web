@@ -5,31 +5,31 @@ import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 const router = createBrowserRouter([
-	{
-		path: "/signin",
-		element: <SignIn />,
-	},
-	{
-		path: "/register",
-		element: <SignIn register />,
-	},
-	{
-		path: "/signup",
-		element: <SignUp />,
-		loader: signUpLoader,
-	},
+  {
+    path: "/signin",
+    element: <SignIn />,
+  },
+  {
+    path: "/register",
+    element: <SignIn register />,
+  },
+  {
+    path: "/signup",
+    element: <SignUp />,
+    loader: signUpLoader,
+  },
 ]);
 
 const App = () => {
-	return (
-		<SessionProvider>
-			<RouterProvider router={router} />
-		</SessionProvider>
-	);
+  return (
+    <SessionProvider>
+      <RouterProvider router={router} />
+    </SessionProvider>
+  );
 };
 
 const domNode = document.getElementById("root");
 if (domNode) {
-	const root = createRoot(domNode);
-	root.render(<App />);
+  const root = createRoot(domNode);
+  root.render(<App />);
 }
