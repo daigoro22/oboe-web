@@ -49,7 +49,7 @@ describe("signUp.controller", () => {
       },
     });
 
-    expect(res.status).toEqual(200);
+    expect(res.status).toEqual(201);
   });
 
   test("スキーマバリデーションに失敗した場合、400エラーが返されること", async () => {
