@@ -7,14 +7,17 @@ import { Select } from "@/components/elements/Select";
 import { Button } from "@/components/ui/button";
 import { Form, FormField } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useToast } from "@/components/ui/use-toast";
 import { users } from "@/db/schema";
 import {
   getFormOptions,
   type FormOptionsResponse,
 } from "@/features/auth/api/formOptions";
+import type { SignUpRoute } from "@/features/auth/routes/server/signUp/signUp.controller";
 import { type SignUpSchema, signUpSchema } from "@/schemas/signUp";
 import { getSession } from "@hono/auth-js/react";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { hc } from "hono/client";
 import { useForm } from "react-hook-form";
 import { useLoaderData } from "react-router-dom";
 
@@ -41,15 +44,32 @@ export const SignUp = () => {
 
   const { control, handleSubmit } = form;
 
+  const { toast } = useToast();
+
   const onSubmit = handleSubmit(async (data) => {
-    console.log(data);
-    const res = await fetch("api/signup", {
-      method: "POST",
-      body: JSON.stringify(data),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    const client = hc<SignUpRoute>("/");
+    try {
+      const res = await client.api.signup.$post({ json: data });
+      if (res.status === 201) {
+        toast({
+          title: "登録ありがとうございます！",
+          description: "登録記念ポイントを付与しました！",
+        });
+      } else if (res.status >= 400) {
+        toast({
+          title: "登録に失敗しました",
+          description: "入力内容に誤りがあります。",
+          variant: "destructive",
+        });
+      } else if (res.status >= 500) {
+        toast({
+          title: "登録に失敗しました",
+          description:
+            "再度登録を行ってください。このメッセージが繰り返し表示されるようであれば公式 LINE までご連絡をお願いいたします。",
+          variant: "destructive",
+        });
+      }
+    } catch (e) {}
   });
 
   return (
