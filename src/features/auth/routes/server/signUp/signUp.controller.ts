@@ -48,6 +48,8 @@ export const signUp = new Hono<Env>().post(
       return c.json({ error: "server error" }, 500);
     }
 
-    return c.text("success", 200);
+    return c.text("success", 201);
   }),
 );
+
+export type SignUpRoute = typeof signUp;

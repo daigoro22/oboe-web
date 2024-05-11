@@ -14,7 +14,7 @@
     "indentWidth": 2
   },
   "files": {
-    "ignore": [".style-dictionary/build/"]
+    "ignore": [".style-dictionary/build/", "src/components/ui/"]
   },
   "javascript": {
     "parser": {

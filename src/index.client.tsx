@@ -1,3 +1,4 @@
+import { Toaster } from "@/components/ui/toaster";
 import { SignIn } from "@/features/auth/routes/client/signIn";
 import { SignUp, signUpLoader } from "@/features/auth/routes/client/signUp";
 import { SessionProvider } from "@hono/auth-js/react";
@@ -23,6 +24,7 @@ const router = createBrowserRouter([
 const App = () => {
   return (
     <SessionProvider>
+      <Toaster />
       <RouterProvider router={router} />
     </SessionProvider>
   );
