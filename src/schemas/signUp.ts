@@ -10,7 +10,13 @@ const MESSAGE = {
 
 export const signUpSchema = createInsertSchema(users, {
 	name: z.string().min(1, MESSAGE.STRING_MIN).max(255, MESSAGE.STRING_MAX),
-	birthDate: z.string({ message: MESSAGE.REQUIRED }).date(),
+	birthDate: z
+		.string({ message: MESSAGE.REQUIRED })
+		.date()
+		.refine(
+			(s) => new Date(s).getTime() < new Date().getTime(),
+			"過去の日付を選択してください",
+		),
 	gender: z.enum(users.gender.enumValues, { message: MESSAGE.REQUIRED }),
 	occupationId: z.coerce.number({ message: MESSAGE.REQUIRED }).positive(),
 	objectiveId: z.coerce.number({ message: MESSAGE.REQUIRED }).positive(),

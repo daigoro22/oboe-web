@@ -133,6 +133,16 @@ describe("signUp.controller", () => {
 			},
 		},
 		{
+			name: "未来の日付の場合",
+			data: {
+				name: "テスト太郎",
+				birthDate: "3000-01-01", // 未来の日付
+				gender: "男",
+				occupationId: 1,
+				objectiveId: 1,
+			},
+		},
+		{
 			name: "無効な性別の値の場合",
 			data: {
 				name: "テスト太郎",
