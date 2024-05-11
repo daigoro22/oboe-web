@@ -43,6 +43,9 @@ export const accounts = sqliteTable(
 		userId: integer("user_id").notNull(),
 		provider: text("provider").notNull(),
 		providerAccountId: text("provider_account_id").notNull(),
+		createdAt: integer("created_at", { mode: "timestamp_ms" })
+			.notNull()
+			.default(sql`CURRENT_TIMESTAMP`),
 	},
 	(accounts) => ({
 		userFk: foreignKey({
