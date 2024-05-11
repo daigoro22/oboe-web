@@ -7,16 +7,16 @@ import React from "react";
 import { createRoot } from "react-dom/client";
 
 export const SignIn = ({ register = false }: { register?: boolean }) => {
-	return (
-		<Grid>
-			<GridContainer>
-				<CardLayout
-					title={register ? "LINE で Oboe に登録" : "LINE でログイン"}
-					desc="LINE 公式のログイン画面に移動します"
-				>
-					<LineSignInButton callbackUrl={register ? "/signUp" : "/"} />
-				</CardLayout>
-			</GridContainer>
-		</Grid>
-	);
+  return (
+    <Grid>
+      <GridContainer>
+        <CardLayout
+          title={register ? "LINE で Oboe に登録" : "LINE でログイン"}
+          desc="LINE 公式のログイン画面に移動します"
+        >
+          <LineSignInButton callbackUrl={register ? "/signUp" : "/"} />
+        </CardLayout>
+      </GridContainer>
+    </Grid>
+  );
 };

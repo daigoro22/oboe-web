@@ -1,42 +1,42 @@
 {
-	"compilerOptions": {
-		"target": "ESNext",
-		"module": "ESNext",
-		"moduleResolution": "Bundler",
-		"strict": true,
-		"lib": ["ESNext"],
-		"baseUrl": ".",
-		"paths": {
-			"@/*": ["./src/*"]
-		},
-		"experimentalDecorators": true,
-		"emitDecoratorMetadata": true,
-		"allowJs": true,
-		"checkJs": true,
-		"esModuleInterop": true,
-		"forceConsistentCasingInFileNames": true,
-		"resolveJsonModule": true,
-		"skipLibCheck": true,
-		"sourceMap": true,
-		"noEmit": true,
-		"allowImportingTsExtensions": true,
-		"moduleDetection": "force",
-		"types": [
-			"@cloudflare/workers-types",
-			"vite/client",
-			"bun-types",
-			"@cloudflare/workers-types/experimental",
-			"@cloudflare/vitest-pool-workers",
-			"vite-plugin-svgr/client"
-		],
-		"jsx": "react-jsx",
-		"jsxImportSource": "react"
-	},
-	"include": [
-		"**/*.ts",
-		"**/*.tsx",
-		"../src/env.d.ts",
-		"generators/component/index.js",
-		"plopfile.js"
-	]
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "strict": true,
+    "lib": ["ESNext"],
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "allowJs": true,
+    "checkJs": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "noEmit": true,
+    "allowImportingTsExtensions": true,
+    "moduleDetection": "force",
+    "types": [
+      "@cloudflare/workers-types",
+      "vite/client",
+      "bun-types",
+      "@cloudflare/workers-types/experimental",
+      "@cloudflare/vitest-pool-workers",
+      "vite-plugin-svgr/client"
+    ],
+    "jsx": "react-jsx",
+    "jsxImportSource": "react"
+  },
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    "../src/env.d.ts",
+    "generators/component/index.js",
+    "plopfile.js"
+  ]
 }

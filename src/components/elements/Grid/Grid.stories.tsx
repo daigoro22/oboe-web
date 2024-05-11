@@ -4,12 +4,12 @@ import React from "react";
 import { Grid } from "./Grid";
 
 const meta: Meta = {
-	title: "Components/Grid",
-	component: Grid,
-	parameters: {
-		controls: { expanded: true },
-	},
-	tags: ["autodocs"],
+  title: "Components/Grid",
+  component: Grid,
+  parameters: {
+    controls: { expanded: true },
+  },
+  tags: ["autodocs"],
 };
 
 export default meta;

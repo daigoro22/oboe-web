@@ -9,56 +9,56 @@ const features = fs.readdirSync(featuresDir);
  * @type {import('plop').PlopGenerator}
  */
 const componentGenerator = {
-	description: "Component Generator",
-	prompts: [
-		{
-			type: "input",
-			name: "name",
-			message: "component name",
-		},
-		{
-			type: "list",
-			name: "feature",
-			message: "Which feature does this component belong to?",
-			choices: ["ROOT", ...features],
-			when: () => features.length > 0,
-		},
-		{
-			type: "input",
-			name: "folder",
-			message: "folder in components",
-			when: ({ feature }) => !feature || feature === "ROOT",
-		},
-	],
-	actions: (answers) => {
-		const componentGeneratePath =
-			!answers?.feature || answers.feature === "ROOT"
-				? "src/components/{{folder}}"
-				: "src/features/{{feature}}/components";
-		return [
-			{
-				type: "add",
-				path: `${componentGeneratePath}/{{properCase name}}/index.ts`,
-				templateFile: "generators/component/index.ts.hbs",
-			},
-			{
-				type: "add",
-				path: `${componentGeneratePath}/{{properCase name}}/{{properCase name}}.tsx`,
-				templateFile: "generators/component/Component.tsx.hbs",
-			},
-			{
-				type: "add",
-				path: `${componentGeneratePath}/{{properCase name}}/{{properCase name}}.stories.tsx`,
-				templateFile: "generators/component/Component.stories.tsx.hbs",
-			},
-		];
-	},
-	runPrompts: (bypassArr) => {
-		throw new Error("Function not implemented.");
-	},
-	runActions: (answers, hooks) => {
-		throw new Error("Function not implemented.");
-	},
+  description: "Component Generator",
+  prompts: [
+    {
+      type: "input",
+      name: "name",
+      message: "component name",
+    },
+    {
+      type: "list",
+      name: "feature",
+      message: "Which feature does this component belong to?",
+      choices: ["ROOT", ...features],
+      when: () => features.length > 0,
+    },
+    {
+      type: "input",
+      name: "folder",
+      message: "folder in components",
+      when: ({ feature }) => !feature || feature === "ROOT",
+    },
+  ],
+  actions: (answers) => {
+    const componentGeneratePath =
+      !answers?.feature || answers.feature === "ROOT"
+        ? "src/components/{{folder}}"
+        : "src/features/{{feature}}/components";
+    return [
+      {
+        type: "add",
+        path: `${componentGeneratePath}/{{properCase name}}/index.ts`,
+        templateFile: "generators/component/index.ts.hbs",
+      },
+      {
+        type: "add",
+        path: `${componentGeneratePath}/{{properCase name}}/{{properCase name}}.tsx`,
+        templateFile: "generators/component/Component.tsx.hbs",
+      },
+      {
+        type: "add",
+        path: `${componentGeneratePath}/{{properCase name}}/{{properCase name}}.stories.tsx`,
+        templateFile: "generators/component/Component.stories.tsx.hbs",
+      },
+    ];
+  },
+  runPrompts: (bypassArr) => {
+    throw new Error("Function not implemented.");
+  },
+  runActions: (answers, hooks) => {
+    throw new Error("Function not implemented.");
+  },
 };
 
 export default componentGenerator;

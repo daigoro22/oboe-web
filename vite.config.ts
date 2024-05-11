@@ -8,25 +8,25 @@ import { defineConfig } from "vite";
 import commonjs from "vite-plugin-commonjs";
 
 export default defineConfig({
-	plugins: [
-		build(),
-		devServer({
-			adapter,
-			entry: "src/index.tsx",
-		}),
-		commonjs({
-			filter(id) {
-				if (id.includes("node_modules/cookie")) {
-					return true;
-				}
-			},
-		}),
-		svgr(),
-	],
-	resolve: {
-		alias: {
-			"@": path.resolve(__dirname, "./src"),
-		},
-	},
-	ssr: { external: ["react", "react-dom"] },
+  plugins: [
+    build(),
+    devServer({
+      adapter,
+      entry: "src/index.tsx",
+    }),
+    commonjs({
+      filter(id) {
+        if (id.includes("node_modules/cookie")) {
+          return true;
+        }
+      },
+    }),
+    svgr(),
+  ],
+  resolve: {
+    alias: {
+      "@": path.resolve(__dirname, "./src"),
+    },
+  },
+  ssr: { external: ["react", "react-dom"] },
 });

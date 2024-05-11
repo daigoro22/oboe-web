@@ -4,12 +4,12 @@ import React from "react";
 import { CardLayout } from "./CardLayout";
 
 const meta: Meta = {
-	title: "Components/CardLayout",
-	component: CardLayout,
-	parameters: {
-		controls: { expanded: true },
-	},
-	tags: ["autodocs"],
+  title: "Components/CardLayout",
+  component: CardLayout,
+  parameters: {
+    controls: { expanded: true },
+  },
+  tags: ["autodocs"],
 };
 
 export default meta;

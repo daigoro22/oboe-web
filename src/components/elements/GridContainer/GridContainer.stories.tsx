@@ -5,20 +5,20 @@ import { Grid } from "@/components/elements/Grid";
 import { GridContainer } from "./GridContainer";
 
 const meta: Meta = {
-	title: "Components/GridContainer",
-	component: GridContainer,
-	parameters: {
-		controls: { expanded: true },
-	},
-	tags: ["autodocs"],
+  title: "Components/GridContainer",
+  component: GridContainer,
+  parameters: {
+    controls: { expanded: true },
+  },
+  tags: ["autodocs"],
 };
 
 export default meta;
 
 const Template: StoryFn = (props) => (
-	<Grid>
-		<GridContainer {...props}>Hello</GridContainer>
-	</Grid>
+  <Grid>
+    <GridContainer {...props}>Hello</GridContainer>
+  </Grid>
 );
 
 export const Default = Template.bind({});
