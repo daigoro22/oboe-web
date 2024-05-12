@@ -9,18 +9,25 @@ const flex = cva("flex", {
       col: "flex-col",
     },
     gap: {
+      xs: "gap-1",
       sm: "gap-3",
       md: "gap-4",
       lg: "gap-5",
       xl: "gap-6",
     },
+    alignItems: {
+      start: "items-start",
+      center: "items-center",
+      end: "items-end",
+    },
   },
   defaultVariants: {
     direction: "row",
     gap: "sm",
+    alignItems: "center",
   },
 });
 
-export const Flex = ({ children, direction, gap }: FlexProps) => (
-  <div className={flex({ direction, gap })}>{children}</div>
+export const Flex = ({ children, direction, gap, alignItems }: FlexProps) => (
+  <div className={flex({ direction, gap, alignItems })}>{children}</div>
 );
