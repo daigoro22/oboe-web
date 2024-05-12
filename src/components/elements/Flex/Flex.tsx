@@ -20,14 +20,28 @@ const flex = cva("flex", {
       center: "items-center",
       end: "items-end",
     },
+    justifyContent: {
+      start: "justify-start",
+      center: "justify-center",
+      end: "justify-end",
+      between: "justify-between",
+      around: "justify-around",
+    },
   },
   defaultVariants: {
     direction: "row",
     gap: "sm",
-    alignItems: "center",
   },
 });
 
-export const Flex = ({ children, direction, gap, alignItems }: FlexProps) => (
-  <div className={flex({ direction, gap, alignItems })}>{children}</div>
+export const Flex = ({
+  children,
+  direction,
+  gap,
+  alignItems,
+  justifyContent,
+}: FlexProps) => (
+  <div className={flex({ direction, gap, alignItems, justifyContent })}>
+    {children}
+  </div>
 );
