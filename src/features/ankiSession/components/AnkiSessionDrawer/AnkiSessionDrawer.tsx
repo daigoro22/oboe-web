@@ -18,7 +18,7 @@ const Point = ({
 }: React.PropsWithChildren<{
   point: number;
 }>) => (
-  <Flex direction="col" gap="xs">
+  <Flex direction="col" gap="xs" alignItems="center">
     <p className="text-2xl">{point}</p>
     <p className="text-xs text-muted-foreground">pt</p>
   </Flex>
@@ -44,7 +44,7 @@ export const AnkiSessionDrawer = ({
             ポイントを消費して暗記セッションを開始します
           </DrawerDescription>
         </DrawerHeader>
-        <Flex direction="col">
+        <Flex direction="col" alignItems="center">
           <p className="text-base">デッキ名：{name}</p>
           <Flex direction="row">
             <Point point={pointFrom} />
