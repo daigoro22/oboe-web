@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/card";
 import { CalendarDays } from "lucide-react";
 import * as React from "react";
-// biome-ignore lint/complexity/noBannedTypes: <explanation></explanation>
+
 export type StudyStreakCardProps = { streak: number };
 export const StudyStreakCard = ({ streak }: StudyStreakCardProps) => {
   return (
