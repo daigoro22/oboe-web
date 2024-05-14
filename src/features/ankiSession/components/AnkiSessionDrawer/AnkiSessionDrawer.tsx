@@ -46,7 +46,7 @@ export const AnkiSessionDrawer = ({
         </DrawerHeader>
         <Flex direction="col" alignItems="center">
           <p className="text-base">デッキ名：{name}</p>
-          <Flex direction="row">
+          <Flex direction="row" alignItems="center">
             <Point point={pointFrom} />
             <ArrowBigRight />
             <Point point={pointTo} />
