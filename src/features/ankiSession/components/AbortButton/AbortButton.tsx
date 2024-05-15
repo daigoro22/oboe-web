@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { BookOpenCheck } from "lucide-react";
 import * as React from "react";
 
+// biome-ignore lint/complexity/noBannedTypes: <explanation>
 export type AbortButtonProps = {};
 export const AbortButton = (props: AbortButtonProps) => {
   return (
