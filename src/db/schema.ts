@@ -88,6 +88,9 @@ export const ankiSessions = sqliteTable(
     startsAt: integer("startsAt", { mode: "timestamp_ms" }).notNull(),
     endsAt: integer("endsAt", { mode: "timestamp_ms" }).notNull(),
     deckName: text("deckName").notNull(),
+    createdAt: integer("created_at", { mode: "timestamp_ms" })
+      .notNull()
+      .default(sql`CURRENT_TIMESTAMP`),
   },
   (ankiSessions) => ({
     deckFk: foreignKey({
@@ -108,6 +111,9 @@ export const decks = sqliteTable(
     userId: text("userId").notNull(),
     name: text("name").notNull(),
     description: text("description").notNull(),
+    createdAt: integer("created_at", { mode: "timestamp_ms" })
+      .notNull()
+      .default(sql`CURRENT_TIMESTAMP`),
   },
   (decks) => ({
     userFk: foreignKey({
