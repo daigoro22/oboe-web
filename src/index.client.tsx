@@ -1,6 +1,7 @@
 import { Toaster } from "@/components/ui/toaster";
 import { SignIn } from "@/features/auth/routes/client/signIn";
 import { SignUp, signUpLoader } from "@/features/auth/routes/client/signUp";
+import Index from "@/routes";
 import { SessionProvider } from "@hono/auth-js/react";
 import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
@@ -19,6 +20,7 @@ const router = createBrowserRouter([
     element: <SignUp />,
     loader: signUpLoader,
   },
+  { path: "/", element: <Index /> },
 ]);
 
 const App = () => {
