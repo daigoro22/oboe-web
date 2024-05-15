@@ -20,6 +20,7 @@ export const users = sqliteTable(
     occupationId: integer("occupation_id").notNull(),
     objectiveId: integer("objective_id").notNull(),
     customerId: text("customer_id").notNull().unique(),
+    point: integer("point").notNull().default(0),
     createdAt: integer("created_at", { mode: "timestamp_ms" })
       .notNull()
       .default(sql`CURRENT_TIMESTAMP`),
