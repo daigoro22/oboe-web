@@ -21,6 +21,7 @@ describe("signUp.repository", () => {
       objectiveId: 1,
       customerId: "1234567890",
       image: "https://example.com/test_image.jpg",
+      point: 100,
     } as const;
 
     const targetProvider = {
