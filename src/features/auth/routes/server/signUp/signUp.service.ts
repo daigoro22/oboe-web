@@ -1,4 +1,5 @@
 import type { accounts, users } from "@/db/schema";
+import { PROVIDER } from "@/lib/constant";
 import type { JWT } from "@auth/core/jwt";
 import type { InferInsertModel } from "drizzle-orm";
 import { inject, injectable } from "tsyringe";
@@ -15,7 +16,7 @@ export default class SignUpService {
 
   async signUp(user: User, token?: JWT) {
     const [provider, providerAccountId] = [
-      "https://access.line.me", // FIXME: JWT token から取得, 他のプロバイダにも対応
+      PROVIDER.LINE, // FIXME: JWT token から取得, 他のプロバイダにも対応
       token?.sub,
     ];
 
