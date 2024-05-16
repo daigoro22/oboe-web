@@ -1,5 +1,8 @@
-import { describe, test } from "vitest";
+import { beforeAll, describe, test } from "vitest";
 import { {{ properCase name }}FakeRepository } from "@/lib/test-helper/{{ name }}";
+import { createMiddleware } from "hono/factory";
+import { container } from "tsyringe";
+import { {{ name }} } from "./{{ name }}.controller";
 
 const {{ name }}ContainerMiddleware = createMiddleware(async (c, next) => {
 	container.register("I{{ properCase name }}", {
