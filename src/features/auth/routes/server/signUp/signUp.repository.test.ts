@@ -2,6 +2,9 @@ import { DB, prepare, testDB } from "@/db/fixture";
 import SignUpRepository from "./signUp.repository";
 import { beforeAll, describe, expect, test } from "vitest";
 import { accounts, users } from "@/db/schema";
+import { desc } from "drizzle-orm";
+import { sleep } from "@/lib/test-helper";
+import { add } from "date-fns";
 
 describe("signUp.repository", () => {
   let signUpRepository: SignUpRepository;
@@ -34,14 +37,18 @@ describe("signUp.repository", () => {
     ).resolves.not.toThrowError();
 
     const { createdAt: _, ...userRecords } = (
-      await testDB.select().from(users).limit(1)
+      await testDB.select().from(users).orderBy(desc(users.id)).limit(1)
     )[0];
     const { createdAt: __, ...accountRecords } = (
-      await testDB.select().from(accounts).limit(1)
+      await testDB.select().from(accounts).orderBy(desc(accounts.id)).limit(1)
     )[0];
 
-    expect(userRecords).toEqual({ id: 1, ...targetUser });
-    expect(accountRecords).toEqual({ id: 1, userId: 1, ...targetProvider });
+    expect(userRecords).toEqual({ id: 11, ...targetUser });
+    expect(accountRecords).toEqual({
+      id: 11,
+      userId: userRecords.id,
+      ...targetProvider,
+    });
   });
 
   test.each([
