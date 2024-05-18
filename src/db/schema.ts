@@ -87,7 +87,6 @@ export const ankiSessions = sqliteTable(
     userId: text("userId").notNull(),
     startsAt: integer("startsAt", { mode: "timestamp_ms" }).notNull(),
     endsAt: integer("endsAt", { mode: "timestamp_ms" }).notNull(),
-    deckName: text("deckName").notNull(),
     createdAt: integer("created_at", { mode: "timestamp_ms" })
       .notNull()
       .default(sql`CURRENT_TIMESTAMP`),

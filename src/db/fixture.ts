@@ -69,6 +69,7 @@ export const prepare = () => {
         occupationId: faker.helpers.arrayElement(occupations.map((o) => o.id)),
         objectiveId: faker.helpers.arrayElement(objectives.map((o) => o.id)),
         customerId: faker.string.nanoid(),
+        point: faker.number.int({ min: 0, max: 10000 }),
       }),
       count,
     );
