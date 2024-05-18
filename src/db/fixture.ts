@@ -1,5 +1,9 @@
 import { env } from "cloudflare:test";
-import { FAKER_SEED, generateFakeObject } from "@/lib/test-helper";
+import {
+  FAKER_SEED,
+  generateFakeObject,
+  toIdGenerator,
+} from "@/lib/test-helper";
 import type {
   InferInsertModel,
   InferSelectModel,
@@ -79,7 +83,7 @@ export const prepare = () => {
     createFixtures(
       _accounts,
       () => ({
-        userId: faker.helpers.arrayElement(users.map((u) => u.id)),
+        userId: Number(toIdGenerator(users).next().value),
         provider: PROVIDER.LINE,
         providerAccountId: faker.string.nanoid(),
       }),
