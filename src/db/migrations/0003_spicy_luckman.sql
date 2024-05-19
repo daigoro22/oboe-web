@@ -1,1 +1,0 @@
-ALTER TABLE users ADD `point` integer DEFAULT 0 NOT NULL;

@@ -1,1 +1,0 @@
-ALTER TABLE `AnkiSessions` DROP COLUMN `deckName`;
