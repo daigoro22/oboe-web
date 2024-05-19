@@ -12,11 +12,11 @@ let  {{ name }}: {{ properCase name }}Service;
 
 beforeAll(async () => {
 	container.register("I{{ properCase name }}", {
-		useClass: fakeRepository,
+		useClass: {{ properCase name }}FakeRepository,
 	});
 	{{ name }} = container.resolve({{ properCase name }}Service);
 });
 
 describe("{{ name }}.service", () => {
-	test("{{ name }}.service", async () => {});
+	test("通常ケース", async () => {});
 });
