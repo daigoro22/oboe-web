@@ -10,14 +10,7 @@ import { beforeEach, describe, expect, test, vi } from "vitest";
 import { Hono } from "hono";
 import SignUpService from "@/features/auth/routes/server/signUp/signUp.service";
 import { DrizzleError } from "drizzle-orm";
-
-const user: AuthUser = {
-  session: {
-    expires: String(new Date().getTime() / 1000 + 60 * 60 * 24),
-    user: { image: "TEST_IMAGE_URL" },
-  },
-  token: { sub: "TEST_SUB" },
-};
+import { setFakeUserMiddleware } from "@/lib/test-helper";
 
 beforeEach(() => {
   container.clearInstances();
@@ -27,12 +20,12 @@ const signUpContainerMiddleware = createMiddleware(async (c, next) => {
   container.register("ISignUp", {
     useValue: new SignUpFakeRepository(),
   });
-  c.set("authUser", user);
   await next();
 });
 
 describe("signUp.controller", () => {
   const app = new Hono({ strict: false });
+  app.use("*", setFakeUserMiddleware);
   app.use("*", signUpContainerMiddleware);
   app.route("/", signUp);
   const client = testClient<typeof signUp>(app);
