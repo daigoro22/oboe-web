@@ -23,18 +23,17 @@ beforeEach(() => {
   container.clearInstances();
 });
 
-const signUpContainerMiddleware = () =>
-  createMiddleware(async (c, next) => {
-    container.register("ISignUp", {
-      useValue: new SignUpFakeRepository(),
-    });
-    c.set("authUser", user);
-    await next();
+const signUpContainerMiddleware = createMiddleware(async (c, next) => {
+  container.register("ISignUp", {
+    useValue: new SignUpFakeRepository(),
   });
+  c.set("authUser", user);
+  await next();
+});
 
 describe("signUp.controller", () => {
   const app = new Hono({ strict: false });
-  app.use("*", signUpContainerMiddleware());
+  app.use("*", signUpContainerMiddleware);
   app.route("/", signUp);
   const client = testClient<typeof signUp>(app);
 
