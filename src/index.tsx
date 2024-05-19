@@ -21,6 +21,10 @@ import {
   signUp,
   signUpContainerMiddleware,
 } from "@/features/auth/routes/server/signUp/signUp.controller";
+import {
+  ankiSession,
+  ankiSessionContainerMiddleware,
+} from "@/features/ankiSession/routes/server/ankiSession/ankiSession.controller";
 
 const app = new Hono<Env>({ strict: false });
 
@@ -45,10 +49,8 @@ app.route("/", formOptions);
 signUp.use("/", signUpContainerMiddleware);
 app.route("/", signUp);
 
-app.get("/api/protected", (c) => {
-  const auth = c.get("authUser");
-  return c.json(auth);
-});
+ankiSession.use("/", ankiSessionContainerMiddleware);
+app.route("/", ankiSession);
 
 function getAuthConfig(c: Context): AuthConfig {
   const {
