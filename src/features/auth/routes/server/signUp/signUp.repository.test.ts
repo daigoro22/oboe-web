@@ -3,8 +3,6 @@ import SignUpRepository from "./signUp.repository";
 import { beforeAll, describe, expect, test } from "vitest";
 import { accounts, users } from "@/db/schema";
 import { desc } from "drizzle-orm";
-import { sleep } from "@/lib/test-helper";
-import { add } from "date-fns";
 
 describe("signUp.repository", () => {
   let signUpRepository: SignUpRepository;
