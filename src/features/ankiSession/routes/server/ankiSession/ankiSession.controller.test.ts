@@ -22,7 +22,7 @@ describe("ankiSession.controller", () => {
   const client = testClient<typeof ankiSession>(app);
 
   test("通常ケース", async () => {
-    const res = await client.api.ankiSession.latest.$get();
+    const res = await client.api.auth.verified.ankiSession.latest.$get();
     expect(res.status).toBe(200);
     expect(await res.json()).toEqual({
       point: 100,

@@ -5,7 +5,7 @@ import { Hono } from "hono";
 import { createMiddleware } from "hono/factory";
 import { container } from "tsyringe";
 
-const ROUTE = "/api/ankiSession" as const;
+const ROUTE = "/api/auth/verified/ankiSession" as const;
 
 export const ankiSessionContainerMiddleware = createMiddleware(
   async (c, next) => {

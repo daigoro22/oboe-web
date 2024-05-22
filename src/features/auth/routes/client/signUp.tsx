@@ -50,7 +50,7 @@ export const SignUp = () => {
   const onSubmit = handleSubmit(async (data) => {
     const client = hc<SignUpRoute>("/");
     try {
-      const res = await client.api.signup.$post({ json: data });
+      const res = await client.api.auth.signup.$post({ json: data });
       if (res.status === 201) {
         navigate("/");
         toast({

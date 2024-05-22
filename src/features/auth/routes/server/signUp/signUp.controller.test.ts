@@ -31,7 +31,7 @@ describe("signUp.controller", () => {
   const client = testClient<typeof signUp>(app);
 
   test("controller が正常に呼び出されるかどうか", async () => {
-    const res = await client.api.signup.$post({
+    const res = await client.api.auth.signup.$post({
       json: {
         name: "テスト太郎",
         birthDate: "2000-01-01",
@@ -45,7 +45,7 @@ describe("signUp.controller", () => {
   });
 
   test("スキーマバリデーションに失敗した場合、400エラーが返されること", async () => {
-    const res = await client.api.signup.$post({
+    const res = await client.api.auth.signup.$post({
       json: {
         name: "テスト太郎",
         birthDate: "2000-01-01",
@@ -64,7 +64,7 @@ describe("signUp.controller", () => {
       throw new DrizzleError({ message: "Drizzle Error" });
     });
 
-    const res = await client.api.signup.$post({
+    const res = await client.api.auth.signup.$post({
       json: {
         name: "テスト太郎",
         birthDate: "2000-01-01",
@@ -87,7 +87,7 @@ describe("signUp.controller", () => {
       throw new Error("Server Error");
     });
 
-    const res = await client.api.signup.$post({
+    const res = await client.api.auth.signup.$post({
       json: {
         name: "テスト太郎",
         birthDate: "2000-01-01",
@@ -155,7 +155,7 @@ describe("signUp.controller", () => {
       },
     },
   ])("スキーマバリデーションのエッジケース: $name", async ({ data }) => {
-    const res = await client.api.signup.$post({ json: data });
+    const res = await client.api.auth.signup.$post({ json: data });
     expect(res.status).toEqual(400);
   });
 });

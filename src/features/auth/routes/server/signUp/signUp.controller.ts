@@ -9,7 +9,7 @@ import { container } from "tsyringe";
 import { signUpSchema } from "@/schemas/signUp";
 import { DrizzleError } from "drizzle-orm";
 
-const ROUTE = "/api/signup" as const;
+const ROUTE = "/api/auth/signup" as const;
 
 export const signUpContainerMiddleware = createMiddleware(async (c, next) => {
   container.register("ISignUp", {
@@ -36,7 +36,7 @@ export const signUp = new Hono<Env>().post(
           ...data,
           birthDate: new Date(data.birthDate),
           customerId: String(new Date().getTime()), //TODO: Stripe API を使用して ID を取得
-          image: auth.session.user?.image,
+          image: auth.session?.user?.image,
         },
         auth?.token,
       );

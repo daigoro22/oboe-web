@@ -25,6 +25,7 @@ import {
   ankiSession,
   ankiSessionContainerMiddleware,
 } from "@/features/ankiSession/routes/server/ankiSession/ankiSession.controller";
+import { verifySignupMiddleware } from "@/lib/middleware";
 
 const app = new Hono<Env>({ strict: false });
 
@@ -39,14 +40,16 @@ app.use(
 
 app.use("*", initAuthConfig(getAuthConfig));
 
-app.use("/api/auth/*", authHandler());
+app.use("/api/oauth/*", authHandler());
 
 app.use("/api/*", verifyAuth());
+
+app.use("/api/auth/*", signUpContainerMiddleware);
+app.use("/api/auth/verified/*", verifySignupMiddleware);
 
 formOptions.use("/", formOptionsContainerMiddleware);
 app.route("/", formOptions);
 
-signUp.use("/", signUpContainerMiddleware);
 app.route("/", signUp);
 
 ankiSession.use("/", ankiSessionContainerMiddleware);
@@ -65,6 +68,7 @@ function getAuthConfig(c: Context): AuthConfig {
   return {
     secret,
     providers: [Line({ clientId, clientSecret, checks: ["state"] })],
+    basePath: "/api/oauth",
   };
 }
 
