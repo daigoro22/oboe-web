@@ -24,4 +24,21 @@ export default class SignUpRepository implements ISignUp {
       }),
     ]);
   }
+
+  async getAccountAndUser(providerAccountId: string): Promise<{
+    accountId: string | undefined;
+    userId: string | undefined;
+  }> {
+    const res = await this.db
+      .select({ userId: users.id, accountId: accounts.providerAccountId })
+      .from(users)
+      .innerJoin(accounts, eq(users.id, accounts.userId))
+      .where(eq(accounts.providerAccountId, providerAccountId))
+      .limit(1);
+
+    const userId = res[0]?.userId ? String(res[0]?.userId) : undefined;
+    const accountId = res[0]?.accountId;
+
+    return { userId, accountId };
+  }
 }

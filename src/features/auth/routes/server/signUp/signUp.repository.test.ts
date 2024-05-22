@@ -4,15 +4,15 @@ import { beforeAll, describe, expect, test } from "vitest";
 import { accounts, users } from "@/db/schema";
 import { desc } from "drizzle-orm";
 
-describe("signUp.repository", () => {
-  let signUpRepository: SignUpRepository;
-  const { setupAll } = prepare();
+let signUpRepository: SignUpRepository;
+const { setupAll, users: userFixtures, accounts: accountFixtures } = prepare();
 
-  beforeAll(async () => {
-    await setupAll();
-    signUpRepository = new SignUpRepository(DB);
-  });
+beforeAll(async () => {
+  await setupAll();
+  signUpRepository = new SignUpRepository(DB);
+});
 
+describe("signUp", () => {
   test("通常ケース", async () => {
     const targetUser = {
       name: "テスト太郎",
@@ -105,5 +105,31 @@ describe("signUp.repository", () => {
         providerAccountId: "TEST_SUB",
       }),
     ).rejects.toThrowError();
+  });
+});
+
+describe("getAccountAndUser", () => {
+  test("通常ケース", async () => {
+    const account = accountFixtures()[0];
+    const user = userFixtures()[0];
+
+    const res = await signUpRepository.getAccountAndUser(
+      account?.providerAccountId,
+    );
+    expect(res).toEqual({
+      userId: String(user.id),
+      accountId: account.providerAccountId,
+    });
+  });
+
+  test("存在しない providerAccountId", async () => {
+    const nonExistentProviderAccountId = "NON_EXISTENT_ID";
+    const result = await signUpRepository.getAccountAndUser(
+      nonExistentProviderAccountId,
+    );
+    expect(result).toEqual({
+      userId: undefined,
+      accountId: undefined,
+    });
   });
 });
