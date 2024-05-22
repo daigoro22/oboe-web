@@ -107,29 +107,3 @@ describe("signUp", () => {
     ).rejects.toThrowError();
   });
 });
-
-describe("getAccountAndUser", () => {
-  test("通常ケース", async () => {
-    const account = accountFixtures()[0];
-    const user = userFixtures()[0];
-
-    const res = await signUpRepository.getAccountAndUser(
-      account?.providerAccountId,
-    );
-    expect(res).toEqual({
-      userId: String(user.id),
-      accountId: account.providerAccountId,
-    });
-  });
-
-  test("存在しない providerAccountId", async () => {
-    const nonExistentProviderAccountId = "NON_EXISTENT_ID";
-    const result = await signUpRepository.getAccountAndUser(
-      nonExistentProviderAccountId,
-    );
-    expect(result).toEqual({
-      userId: undefined,
-      accountId: undefined,
-    });
-  });
-});
