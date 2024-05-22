@@ -26,6 +26,7 @@ import {
   ankiSessionContainerMiddleware,
 } from "@/features/ankiSession/routes/server/ankiSession/ankiSession.controller";
 import { verifySignupMiddleware } from "@/lib/middleware";
+import { userContainerMiddleware } from "@/features/auth/routes/server/user/user.controller";
 
 const app = new Hono<Env>({ strict: false });
 
@@ -44,12 +45,13 @@ app.use("/api/oauth/*", authHandler());
 
 app.use("/api/*", verifyAuth());
 
-app.use("/api/auth/*", signUpContainerMiddleware);
+app.use("/api/auth/*", userContainerMiddleware);
 app.use("/api/auth/verified/*", verifySignupMiddleware);
 
 formOptions.use("/", formOptionsContainerMiddleware);
 app.route("/", formOptions);
 
+signUp.use("/", signUpContainerMiddleware);
 app.route("/", signUp);
 
 ankiSession.use("/", ankiSessionContainerMiddleware);

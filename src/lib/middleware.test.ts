@@ -1,7 +1,7 @@
-import SignUpService from "@/features/auth/routes/server/signUp/signUp.service";
+import UserService from "@/features/auth/routes/server/user/user.service";
 import { verifySignupMiddleware } from "@/lib/middleware";
 import { setFakeUserMiddleware } from "@/lib/test-helper";
-import { SignUpFakeRepository } from "@/lib/test-helper/signUp";
+import { UserFakeRepository } from "@/lib/test-helper/user";
 import { Hono } from "hono";
 import { createMiddleware } from "hono/factory";
 import { testClient } from "hono/testing";
@@ -9,9 +9,9 @@ import { container } from "tsyringe";
 import { describe, expect, test, vi } from "vitest";
 
 describe("verifySignupMiddleware", () => {
-  const signUpContainerMiddleware = createMiddleware(async (c, next) => {
-    container.register("ISignUp", {
-      useValue: new SignUpFakeRepository(),
+  const userContainerMiddleware = createMiddleware(async (c, next) => {
+    container.register("IUser", {
+      useClass: UserFakeRepository,
     });
     await next();
   });
@@ -28,11 +28,11 @@ describe("verifySignupMiddleware", () => {
   });
 
   test("ユーザ登録していなければ401を返す", async () => {
-    const signUpServiceMock = vi.spyOn(SignUpService.prototype, "isSignedUp");
-    signUpServiceMock.mockResolvedValue(false);
+    const userServiceMock = vi.spyOn(UserService.prototype, "getUser");
+    userServiceMock.mockResolvedValue(undefined);
 
     const app = new Hono({ strict: false });
-    app.use("*", signUpContainerMiddleware);
+    app.use("*", userContainerMiddleware);
     app.use("*", setFakeUserMiddleware);
     app.use("*", verifySignupMiddleware);
     const get = app.get("/", async (c) => c.text("OK", 200));
@@ -44,11 +44,11 @@ describe("verifySignupMiddleware", () => {
   });
 
   test("ユーザが登録済みの場合、200を返す", async () => {
-    const signUpServiceMock = vi.spyOn(SignUpService.prototype, "isSignedUp");
-    signUpServiceMock.mockResolvedValue(true);
+    const userServiceMock = vi.spyOn(UserService.prototype, "getUser");
+    userServiceMock.mockResolvedValue({ id: 1, point: 10000 });
 
     const app = new Hono({ strict: false });
-    app.use("*", signUpContainerMiddleware);
+    app.use("*", userContainerMiddleware);
     app.use("*", setFakeUserMiddleware);
     app.use("*", verifySignupMiddleware);
     const get = app.get("/", async (c) => c.text("OK", 200));
@@ -58,6 +58,6 @@ describe("verifySignupMiddleware", () => {
     expect(res.status).toBe(200);
     expect(await res.text()).toBe("OK");
 
-    signUpServiceMock.mockRestore();
+    userServiceMock.mockRestore();
   });
 });
