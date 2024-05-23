@@ -18,10 +18,11 @@ export const ankiSessionContainerMiddleware = createMiddleware(
 
 export const ankiSession = new Hono<Env>().get(`${ROUTE}/latest`, async (c) => {
   const ankiSession = container.resolve(AnkiSessionService);
+  const user = c.get("userData");
   let sessionAndPoint;
   try {
     sessionAndPoint = await ankiSession.getLatestSessionAndPoint(
-      c.get("authUser").session.user?.id,
+      String(user.id),
     );
   } catch (error) {
     return c.json({ error: "server error" }, 500);

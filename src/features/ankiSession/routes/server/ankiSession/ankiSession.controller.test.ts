@@ -6,6 +6,7 @@ import { ankiSession } from "./ankiSession.controller";
 import { Hono } from "hono";
 import { testClient } from "hono/testing";
 import { setFakeUserMiddleware } from "@/lib/test-helper";
+import { verifySignupMiddleware } from "@/lib/middleware";
 
 const ankiSessionContainerMiddleware = createMiddleware(async (c, next) => {
   container.register("IAnkiSession", {
@@ -17,6 +18,7 @@ const ankiSessionContainerMiddleware = createMiddleware(async (c, next) => {
 describe("ankiSession.controller", () => {
   const app = new Hono({ strict: false });
   app.use("*", setFakeUserMiddleware);
+  app.use("*", verifySignupMiddleware);
   app.use("*", ankiSessionContainerMiddleware);
   app.route("/", ankiSession);
   const client = testClient<typeof ankiSession>(app);
