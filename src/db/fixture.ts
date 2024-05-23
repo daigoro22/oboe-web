@@ -1,5 +1,9 @@
 import { env } from "cloudflare:test";
-import { FAKER_SEED, generateFakeObject } from "@/lib/test-helper";
+import {
+  FAKER_SEED,
+  generateFakeObject,
+  toIdGenerator,
+} from "@/lib/test-helper";
 import type {
   InferInsertModel,
   InferSelectModel,
@@ -11,7 +15,10 @@ import { faker } from "./faker";
 import {
   objectives as _objectives,
   occupations as _occupations,
+  users as _users,
+  accounts as _accounts,
 } from "./schema";
+import { PROVIDER } from "@/lib/constant";
 
 export const DB = env.DATABASE;
 export const testDB = drizzle(env.DATABASE);
@@ -50,16 +57,55 @@ export const prepare = () => {
       count,
     );
 
+  let users: InferSelectModel<typeof _users>[];
+  const setupUsers = (count = DEFAULT_COUNT) =>
+    createFixtures(
+      _users,
+      () => ({
+        name: faker.person.firstName(),
+        birthDate: faker.date.recent({ days: 30 }),
+        gender: faker.helpers.arrayElement([
+          "男",
+          "女",
+          "その他",
+          "無回答",
+        ] as typeof _users.gender.enumValues),
+        occupationId: faker.helpers.arrayElement(occupations.map((o) => o.id)),
+        objectiveId: faker.helpers.arrayElement(objectives.map((o) => o.id)),
+        customerId: faker.string.nanoid(),
+        point: faker.number.int({ min: 0, max: 10000 }),
+      }),
+      count,
+    );
+
+  let accounts: InferSelectModel<typeof _accounts>[];
+  const setupAccounts = (count = DEFAULT_COUNT) =>
+    createFixtures(
+      _accounts,
+      () => ({
+        userId: Number(toIdGenerator(users).next().value),
+        provider: PROVIDER.LINE,
+        providerAccountId: faker.string.nanoid(),
+      }),
+      count,
+    );
+
   const setupAll = async () => {
     occupations = await setupOccupations();
     objectives = await setupObjectives();
+    users = await setupUsers();
+    accounts = await setupAccounts();
   };
 
   return {
     occupations: () => occupations,
     objectives: () => objectives,
+    users: () => users,
+    accounts: () => accounts,
     setupOccupations,
     setupObjectives,
+    setupUsers,
+    setupAccounts,
     setupAll,
   };
 };

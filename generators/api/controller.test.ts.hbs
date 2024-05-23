@@ -1,5 +1,10 @@
-import { describe, test } from "vitest";
+import { beforeAll, describe, test } from "vitest";
 import { {{ properCase name }}FakeRepository } from "@/lib/test-helper/{{ name }}";
+import { createMiddleware } from "hono/factory";
+import { container } from "tsyringe";
+import { {{ name }} } from "./{{ name }}.controller";
+import { Hono } from "hono";
+import { testClient } from "hono/testing";
 
 const {{ name }}ContainerMiddleware = createMiddleware(async (c, next) => {
 	container.register("I{{ properCase name }}", {
@@ -8,13 +13,11 @@ const {{ name }}ContainerMiddleware = createMiddleware(async (c, next) => {
 	await next();
 });
 
-beforeAll(async () => {
-	// TODO: 2回目以降の実行でエラーが出るので afterAll でミドルウェアを外したい
-	try {
-		{{ name }}.use("/", {{ name }}ContainerMiddleware);
-	} catch (e) {}
-});
-
 describe("{{ name }}.controller", () => {
-	test("controller が正常に呼び出されるかどうか", async () => {});
+	const app = new Hono({ strict: false });
+  app.use("*", {{ name }}ContainerMiddleware);
+  app.route("/", {{ name }});
+  const client = testClient<typeof {{ name }}>(app);
+
+	test("通常ケース", async () => {});
 });

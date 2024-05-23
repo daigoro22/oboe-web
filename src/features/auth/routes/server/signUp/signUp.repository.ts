@@ -1,7 +1,7 @@
 import { accounts, users } from "@/db/schema";
 import type { ISignUp, Provider, User } from "./signUp.service";
 import { type DrizzleD1Database, drizzle } from "drizzle-orm/d1";
-import { eq, desc } from "drizzle-orm";
+import { desc } from "drizzle-orm";
 export default class SignUpRepository implements ISignUp {
   private db: DrizzleD1Database;
   constructor(connection: D1Database) {

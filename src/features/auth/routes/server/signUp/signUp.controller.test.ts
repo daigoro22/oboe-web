@@ -10,36 +10,28 @@ import { beforeEach, describe, expect, test, vi } from "vitest";
 import { Hono } from "hono";
 import SignUpService from "@/features/auth/routes/server/signUp/signUp.service";
 import { DrizzleError } from "drizzle-orm";
-
-const user: AuthUser = {
-  session: {
-    expires: String(new Date().getTime() / 1000 + 60 * 60 * 24),
-    user: { image: "TEST_IMAGE_URL" },
-  },
-  token: { sub: "TEST_SUB" },
-};
+import { setFakeUserMiddleware } from "@/lib/test-helper";
 
 beforeEach(() => {
   container.clearInstances();
 });
 
-const signUpContainerMiddleware = () =>
-  createMiddleware(async (c, next) => {
-    container.register("ISignUp", {
-      useValue: new SignUpFakeRepository(),
-    });
-    c.set("authUser", user);
-    await next();
+const signUpContainerMiddleware = createMiddleware(async (c, next) => {
+  container.register("ISignUp", {
+    useValue: new SignUpFakeRepository(),
   });
+  await next();
+});
 
 describe("signUp.controller", () => {
   const app = new Hono({ strict: false });
-  app.use("*", signUpContainerMiddleware());
+  app.use("*", setFakeUserMiddleware);
+  app.use("*", signUpContainerMiddleware);
   app.route("/", signUp);
   const client = testClient<typeof signUp>(app);
 
   test("controller が正常に呼び出されるかどうか", async () => {
-    const res = await client.api.signup.$post({
+    const res = await client.api.auth.signup.$post({
       json: {
         name: "テスト太郎",
         birthDate: "2000-01-01",
@@ -53,7 +45,7 @@ describe("signUp.controller", () => {
   });
 
   test("スキーマバリデーションに失敗した場合、400エラーが返されること", async () => {
-    const res = await client.api.signup.$post({
+    const res = await client.api.auth.signup.$post({
       json: {
         name: "テスト太郎",
         birthDate: "2000-01-01",
@@ -72,7 +64,7 @@ describe("signUp.controller", () => {
       throw new DrizzleError({ message: "Drizzle Error" });
     });
 
-    const res = await client.api.signup.$post({
+    const res = await client.api.auth.signup.$post({
       json: {
         name: "テスト太郎",
         birthDate: "2000-01-01",
@@ -95,7 +87,7 @@ describe("signUp.controller", () => {
       throw new Error("Server Error");
     });
 
-    const res = await client.api.signup.$post({
+    const res = await client.api.auth.signup.$post({
       json: {
         name: "テスト太郎",
         birthDate: "2000-01-01",
@@ -163,7 +155,7 @@ describe("signUp.controller", () => {
       },
     },
   ])("スキーマバリデーションのエッジケース: $name", async ({ data }) => {
-    const res = await client.api.signup.$post({ json: data });
+    const res = await client.api.auth.signup.$post({ json: data });
     expect(res.status).toEqual(400);
   });
 });

@@ -2,19 +2,20 @@ import "reflect-metadata";
 
 import SignUpService from "./signUp.service";
 import { container } from "tsyringe";
-import { beforeAll, describe, expect, test } from "vitest";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import { SignUpFakeRepository } from "@/lib/test-helper/signUp";
+import { TEST_USER } from "@/lib/test-helper";
 
 let signUp: SignUpService;
 
-beforeAll(async () => {
+beforeEach(async () => {
   container.register("ISignUp", {
     useClass: SignUpFakeRepository,
   });
   signUp = container.resolve(SignUpService);
 });
 
-describe("signUp.service", () => {
+describe("signUp", () => {
   test("通常ケース", async () => {
     await expect(
       signUp.signUp(

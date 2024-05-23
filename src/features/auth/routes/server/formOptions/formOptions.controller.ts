@@ -7,7 +7,7 @@ import { createMiddleware } from "hono/factory";
 import { container } from "tsyringe";
 
 export const formOptions = new Hono<Env>();
-const ROUTE = "/api/signup/formOptions" as const;
+const ROUTE = "/api/auth/formOptions" as const;
 
 export const formOptionsContainerMiddleware = createMiddleware(
   async (c, next) => {

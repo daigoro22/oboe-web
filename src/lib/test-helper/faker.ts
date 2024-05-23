@@ -12,3 +12,12 @@ export abstract class AbstractFakerUtil {
     faker.seed(FAKER_SEED);
   }
 }
+
+export function* toIdGenerator<T extends { id: U }, U extends string | number>(
+  array: T[],
+): Generator<U, void, undefined> {
+  let index = 0;
+  while (true) {
+    yield array[index++ % array.length].id;
+  }
+}

@@ -21,6 +21,12 @@ import {
   signUp,
   signUpContainerMiddleware,
 } from "@/features/auth/routes/server/signUp/signUp.controller";
+import {
+  ankiSession,
+  ankiSessionContainerMiddleware,
+} from "@/features/ankiSession/routes/server/ankiSession/ankiSession.controller";
+import { verifySignupMiddleware } from "@/lib/middleware";
+import { userContainerMiddleware } from "@/features/auth/routes/server/user/user.controller";
 
 const app = new Hono<Env>({ strict: false });
 
@@ -35,9 +41,12 @@ app.use(
 
 app.use("*", initAuthConfig(getAuthConfig));
 
-app.use("/api/auth/*", authHandler());
+app.use("/api/oauth/*", authHandler());
 
 app.use("/api/*", verifyAuth());
+
+app.use("/api/auth/*", userContainerMiddleware);
+app.use("/api/auth/verified/*", verifySignupMiddleware);
 
 formOptions.use("/", formOptionsContainerMiddleware);
 app.route("/", formOptions);
@@ -45,10 +54,8 @@ app.route("/", formOptions);
 signUp.use("/", signUpContainerMiddleware);
 app.route("/", signUp);
 
-app.get("/api/protected", (c) => {
-  const auth = c.get("authUser");
-  return c.json(auth);
-});
+ankiSession.use("/", ankiSessionContainerMiddleware);
+app.route("/", ankiSession);
 
 function getAuthConfig(c: Context): AuthConfig {
   const {
@@ -63,6 +70,16 @@ function getAuthConfig(c: Context): AuthConfig {
   return {
     secret,
     providers: [Line({ clientId, clientSecret, checks: ["state"] })],
+    callbacks: {
+      jwt: ({ token, profile, trigger }) => {
+        if (trigger === "signIn") {
+          token.iss = profile?.iss;
+          token.sub = profile?.sub;
+        }
+        return token;
+      },
+    },
+    basePath: "/api/oauth",
   };
 }
 
