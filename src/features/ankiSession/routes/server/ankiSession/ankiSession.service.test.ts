@@ -29,10 +29,4 @@ describe("ankiSession.service", () => {
       },
     });
   });
-
-  test("provider not found エラーが出るケース", async () => {
-    await expect(ankiSession.getLatestSessionAndPoint()).rejects.toThrowError(
-      "provider account not found",
-    );
-  });
 });

@@ -17,10 +17,7 @@ export interface IAnkiSession {
 export default class AnkiSessionService {
   constructor(@inject("IAnkiSession") private ankiSession: IAnkiSession) {}
 
-  async getLatestSessionAndPoint(accountId?: string) {
-    if (!accountId) {
-      throw new Error("provider account not found");
-    }
+  async getLatestSessionAndPoint(accountId: string) {
     return this.ankiSession.getLatestSessionAndPoint(accountId, PROVIDER.LINE); //FIXME: provider の判定ロジックを追加
   }
 }
