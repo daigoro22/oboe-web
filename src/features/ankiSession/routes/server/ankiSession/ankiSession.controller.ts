@@ -1,5 +1,7 @@
 import AnkiSessionRepository from "./ankiSession.repository";
-import AnkiSessionService from "./ankiSession.service";
+import AnkiSessionService, {
+  type SessionAndPoint,
+} from "./ankiSession.service";
 import type { Env } from "env";
 import { Hono } from "hono";
 import { createMiddleware } from "hono/factory";
@@ -19,7 +21,7 @@ export const ankiSessionContainerMiddleware = createMiddleware(
 export const ankiSession = new Hono<Env>().get(`${ROUTE}/latest`, async (c) => {
   const ankiSession = container.resolve(AnkiSessionService);
   const user = c.get("userData");
-  let sessionAndPoint;
+  let sessionAndPoint: SessionAndPoint;
   try {
     sessionAndPoint = await ankiSession.getLatestSessionAndPoint(
       String(user.id),
