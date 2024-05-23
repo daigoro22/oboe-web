@@ -90,6 +90,7 @@ export const ankiSessions = sqliteTable(
     createdAt: integer("created_at", { mode: "timestamp_ms" })
       .notNull()
       .default(sql`CURRENT_TIMESTAMP`),
+    isResumed: integer("isResumed").notNull().default(0),
   },
   (ankiSessions) => ({
     deckFk: foreignKey({
