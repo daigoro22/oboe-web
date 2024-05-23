@@ -70,6 +70,15 @@ function getAuthConfig(c: Context): AuthConfig {
   return {
     secret,
     providers: [Line({ clientId, clientSecret, checks: ["state"] })],
+    callbacks: {
+      jwt: ({ token, profile, trigger }) => {
+        if (trigger === "signIn") {
+          token.iss = profile?.iss;
+          token.sub = profile?.sub;
+        }
+        return token;
+      },
+    },
     basePath: "/api/oauth",
   };
 }

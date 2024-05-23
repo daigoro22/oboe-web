@@ -18,6 +18,7 @@ describe("verifySignupMiddleware", () => {
 
   test("ログインしていなければ401を返す", async () => {
     const app = new Hono({ strict: false });
+    app.use("*", userContainerMiddleware);
     app.use("*", verifySignupMiddleware);
     const get = app.get("/", async (c) => c.text("OK", 200));
     const client = testClient<typeof get>(app);

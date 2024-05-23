@@ -7,7 +7,7 @@ export const verifySignupMiddleware = createMiddleware<Env>(async (c, next) => {
   const authUser = c.get("authUser");
 
   const userService = container.resolve(UserService);
-  const userData = await userService.getUser(authUser?.session.user?.id);
+  const userData = await userService.getUser(authUser?.token?.sub);
 
   if (!userData) {
     return c.json({ error: "Unauthorized" }, 401);
