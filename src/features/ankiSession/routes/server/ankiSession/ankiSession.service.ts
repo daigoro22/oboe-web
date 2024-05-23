@@ -7,17 +7,14 @@ export type SessionAndPoint = {
   point: number;
 };
 export interface IAnkiSession {
-  getLatestSessionAndPoint: (
-    accountId: string,
-    provider: (typeof PROVIDER)[keyof typeof PROVIDER],
-  ) => Promise<SessionAndPoint>;
+  getLatestSessionAndPoint: (userId: string) => Promise<SessionAndPoint>;
 }
 
 @injectable()
 export default class AnkiSessionService {
   constructor(@inject("IAnkiSession") private ankiSession: IAnkiSession) {}
 
-  async getLatestSessionAndPoint(accountId: string) {
-    return this.ankiSession.getLatestSessionAndPoint(accountId, PROVIDER.LINE); //FIXME: provider の判定ロジックを追加
+  async getLatestSessionAndPoint(userId: string) {
+    return this.ankiSession.getLatestSessionAndPoint(userId);
   }
 }

@@ -1,7 +1,7 @@
-import { accounts, ankiSessions, users } from "@/db/schema";
+import { ankiSessions, users } from "@/db/schema";
 import type { IAnkiSession, SessionAndPoint } from "./ankiSession.service";
 import { type DrizzleD1Database, drizzle } from "drizzle-orm/d1";
-import { desc, eq, and } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 
 export default class AnkiSessionRepository implements IAnkiSession {
   private db: DrizzleD1Database;
@@ -9,10 +9,7 @@ export default class AnkiSessionRepository implements IAnkiSession {
     this.db = drizzle(connection);
   }
 
-  async getLatestSessionAndPoint(
-    accountId: string,
-    provider: string,
-  ): Promise<SessionAndPoint> {
+  async getLatestSessionAndPoint(userId: string): Promise<SessionAndPoint> {
     const latestSessionAndPoint = (
       await this.db
         .select({
@@ -20,14 +17,8 @@ export default class AnkiSessionRepository implements IAnkiSession {
           point: users.point,
         })
         .from(users)
-        .innerJoin(accounts, eq(users.id, accounts.userId))
-        .innerJoin(ankiSessions, eq(users.id, ankiSessions.userId))
-        .where(
-          and(
-            eq(accounts.providerAccountId, accountId),
-            eq(accounts.provider, provider),
-          ),
-        )
+        .innerJoin(ankiSessions, eq(ankiSessions.userId, users.id))
+        .where(eq(users.id, Number(userId)))
         .orderBy(desc(ankiSessions.createdAt))
         .limit(1)
     )[0] ?? { point: undefined, session: undefined };

@@ -39,8 +39,7 @@ describe("ankiSession.repository", () => {
 
   test("通常ケース", async () => {
     const res = await ankiSessionRepository.getLatestSessionAndPoint(
-      accounts()[0].providerAccountId,
-      PROVIDER.LINE,
+      String(users()[0].id),
     );
 
     expect(res).toEqual({
@@ -56,19 +55,9 @@ describe("ankiSession.repository", () => {
     });
   });
 
-  test("アカウントプロバイダが見つからないケース", async () => {
-    const res = await ankiSessionRepository.getLatestSessionAndPoint(
-      accounts()[0].providerAccountId,
-      "UNKNOWN_PROVIDER",
-    );
-
-    expect(res).toEqual({ point: undefined, session: undefined });
-  });
-
   test("アカウントが見つからないケース", async () => {
     const res = await ankiSessionRepository.getLatestSessionAndPoint(
-      "nonexistent_account_id",
-      PROVIDER.LINE,
+      "nonexistent_user_id",
     );
 
     expect(res).toEqual({ point: undefined, session: undefined });
