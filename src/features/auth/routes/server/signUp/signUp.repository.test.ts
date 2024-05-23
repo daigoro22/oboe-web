@@ -106,4 +106,32 @@ describe("signUp", () => {
       }),
     ).rejects.toThrowError();
   });
+
+  test("同じ providerAccountId での複数回登録はエラーになること", async () => {
+    const duplicateUser = {
+      name: "テスト二郎",
+      birthDate: new Date("1990-05-05"),
+      gender: "男",
+      occupationId: 2,
+      objectiveId: 2,
+      customerId: "0987654321",
+      image: "https://example.com/another_test_image.jpg",
+    };
+
+    // 最初の登録は成功する
+    await expect(
+      signUpRepository.signUp(duplicateUser, {
+        provider: "https://access.line.me",
+        providerAccountId: "DUPLICATE_TEST_SUB",
+      }),
+    ).resolves.not.toThrowError();
+
+    // 同じ providerAccountId で再登録を試みる
+    await expect(
+      signUpRepository.signUp(duplicateUser, {
+        provider: "https://access.line.me",
+        providerAccountId: "DUPLICATE_TEST_SUB",
+      }),
+    ).rejects.toThrowError();
+  });
 });
