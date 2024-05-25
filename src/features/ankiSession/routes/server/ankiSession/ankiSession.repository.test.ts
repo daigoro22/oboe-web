@@ -51,6 +51,8 @@ describe("ankiSession.repository", () => {
         id: 1,
         startsAt: null,
         userId: "1",
+        isResumable: 1,
+        resumeCount: 0,
       },
     });
   });
