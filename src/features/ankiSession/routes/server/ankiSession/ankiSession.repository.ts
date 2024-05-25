@@ -9,7 +9,7 @@ export default class AnkiSessionRepository implements IAnkiSession {
     this.db = drizzle(connection);
   }
 
-  async getLatestSessionAndPoint(userId: string): Promise<SessionAndPoint> {
+  async getLatestSessionAndPoint(userId: number): Promise<SessionAndPoint> {
     const latestSessionAndPoint = (
       await this.db
         .select({
@@ -18,7 +18,7 @@ export default class AnkiSessionRepository implements IAnkiSession {
         })
         .from(users)
         .innerJoin(ankiSessions, eq(ankiSessions.userId, users.id))
-        .where(eq(users.id, Number(userId)))
+        .where(eq(users.id, userId))
         .orderBy(desc(ankiSessions.createdAt))
         .limit(1)
     )[0] ?? { point: undefined, session: undefined };

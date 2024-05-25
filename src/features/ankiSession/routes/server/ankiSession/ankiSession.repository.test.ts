@@ -39,7 +39,7 @@ describe("ankiSession.repository", () => {
 
   test("通常ケース", async () => {
     const res = await ankiSessionRepository.getLatestSessionAndPoint(
-      String(users()[0].id),
+      users()[0].id,
     );
 
     expect(res).toEqual({
@@ -58,9 +58,7 @@ describe("ankiSession.repository", () => {
   });
 
   test("アカウントが見つからないケース", async () => {
-    const res = await ankiSessionRepository.getLatestSessionAndPoint(
-      "nonexistent_user_id",
-    );
+    const res = await ankiSessionRepository.getLatestSessionAndPoint(-1);
 
     expect(res).toEqual({ point: undefined, session: undefined });
   });

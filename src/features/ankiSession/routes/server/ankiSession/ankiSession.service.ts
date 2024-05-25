@@ -7,14 +7,14 @@ export type SessionAndPoint = {
   point: number;
 };
 export interface IAnkiSession {
-  getLatestSessionAndPoint: (userId: string) => Promise<SessionAndPoint>;
+  getLatestSessionAndPoint: (userId: number) => Promise<SessionAndPoint>;
 }
 
 @injectable()
 export default class AnkiSessionService {
   constructor(@inject("IAnkiSession") private ankiSession: IAnkiSession) {}
 
-  async getLatestSessionAndPoint(userId: string) {
+  async getLatestSessionAndPoint(userId: number) {
     return this.ankiSession.getLatestSessionAndPoint(userId);
   }
 }

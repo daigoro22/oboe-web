@@ -23,9 +23,7 @@ export const ankiSession = new Hono<Env>().get(`${ROUTE}/latest`, async (c) => {
   const user = c.get("userData");
   let sessionAndPoint: SessionAndPoint;
   try {
-    sessionAndPoint = await ankiSession.getLatestSessionAndPoint(
-      String(user.id),
-    );
+    sessionAndPoint = await ankiSession.getLatestSessionAndPoint(user.id);
   } catch (error) {
     return c.json({ error: "server error" }, 500);
   }

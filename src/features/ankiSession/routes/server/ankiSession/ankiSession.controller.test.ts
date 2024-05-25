@@ -35,6 +35,8 @@ describe("ankiSession.controller", () => {
         endsAt: null,
         userId: "1",
         createdAt: new Date().toISOString(),
+        isResumable: 1,
+        resumeCount: 0,
       },
     });
   });

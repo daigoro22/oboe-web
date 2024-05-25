@@ -16,7 +16,7 @@ beforeAll(async () => {
 
 describe("ankiSession.service", () => {
   test("通常ケース", async () => {
-    const res = await ankiSession.getLatestSessionAndPoint("1");
+    const res = await ankiSession.getLatestSessionAndPoint(1);
     expect(res).toEqual({
       point: 100,
       session: {
@@ -26,6 +26,8 @@ describe("ankiSession.service", () => {
         endsAt: null,
         userId: "1",
         createdAt: new Date(),
+        isResumable: 1,
+        resumeCount: 0,
       },
     });
   });

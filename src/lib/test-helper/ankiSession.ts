@@ -5,7 +5,7 @@ export class AnkiSessionFakeRepository
   extends AbstractFakerUtil
   implements IAnkiSession
 {
-  async getLatestSessionAndPoint(_: string, __: string) {
+  async getLatestSessionAndPoint(_: number) {
     return {
       point: 100,
       session: {
@@ -15,6 +15,8 @@ export class AnkiSessionFakeRepository
         endsAt: null,
         userId: "1",
         createdAt: new Date(),
+        isResumable: 1,
+        resumeCount: 0,
       },
     };
   }
