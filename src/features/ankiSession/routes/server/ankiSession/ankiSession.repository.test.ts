@@ -20,6 +20,7 @@ describe("ankiSession.repository", () => {
         userId: String(toIdGenerator(users()).next().value),
         name: faker.commerce.productName(),
         description: faker.commerce.productDescription(),
+        publicId: faker.string.nanoid(),
       }),
       10,
     );
@@ -27,11 +28,14 @@ describe("ankiSession.repository", () => {
     await createFixtures(
       ankiSessions,
       () => ({
-        userId: String(toIdGenerator(users()).next().value),
-        deckId: String(toIdGenerator(deckFixtures).next().value),
+        userId: Number(toIdGenerator(users()).next().value),
+        deckPublicId: String(
+          toIdGenerator(deckFixtures, "publicId").next().value,
+        ),
         startsAt: null,
         endsAt: null,
         createdAt: new Date(),
+        publicId: faker.string.nanoid(),
       }),
       10,
     );
@@ -46,13 +50,14 @@ describe("ankiSession.repository", () => {
       point: 6833,
       session: {
         createdAt: TESTING_TIME,
-        deckId: "1",
+        deckPublicId: "GIuM_z8oCkfHADr5IqiuJ",
         endsAt: null,
         id: 1,
         startsAt: null,
-        userId: "1",
+        userId: 1,
         isResumable: 1,
         resumeCount: 0,
+        publicId: "7r2ipnl-wy7M_4bwtj6Af",
       },
     });
   });

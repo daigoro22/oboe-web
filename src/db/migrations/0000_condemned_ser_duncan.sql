@@ -9,12 +9,15 @@ CREATE TABLE `accounts` (
 --> statement-breakpoint
 CREATE TABLE `AnkiSessions` (
 	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
-	`deckId` text NOT NULL,
-	`userId` text NOT NULL,
+	`deckPublicId` text NOT NULL,
+	`userId` integer NOT NULL,
 	`startsAt` integer,
 	`endsAt` integer,
 	`created_at` integer DEFAULT CURRENT_TIMESTAMP NOT NULL,
-	FOREIGN KEY (`deckId`) REFERENCES `Decks`(`id`) ON UPDATE no action ON DELETE no action,
+	`isResumable` integer DEFAULT 1 NOT NULL,
+	`resumeCount` integer DEFAULT 0 NOT NULL,
+	`publicId` text NOT NULL,
+	FOREIGN KEY (`deckPublicId`) REFERENCES `Decks`(`publicId`) ON UPDATE no action ON DELETE no action,
 	FOREIGN KEY (`userId`) REFERENCES `users`(`id`) ON UPDATE no action ON DELETE no action
 );
 --> statement-breakpoint
@@ -45,6 +48,7 @@ CREATE TABLE `Decks` (
 	`name` text NOT NULL,
 	`description` text NOT NULL,
 	`created_at` integer DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	`publicId` text NOT NULL,
 	FOREIGN KEY (`userId`) REFERENCES `users`(`id`) ON UPDATE no action ON DELETE no action
 );
 --> statement-breakpoint
@@ -74,4 +78,6 @@ CREATE TABLE `users` (
 );
 --> statement-breakpoint
 CREATE UNIQUE INDEX `accounts_provider_provider_account_id_unique` ON `accounts` (`provider`,`provider_account_id`);--> statement-breakpoint
+CREATE UNIQUE INDEX `AnkiSessions_publicId_unique` ON `AnkiSessions` (`publicId`);--> statement-breakpoint
+CREATE UNIQUE INDEX `Decks_publicId_unique` ON `Decks` (`publicId`);--> statement-breakpoint
 CREATE UNIQUE INDEX `users_customer_id_unique` ON `users` (`customer_id`);

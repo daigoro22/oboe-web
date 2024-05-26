@@ -1,1 +1,0 @@
-ALTER TABLE AnkiSessions ADD `isResumed` integer DEFAULT 0 NOT NULL;

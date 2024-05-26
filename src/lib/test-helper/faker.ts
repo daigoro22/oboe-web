@@ -15,9 +15,10 @@ export abstract class AbstractFakerUtil {
 
 export function* toIdGenerator<T extends { id: U }, U extends string | number>(
   array: T[],
+  idAttrib?: keyof T,
 ): Generator<U, void, undefined> {
   let index = 0;
   while (true) {
-    yield array[index++ % array.length].id;
+    yield array[index++ % array.length][idAttrib ?? "id"];
   }
 }
