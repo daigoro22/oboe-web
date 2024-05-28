@@ -8,6 +8,14 @@ export type SessionAndPoint = {
 };
 export interface IAnkiSession {
   getLatestSessionAndPoint: (userId: number) => Promise<SessionAndPoint>;
+  createSessionAndUpdatePoint: (
+    userId: number,
+    deckPublicId: string,
+    point: number,
+  ) => Promise<string>;
+  getSessionById: (
+    publicId: string,
+  ) => Promise<typeof ankiSessions.$inferSelect | undefined>;
 }
 
 @injectable()
