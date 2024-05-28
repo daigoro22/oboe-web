@@ -75,7 +75,7 @@ describe("getLatestSessionAndPoint", () => {
 describe("getSessionById", () => {
   test("通常ケース", async () => {
     const sessionId = ankiSessionFixtures[0].publicId;
-    const res = await ankiSessionRepository.getSessionById(sessionId);
+    const res = await ankiSessionRepository.getSessionById(1, sessionId);
 
     expect(res).toEqual({
       createdAt: expect.any(Date),

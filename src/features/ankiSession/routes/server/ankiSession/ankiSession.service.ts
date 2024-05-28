@@ -14,6 +14,7 @@ export interface IAnkiSession {
     point: number,
   ) => Promise<string>;
   getSessionById: (
+    userId: number,
     publicId: string,
   ) => Promise<typeof ankiSessions.$inferSelect | undefined>;
 }
@@ -31,7 +32,7 @@ export default class AnkiSessionService {
     return this.ankiSession.getLatestSessionAndPoint(userId);
   }
 
-  async getSessionById(publicId: string) {
-    return this.ankiSession.getSessionById(publicId);
+  async getSessionById(userId: number, publicId: string) {
+    return this.ankiSession.getSessionById(userId, publicId);
   }
 }

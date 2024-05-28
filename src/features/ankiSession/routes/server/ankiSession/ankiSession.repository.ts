@@ -1,7 +1,7 @@
 import { ankiSessions, users } from "@/db/schema";
 import type { IAnkiSession, SessionAndPoint } from "./ankiSession.service";
 import { type DrizzleD1Database, drizzle } from "drizzle-orm/d1";
-import { desc, eq } from "drizzle-orm";
+import { desc, eq, and } from "drizzle-orm";
 import { nanoid } from "nanoid";
 
 export default class AnkiSessionRepository implements IAnkiSession {
@@ -47,12 +47,17 @@ export default class AnkiSessionRepository implements IAnkiSession {
     return publicId;
   }
 
-  async getSessionById(publicId: string) {
+  async getSessionById(userId: number, publicId: string) {
     const data = (
       await this.db
         .select()
         .from(ankiSessions)
-        .where(eq(ankiSessions.publicId, publicId))
+        .where(
+          and(
+            eq(ankiSessions.publicId, publicId),
+            eq(ankiSessions.userId, userId),
+          ),
+        )
         .limit(1)
     )[0];
 

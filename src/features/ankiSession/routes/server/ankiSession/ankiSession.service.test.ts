@@ -40,7 +40,7 @@ describe("getLatestSessionAndPoint", () => {
 describe("getSessionById", () => {
   test("通常ケース", async () => {
     const deckPublicId = "test";
-    const res = await ankiSession.getSessionById(deckPublicId);
+    const res = await ankiSession.getSessionById(1, deckPublicId);
     expect(res).toEqual(TEST_SESSION);
   });
 });
