@@ -3,8 +3,10 @@ import "reflect-metadata";
 import AnkiSessionService from "./ankiSession.service";
 import { container } from "tsyringe";
 import { beforeAll, describe, expect, test } from "vitest";
-import { AnkiSessionFakeRepository } from "@/lib/test-helper/ankiSession";
-
+import {
+  AnkiSessionFakeRepository,
+  TEST_SESSION,
+} from "@/lib/test-helper/ankiSession";
 let ankiSession: AnkiSessionService;
 
 beforeAll(async () => {
@@ -14,7 +16,7 @@ beforeAll(async () => {
   ankiSession = container.resolve(AnkiSessionService);
 });
 
-describe("ankiSession.service", () => {
+describe("getLatestSessionAndPoint", () => {
   test("通常ケース", async () => {
     const res = await ankiSession.getLatestSessionAndPoint(1);
     expect(res).toEqual({
@@ -22,13 +24,23 @@ describe("ankiSession.service", () => {
       session: {
         id: 1,
         deckId: "1",
+        deckPublicId: "test_deck",
         startsAt: null,
         endsAt: null,
-        userId: "1",
+        userId: 1,
         createdAt: new Date(),
         isResumable: 1,
         resumeCount: 0,
+        publicId: "test_session",
       },
     });
+  });
+});
+
+describe("getSessionById", () => {
+  test("通常ケース", async () => {
+    const deckPublicId = "test";
+    const res = await ankiSession.getSessionById(deckPublicId);
+    expect(res).toEqual(TEST_SESSION);
   });
 });

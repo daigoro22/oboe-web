@@ -1,6 +1,6 @@
 import type { ankiSessions } from "@/db/schema";
-import { PROVIDER } from "@/lib/constant";
-import { inject, injectable } from "tsyringe";
+import { container, inject, injectable } from "tsyringe";
+import UserService from "@/features/auth/routes/server/user/user.service";
 
 export type SessionAndPoint = {
   session: typeof ankiSessions.$inferSelect;
@@ -20,9 +20,18 @@ export interface IAnkiSession {
 
 @injectable()
 export default class AnkiSessionService {
-  constructor(@inject("IAnkiSession") private ankiSession: IAnkiSession) {}
+  constructor(
+    @inject("IAnkiSession") private ankiSession: IAnkiSession,
+    private userService: UserService,
+  ) {
+    this.userService = container.resolve(UserService);
+  }
 
   async getLatestSessionAndPoint(userId: number) {
     return this.ankiSession.getLatestSessionAndPoint(userId);
+  }
+
+  async getSessionById(publicId: string) {
+    return this.ankiSession.getSessionById(publicId);
   }
 }
