@@ -3,7 +3,6 @@ import AnkiSessionRepository from "./ankiSession.repository";
 import { beforeAll, describe, expect, test, vi } from "vitest";
 import { ankiSessions, decks, users } from "@/db/schema";
 import { faker } from "@faker-js/faker";
-import { PROVIDER } from "@/lib/constant";
 import { TESTING_TIME, toIdGenerator } from "@/lib/test-helper";
 import { eq } from "drizzle-orm";
 
@@ -91,21 +90,17 @@ describe("getSessionById", () => {
   });
 });
 
-describe("createSessionAndUpdatePoint", () => {
+describe("createSession", () => {
   test("通常ケース", async () => {
     const userId = usersFixture()[0].id;
     const deckPublicId = deckFixtures[0].publicId;
-    const point = 100;
+    const sessionPublicId = faker.string.nanoid();
 
-    const sessionPublicId =
-      await ankiSessionRepository.createSessionAndUpdatePoint(
-        userId,
-        deckPublicId,
-        point,
-      );
-
-    expect(typeof sessionPublicId).toBe("string");
-    expect(sessionPublicId.length).toBeGreaterThan(0);
+    await ankiSessionRepository.createSession(
+      userId,
+      deckPublicId,
+      sessionPublicId,
+    );
 
     const createdSession = (
       await testDB
@@ -125,7 +120,14 @@ describe("createSessionAndUpdatePoint", () => {
       publicId: sessionPublicId,
       createdAt: expect.any(Date),
     });
+  });
+});
 
+describe("updatePoint", () => {
+  test("通常ケース", async () => {
+    const userId = usersFixture()[0].id;
+    const point = 100;
+    await ankiSessionRepository.updatePoint(userId, point);
     const updatedUser = await testDB
       .select()
       .from(users)
