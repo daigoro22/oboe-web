@@ -7,11 +7,16 @@ import {
   AnkiSessionFakeRepository,
   TEST_SESSION,
 } from "@/lib/test-helper/ankiSession";
+import { FakeTransaction } from "@/lib/test-helper";
+import { ANKI_SESSION_POINT } from "@/lib/constant";
 let ankiSession: AnkiSessionService;
 
 beforeAll(async () => {
   container.register("IAnkiSession", {
     useClass: AnkiSessionFakeRepository,
+  });
+  container.register("Transaction", {
+    useClass: FakeTransaction,
   });
   ankiSession = container.resolve(AnkiSessionService);
 });
@@ -39,8 +44,20 @@ describe("getLatestSessionAndPoint", () => {
 
 describe("getSessionById", () => {
   test("通常ケース", async () => {
-    const deckPublicId = "test";
-    const res = await ankiSession.getSessionById(1, deckPublicId);
+    const publicId = "test";
+    const res = await ankiSession.getSessionById(1, publicId);
     expect(res).toEqual(TEST_SESSION);
+  });
+});
+
+describe("startSession", () => {
+  test("通常ケース", async () => {
+    await expect(
+      ankiSession.startSession(
+        { id: 1, point: ANKI_SESSION_POINT },
+        "test_deck",
+      ),
+    ).resolves.not.toThrowError();
+    //FIXME: トランザクションの中身をテスト
   });
 });

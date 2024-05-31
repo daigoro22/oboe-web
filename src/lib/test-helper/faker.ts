@@ -1,4 +1,6 @@
+import type { ITransaction } from "@/lib/transaction";
 import { faker } from "@faker-js/faker";
+import type { BatchItem, BatchResponse } from "drizzle-orm/batch";
 
 export const FAKER_SEED = 123;
 export const generateFakeObject = <T>(count: number, obj: () => T) =>
@@ -10,6 +12,16 @@ export const generateFakePromise = <T>(count: number, obj: () => T) =>
 export abstract class AbstractFakerUtil {
   constructor() {
     faker.seed(FAKER_SEED);
+  }
+}
+
+export class FakeTransaction implements ITransaction {
+  async transaction<U extends BatchItem<"sqlite">>(
+    tran: (batch: (query: U) => void) => Promise<unknown>,
+  ): Promise<BatchResponse<Readonly<[U, ...U[]]>>> {
+    const batch: unknown[] = [];
+    await tran((query) => batch.push(query));
+    return new Promise((resolve) => resolve(batch));
   }
 }
 

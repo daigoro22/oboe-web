@@ -23,8 +23,12 @@ export class AnkiSessionFakeRepository
       session: TEST_SESSION,
     };
   }
-  async createSessionAndUpdatePoint(_, __, ___) {
-    return "test_session";
+  createSession(_: number, __: string, ___: string) {
+    return "test_query";
+  }
+
+  updatePoint(_: number, __: number) {
+    return "test_query";
   }
 
   async getSessionById() {
