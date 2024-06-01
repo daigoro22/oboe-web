@@ -136,3 +136,41 @@ describe("updatePoint", () => {
     expect(updatedUser[0]?.point).toBe(point);
   });
 });
+
+describe("updateResumable", () => {
+  test("通常ケース", async () => {
+    const userId = usersFixture()[0].id;
+    const sessionId = ankiSessionFixtures[0].id;
+    await expect(
+      ankiSessionRepository.updateResumable(userId, sessionId, false),
+    ).resolves.not.toThrowError();
+
+    const updatedSession = await testDB
+      .select()
+      .from(ankiSessions)
+      .where(eq(ankiSessions.id, sessionId))
+      .limit(1);
+
+    expect(updatedSession[0]?.userId).toBe(userId);
+    expect(updatedSession[0]?.isResumable).toBe(0);
+  });
+});
+
+describe("updateResumeCount", () => {
+  test("通常ケース", async () => {
+    const userId = usersFixture()[0].id;
+    const sessionId = ankiSessionFixtures[0].id;
+    const count = 10;
+
+    expect(ankiSessionFixtures[0]?.resumeCount).toBe(0);
+    await expect(
+      ankiSessionRepository.updateResumeCount(userId, sessionId, count),
+    ).resolves.not.toThrowError();
+    const updatedSession = await testDB
+      .select()
+      .from(ankiSessions)
+      .where(eq(ankiSessions.id, sessionId))
+      .limit(1);
+    expect(updatedSession[0]?.resumeCount).toBe(count);
+  });
+});

@@ -2,6 +2,7 @@ import { ankiSessions, users } from "@/db/schema";
 import type { IAnkiSession, SessionAndPoint } from "./ankiSession.service";
 import { type DrizzleD1Database, drizzle } from "drizzle-orm/d1";
 import { desc, eq, and } from "drizzle-orm";
+import type { RunnableQuery } from "drizzle-orm/runnable-query";
 
 export default class AnkiSessionRepository implements IAnkiSession {
   private db: DrizzleD1Database;
@@ -39,6 +40,28 @@ export default class AnkiSessionRepository implements IAnkiSession {
 
   updatePoint(userId: number, point: number) {
     return this.db.update(users).set({ point }).where(eq(users.id, userId));
+  }
+
+  updateResumable(userId: number, sessionId: number, isResumable: boolean) {
+    return this.db
+      .update(ankiSessions)
+      .set({ isResumable: isResumable ? 1 : 0 })
+      .where(
+        and(
+          eq(ankiSessions.userId, userId),
+          eq(ankiSessions.isResumable, 1),
+          eq(ankiSessions.id, sessionId),
+        ),
+      );
+  }
+
+  updateResumeCount(userId: number, sessionId: number, count: number) {
+    return this.db
+      .update(ankiSessions)
+      .set({ resumeCount: count })
+      .where(
+        and(eq(ankiSessions.userId, userId), eq(ankiSessions.id, sessionId)),
+      );
   }
 
   async getSessionById(userId: number, publicId: string) {
