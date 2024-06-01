@@ -58,13 +58,15 @@ export default class AnkiSessionService {
       if (updatedBalance < 0) {
         throw new InsufficientPointError("所持ポイントが足りません");
       }
+      const { session: latest } =
+        await this.ankiSession.getLatestSessionAndPoint(user.id);
 
       const sessionPublicId = nanoid();
       pushBatch(
         this.ankiSession.createSession(user.id, deckPublicId, sessionPublicId),
       );
       pushBatch(this.ankiSession.updatePoint(user.id, updatedBalance));
-      //FIXME: バッチに復帰フラグの更新を追加
+      pushBatch(this.ankiSession.updateResumable(user.id, latest.id, false));
     });
   }
 
