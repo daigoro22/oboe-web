@@ -23,6 +23,16 @@ export interface IAnkiSession {
     publicId: string,
   ) => Promise<typeof ankiSessions.$inferSelect | undefined>;
   updatePoint: (userId: number, point: number) => BatchQuery;
+  updateResumable: (
+    userId: number,
+    sessionId: number,
+    isResumable: boolean,
+  ) => BatchQuery;
+  updateResumeCount: (
+    userId: number,
+    sessionId: number,
+    count: number,
+  ) => BatchQuery;
 }
 @injectable()
 export default class AnkiSessionService {
@@ -55,6 +65,41 @@ export default class AnkiSessionService {
       );
       pushBatch(this.ankiSession.updatePoint(user.id, updatedBalance));
       //FIXME: バッチに復帰フラグの更新を追加
+    });
+  }
+
+  async resumeSession(userId: number) {
+    return this.tx.transaction(async (pushBatch) => {
+      const { session: latest } =
+        await this.ankiSession.getLatestSessionAndPoint(userId);
+
+      //最新のセッションが完了済みならエラー
+      if (latest.endsAt) {
+        throw new ResumeLimitExceededError("復帰回数が上限を超えました");
+      }
+
+      // 最新のセッションの復帰回数がn回以上もしくは復帰可能フラグが false ならエラー
+      if (
+        latest.resumeCount >= ANKI_SESSION_RESUME_LIMIT ||
+        !latest.isResumable
+      )
+        throw new ResumeLimitExceededError("復帰回数が上限を超えました");
+
+      //最新の ankiSession レコードの復帰回数++
+      pushBatch(
+        this.ankiSession.updateResumeCount(
+          userId,
+          latest.id,
+          latest.resumeCount + 1,
+        ),
+      );
+
+      // 復帰回数+1 >= nの場合, 復帰可能フラグを false に更新
+      if (latest.resumeCount + 1 >= ANKI_SESSION_RESUME_LIMIT) {
+        pushBatch(this.ankiSession.updateResumable(userId, latest.id, false));
+      }
+
+      return latest;
     });
   }
 }

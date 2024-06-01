@@ -1,14 +1,16 @@
 import "reflect-metadata";
 
-import AnkiSessionService from "./ankiSession.service";
+import AnkiSessionService, {
+  ResumeLimitExceededError,
+} from "./ankiSession.service";
 import { container } from "tsyringe";
-import { beforeAll, describe, expect, test } from "vitest";
+import { afterEach, beforeAll, describe, expect, test, vi } from "vitest";
 import {
   AnkiSessionFakeRepository,
   TEST_SESSION,
 } from "@/lib/test-helper/ankiSession";
 import { FakeTransaction } from "@/lib/test-helper";
-import { ANKI_SESSION_POINT } from "@/lib/constant";
+import { ANKI_SESSION_POINT, ANKI_SESSION_RESUME_LIMIT } from "@/lib/constant";
 let ankiSession: AnkiSessionService;
 
 beforeAll(async () => {
@@ -19,6 +21,10 @@ beforeAll(async () => {
     useClass: FakeTransaction,
   });
   ankiSession = container.resolve(AnkiSessionService);
+});
+
+afterEach(() => {
+  vi.restoreAllMocks();
 });
 
 describe("getLatestSessionAndPoint", () => {
@@ -59,5 +65,68 @@ describe("startSession", () => {
       ),
     ).resolves.not.toThrowError();
     //FIXME: トランザクションの中身をテスト
+  });
+
+  //TODO: エラーケース
+});
+
+describe("resumeSession", () => {
+  test("通常ケース", async () => {
+    let res;
+    try {
+      res = await ankiSession.resumeSession(1);
+    } catch (e) {
+      expect(true).toBe(false);
+    }
+    expect(res).toEqual(TEST_SESSION);
+  });
+
+  test("復帰回数が上限を超えた場合のエラー", async () => {
+    const userId = 1;
+    // 復帰回数が上限に達しているセッションを設定
+    const sessionWithMaxResumes = {
+      ...TEST_SESSION,
+      resumeCount: ANKI_SESSION_RESUME_LIMIT,
+      isResumable: 1,
+    };
+    const ankiSessionMock = vi.spyOn(
+      AnkiSessionFakeRepository.prototype,
+      "getLatestSessionAndPoint",
+    );
+    ankiSessionMock.mockImplementation(async (_) => {
+      return {
+        point: 100,
+        session: sessionWithMaxResumes,
+      };
+    });
+    // 復帰回数が上限を超えた場合のエラーを期待
+    await expect(ankiSession.resumeSession(userId)).rejects.toThrow(
+      ResumeLimitExceededError,
+    );
+  });
+
+  test("復帰不可能フラグがfalseの場合のエラー", async () => {
+    const userId = 1;
+    // 復帰不可能フラグがfalseのセッションを設定
+    const sessionWithResumableFalse = {
+      ...TEST_SESSION,
+      resumeCount: 0,
+      isResumable: 0,
+    };
+    const ankiSessionMock = vi.spyOn(
+      AnkiSessionFakeRepository.prototype,
+      "getLatestSessionAndPoint",
+    );
+    ankiSessionMock.mockImplementation(async (_) => {
+      return {
+        point: 100,
+        session: sessionWithResumableFalse,
+      };
+    });
+
+    // 復帰不可能フラグがfalseの場合のエラーを期待
+    await expect(ankiSession.resumeSession(userId)).rejects.toThrow(
+      ResumeLimitExceededError,
+    );
   });
 });

@@ -34,4 +34,11 @@ export class AnkiSessionFakeRepository
   async getSessionById() {
     return TEST_SESSION;
   }
+
+  updateResumable(_: number, __: string, ___: boolean) {
+    return "test_query";
+  }
+  updateResumeCount(_: number, __: string, ___: number) {
+    return "test_query";
+  }
 }
