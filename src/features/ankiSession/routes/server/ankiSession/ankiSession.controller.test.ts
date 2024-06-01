@@ -31,10 +31,12 @@ describe("ankiSession.controller", () => {
       session: {
         id: 1,
         deckId: "1",
+        deckPublicId: "test_deck",
         startsAt: null,
         endsAt: null,
-        userId: "1",
+        userId: 1,
         createdAt: new Date().toISOString(),
+        publicId: "test_session",
         isResumable: 1,
         resumeCount: 0,
       },
