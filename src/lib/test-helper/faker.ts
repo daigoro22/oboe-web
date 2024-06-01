@@ -18,10 +18,10 @@ export abstract class AbstractFakerUtil {
 export class FakeTransaction implements ITransaction {
   async transaction<U extends BatchItem<"sqlite">>(
     tran: (batch: (query: U) => void) => Promise<unknown>,
-  ): Promise<BatchResponse<Readonly<[U, ...U[]]>>> {
+  ): Promise<unknown> {
     const batch: unknown[] = [];
-    await tran((query) => batch.push(query));
-    return new Promise((resolve) => resolve(batch));
+    const res = await tran((query) => batch.push(query));
+    return res;
   }
 }
 

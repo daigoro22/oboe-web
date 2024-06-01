@@ -4,7 +4,7 @@ import { drizzle, type DrizzleD1Database } from "drizzle-orm/d1";
 export interface ITransaction {
   transaction: <U extends BatchItem<"sqlite">>(
     tran: (batch: (query: U) => void) => Promise<unknown>,
-  ) => Promise<BatchResponse<Readonly<[U, ...U[]]>>>;
+  ) => Promise<unknown>;
 }
 
 export class Transaction implements ITransaction {
@@ -15,14 +15,15 @@ export class Transaction implements ITransaction {
 
   async transaction<U extends BatchItem<"sqlite">>(
     tran: (batch: (query: U) => void) => Promise<unknown>,
-  ): Promise<BatchResponse<Readonly<[U, ...U[]]>>> {
+  ): Promise<unknown> {
     const batch: U[] = [];
-    await tran((query) => batch.push(query));
+    const res = await tran((query) => batch.push(query));
     if (!batch[0]) {
       throw new BatchEmptyError("batch is empty");
     }
     const b = [batch[0], ...batch.slice(1)] as const;
-    return this.db.batch(b);
+    await this.db.batch(b);
+    return res;
   }
 }
 
