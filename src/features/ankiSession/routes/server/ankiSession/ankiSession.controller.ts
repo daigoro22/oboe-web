@@ -1,11 +1,14 @@
+import { zValidator } from "@hono/zod-validator";
 import AnkiSessionRepository from "./ankiSession.repository";
 import AnkiSessionService, {
+  InsufficientPointError,
   type SessionAndPoint,
 } from "./ankiSession.service";
 import type { Env } from "env";
 import { type Context as C, Hono } from "hono";
 import { createFactory, createMiddleware } from "hono/factory";
 import { container } from "tsyringe";
+import { newSessionSchema } from "@/schemas/ankiSession";
 
 type Context = C<Env>;
 
@@ -34,12 +37,29 @@ const latestGet = factory.createHandlers(async (c: Context) => {
   return c.json(sessionAndPoint);
 });
 
-const newPost = factory.createHandlers(async (c: Context) => {
-  const ankiSession = container.resolve(AnkiSessionService);
-  const user = c.get("userData");
-  const newSession = await ankiSession.startSession(user);
-  return c.json({ sessionId: newSession });
-});
+const newPost = factory.createHandlers(
+  zValidator("json", newSessionSchema, async (result, c) => {
+    const { success, data } = result;
+
+    if (!success) {
+      return c.json(result.error, 400);
+    }
+
+    const ankiSession = container.resolve(AnkiSessionService);
+    const user = c.get("userData");
+
+    let newSessionId: string;
+    try {
+      newSessionId = await ankiSession.startSession(user, data.deckId);
+    } catch (error) {
+      if (error instanceof InsufficientPointError) {
+        return c.json({ error: error.message }, 409);
+      }
+      return c.json({ error: "server error" }, 500);
+    }
+    return c.json({ sessionId: newSessionId }, 201);
+  }),
+);
 
 const idGet = factory.createHandlers(async (c: Context) => {
   const ankiSession = container.resolve(AnkiSessionService);

@@ -53,6 +53,7 @@ export default class AnkiSessionService {
     user: NonNullable<Awaited<ReturnType<UserService["getUser"]>>>,
     deckPublicId: string,
   ) {
+    const sessionPublicId = nanoid();
     await this.tx.transaction(async (pushBatch) => {
       const updatedBalance = user.point - ANKI_SESSION_POINT;
       if (updatedBalance < 0) {
@@ -61,13 +62,13 @@ export default class AnkiSessionService {
       const { session: latest } =
         await this.ankiSession.getLatestSessionAndPoint(user.id);
 
-      const sessionPublicId = nanoid();
       pushBatch(
         this.ankiSession.createSession(user.id, deckPublicId, sessionPublicId),
       );
       pushBatch(this.ankiSession.updatePoint(user.id, updatedBalance));
       pushBatch(this.ankiSession.updateResumable(user.id, latest.id, false));
     });
+    return sessionPublicId;
   }
 
   async resumeSession(userId: number) {
