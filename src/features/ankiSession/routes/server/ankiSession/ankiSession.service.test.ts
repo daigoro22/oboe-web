@@ -1,6 +1,7 @@
 import "reflect-metadata";
 
 import AnkiSessionService, {
+  InsufficientPointError,
   ResumeLimitExceededError,
 } from "./ankiSession.service";
 import { container } from "tsyringe";
@@ -67,7 +68,14 @@ describe("startSession", () => {
     //FIXME: トランザクションの中身をテスト
   });
 
-  //TODO: エラーケース
+  test("ポイントが不足している場合のエラー", async () => {
+    const userWithInsufficientPoints = { id: 1, point: ANKI_SESSION_POINT - 1 }; // ANKI_SESSION_POINTより少ないポイント
+    const deckPublicId = "test_deck";
+
+    await expect(
+      ankiSession.startSession(userWithInsufficientPoints, deckPublicId),
+    ).rejects.toThrow(InsufficientPointError);
+  });
 });
 
 describe("resumeSession", () => {
