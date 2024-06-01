@@ -13,9 +13,9 @@ export class Transaction implements ITransaction {
     this.db = drizzle(connection);
   }
 
-  async transaction<U extends BatchItem<"sqlite">>(
-    tran: (batch: (query: U) => void) => Promise<unknown>,
-  ): Promise<unknown> {
+  async transaction<U extends BatchItem<"sqlite">, T>(
+    tran: (batch: (query: U) => void) => Promise<T>,
+  ): Promise<T> {
     const batch: U[] = [];
     const res = await tran((query) => batch.push(query));
     if (!batch[0]) {
