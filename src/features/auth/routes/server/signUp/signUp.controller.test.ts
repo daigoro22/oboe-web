@@ -6,7 +6,7 @@ import type { AuthUser } from "@hono/auth-js";
 import { createMiddleware } from "hono/factory";
 import { testClient } from "hono/testing";
 import { container } from "tsyringe";
-import { beforeEach, describe, expect, test, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import { Hono } from "hono";
 import SignUpService from "@/features/auth/routes/server/signUp/signUp.service";
 import { DrizzleError } from "drizzle-orm";
@@ -14,6 +14,10 @@ import { setFakeUserMiddleware } from "@/lib/test-helper";
 
 beforeEach(() => {
   container.clearInstances();
+});
+
+afterEach(() => {
+  vi.restoreAllMocks();
 });
 
 const signUpContainerMiddleware = createMiddleware(async (c, next) => {
