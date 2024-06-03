@@ -1,3 +1,5 @@
+import { faker } from "@/db/faker";
+import type AnkiSessionRepository from "@/features/ankiSession/routes/server/ankiSession/ankiSession.repository";
 import type { IAnkiSession } from "@/features/ankiSession/routes/server/ankiSession/ankiSession.service";
 import { AbstractFakerUtil } from "@/lib/test-helper/faker";
 
@@ -12,6 +14,46 @@ export const TEST_SESSION = {
   isResumable: 1,
   resumeCount: 0,
   publicId: "test_session",
+};
+
+export const TEST_SESSION_AND_DECK: Awaited<
+  ReturnType<AnkiSessionRepository["getSessionAndDeckById"]>
+> = {
+  session: {
+    id: faker.number.int(),
+    startsAt: faker.date.past(),
+    endsAt: faker.date.future(),
+    isResumable: faker.number.int({ min: 0, max: 1 }),
+    resumeCount: faker.number.int(),
+    publicId: faker.string.nanoid(),
+    createdAt: faker.date.recent(),
+  },
+  deck: {
+    id: faker.number.int(),
+    publicId: faker.string.uuid(),
+    name: faker.commerce.productName(),
+    description: faker.lorem.sentences(),
+    createdAt: faker.date.recent(),
+  },
+  cards: Array.from({ length: 5 }, () => ({
+    id: faker.number.int(),
+    deckId: faker.number.int(),
+    number: faker.number.int(),
+    frontContent: faker.lorem.sentence(),
+    backContent: faker.lorem.sentence(),
+    stability: faker.number.float({ min: 0.0, max: 1.0 }),
+    difficulty: faker.number.float({ min: 0.0, max: 1.0 }),
+    due: faker.date.future(),
+    elapsedDays: faker.number.int({ min: 0, max: 365 }),
+    lastElapsedDays: faker.number.int({ min: 0, max: 365 }),
+    scheduledDays: faker.number.int({ min: 1, max: 365 }),
+    review: faker.date.future(),
+    duration: faker.number.int({ min: 1, max: 3600 }), // 1秒から1時間
+    lat: faker.location.latitude(),
+    lng: faker.location.longitude(),
+    pitch: faker.number.float({ min: -90, max: 90 }),
+    heading: faker.number.float({ min: 0, max: 360 }),
+  })),
 };
 export class AnkiSessionFakeRepository
   extends AbstractFakerUtil
@@ -31,8 +73,8 @@ export class AnkiSessionFakeRepository
     return "test_query";
   }
 
-  async getSessionById() {
-    return TEST_SESSION;
+  async getSessionAndDeckById() {
+    return TEST_SESSION_AND_DECK;
   }
 
   updateResumable(_: number, __: string, ___: boolean) {

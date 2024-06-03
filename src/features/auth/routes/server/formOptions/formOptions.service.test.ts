@@ -4,7 +4,7 @@ import FormOptionsService, {
   type IFormOptions,
 } from "@/features/auth/routes/server/formOptions/formOptions.service";
 import { AbstractFakerUtil, generateFakePromise } from "@/lib/test-helper";
-import { faker } from "@faker-js/faker";
+import { faker } from "@/db/faker";
 import { container } from "tsyringe";
 import { beforeAll, describe, expect, test } from "vitest";
 
@@ -38,30 +38,30 @@ describe("formOptions.service", () => {
     expect(res).toEqual({
       objectives: [
         {
-          id: 99,
-          name: "hotel",
+          id: 65,
+          name: "north",
         },
         {
-          id: 69,
-          name: "panel",
+          id: 3,
+          name: "grasp",
         },
         {
-          id: 48,
-          name: "chard",
+          id: 76,
+          name: "plane",
         },
       ],
       occupations: [
         {
-          id: 70,
-          name: "International Response Administrator",
+          id: 24,
+          name: "Future Assurance Coordinator",
         },
         {
-          id: 22,
-          name: "International Infrastructure Developer",
+          id: 35,
+          name: "Investor Response Orchestrator",
         },
         {
-          id: 72,
-          name: "Central Group Consultant",
+          id: 100,
+          name: "Chief Program Representative",
         },
       ],
     });

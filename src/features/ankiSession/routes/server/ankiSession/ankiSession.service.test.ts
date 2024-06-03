@@ -9,6 +9,7 @@ import { afterEach, beforeAll, describe, expect, test, vi } from "vitest";
 import {
   AnkiSessionFakeRepository,
   TEST_SESSION,
+  TEST_SESSION_AND_DECK,
 } from "@/lib/test-helper/ankiSession";
 import { FakeTransaction } from "@/lib/test-helper";
 import { ANKI_SESSION_POINT, ANKI_SESSION_RESUME_LIMIT } from "@/lib/constant";
@@ -52,8 +53,8 @@ describe("getLatestSessionAndPoint", () => {
 describe("getSessionById", () => {
   test("通常ケース", async () => {
     const publicId = "test";
-    const res = await ankiSession.getSessionById(1, publicId);
-    expect(res).toEqual(TEST_SESSION);
+    const res = await ankiSession.getSessionAndDeckById(1, publicId);
+    expect(res).toEqual(TEST_SESSION_AND_DECK);
   });
 });
 
