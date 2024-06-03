@@ -64,48 +64,48 @@ export default class AnkiSessionRepository implements IAnkiSession {
   }
 
   async getSessionAndDeckById(userId: number, sessionPublicId: string) {
-    const sessionAndDeckData = (
-      await this.db
-        .select({
-          session: {
-            id: sql<number>`${ankiSessions.id}`.as("sessionId"),
-            startsAt: ankiSessions.startsAt,
-            endsAt: ankiSessions.endsAt,
-            isResumable: ankiSessions.isResumable,
-            resumeCount: ankiSessions.resumeCount,
-            publicId: sql<string>`${ankiSessions.publicId}`.as(
-              "sessionPublicId",
-            ),
-            createdAt: sql<Date>`${ankiSessions.createdAt}`.as(
-              "sessionCreatedAt",
-            ),
-          },
-          deck: {
-            id: sql<number>`${decks.id}`.as("deckId"),
-            publicId: decks.publicId,
-            name: decks.name,
-            description: decks.description,
-            createdAt: sql<Date>`${decks.createdAt}`.as("deckCreatedAt"),
-          },
-        })
-        .from(ankiSessions)
-        .innerJoin(decks, eq(ankiSessions.deckPublicId, decks.publicId))
-        .where(
-          and(
-            eq(ankiSessions.publicId, sessionPublicId),
-            eq(ankiSessions.userId, userId),
+    const sessionAndDeckData = await this.db
+      .select({
+        session: {
+          id: sql<number>`${ankiSessions.id}`.as("sessionId"),
+          startsAt: ankiSessions.startsAt,
+          endsAt: ankiSessions.endsAt,
+          isResumable: ankiSessions.isResumable,
+          resumeCount: ankiSessions.resumeCount,
+          publicId: sql<string>`${ankiSessions.publicId}`.as("sessionPublicId"),
+          createdAt: sql<Date>`${ankiSessions.createdAt}`.as(
+            "sessionCreatedAt",
           ),
-        )
-    )[0];
+        },
+        deck: {
+          id: sql<number>`${decks.id}`.as("deckId"),
+          publicId: decks.publicId,
+          name: decks.name,
+          description: decks.description,
+          createdAt: sql<Date>`${decks.createdAt}`.as("deckCreatedAt"),
+        },
+      })
+      .from(ankiSessions)
+      .innerJoin(decks, eq(ankiSessions.deckPublicId, decks.publicId))
+      .where(
+        and(
+          eq(ankiSessions.publicId, sessionPublicId),
+          eq(ankiSessions.userId, userId),
+        ),
+      );
+
+    if (sessionAndDeckData.length < 1) {
+      return undefined;
+    }
 
     const cardsData = await this.db
       .select()
       .from(cards)
-      .where(eq(cards.deckId, sessionAndDeckData.deck.id));
+      .where(eq(cards.deckId, sessionAndDeckData[0].deck.id));
 
     return {
-      session: sessionAndDeckData.session,
-      deck: sessionAndDeckData.deck,
+      session: sessionAndDeckData[0].session,
+      deck: sessionAndDeckData[0].deck,
       cards: cardsData,
     };
   }

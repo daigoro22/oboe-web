@@ -120,6 +120,17 @@ describe("getSessionAndDeckById", () => {
       session: { ...sessionTobe, createdAt: expect.any(String) },
     });
   });
+
+  test("セッションが見つからないケース", async () => {
+    const userId = usersFixture()[0].id;
+    const sessionId = "非存在のID";
+    const res = await ankiSessionRepository.getSessionAndDeckById(
+      userId,
+      sessionId,
+    );
+
+    expect(res).toBeUndefined();
+  });
 });
 
 describe("createSession", () => {

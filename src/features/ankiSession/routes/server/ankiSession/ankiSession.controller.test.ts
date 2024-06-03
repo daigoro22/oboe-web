@@ -120,4 +120,21 @@ describe("id:GET", () => {
       })),
     });
   });
+
+  test("セッションが見つからないエラーケース", async () => {
+    const spy = vi
+      .spyOn(AnkiSessionService.prototype, "getSessionAndDeckById")
+      .mockImplementation(async () => {
+        return undefined;
+      });
+
+    const res = await client.api.auth.verified.ankiSession[":id"].$get({
+      param: { id: "non_existent_session" },
+    });
+
+    expect(res.status).toBe(404);
+    const jsonResponse = await res.json();
+    expect(jsonResponse).toEqual({ error: "not found" });
+    spy.mockRestore();
+  });
 });
