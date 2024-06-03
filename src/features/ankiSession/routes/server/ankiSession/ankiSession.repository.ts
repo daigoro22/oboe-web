@@ -1,8 +1,7 @@
-import { ankiSessions, users } from "@/db/schema";
+import { ankiSessions, cards, decks, users } from "@/db/schema";
 import type { IAnkiSession, SessionAndPoint } from "./ankiSession.service";
 import { type DrizzleD1Database, drizzle } from "drizzle-orm/d1";
-import { desc, eq, and } from "drizzle-orm";
-import type { RunnableQuery } from "drizzle-orm/runnable-query";
+import { desc, eq, and, sql } from "drizzle-orm";
 
 export default class AnkiSessionRepository implements IAnkiSession {
   private db: DrizzleD1Database;
@@ -64,20 +63,50 @@ export default class AnkiSessionRepository implements IAnkiSession {
       );
   }
 
-  async getSessionById(userId: number, publicId: string) {
-    const data = (
+  async getSessionAndDeckById(userId: number, sessionPublicId: string) {
+    const sessionAndDeckData = (
       await this.db
-        .select()
+        .select({
+          session: {
+            id: sql<number>`${ankiSessions.id}`.as("sessionId"),
+            startsAt: ankiSessions.startsAt,
+            endsAt: ankiSessions.endsAt,
+            isResumable: ankiSessions.isResumable,
+            resumeCount: ankiSessions.resumeCount,
+            publicId: sql<string>`${ankiSessions.publicId}`.as(
+              "sessionPublicId",
+            ),
+            createdAt: sql<Date>`${ankiSessions.createdAt}`.as(
+              "sessionCreatedAt",
+            ),
+          },
+          deck: {
+            id: sql<number>`${decks.id}`.as("deckId"),
+            publicId: decks.publicId,
+            name: decks.name,
+            description: decks.description,
+            createdAt: sql<Date>`${decks.createdAt}`.as("deckCreatedAt"),
+          },
+        })
         .from(ankiSessions)
+        .innerJoin(decks, eq(ankiSessions.deckPublicId, decks.publicId))
         .where(
           and(
-            eq(ankiSessions.publicId, publicId),
+            eq(ankiSessions.publicId, sessionPublicId),
             eq(ankiSessions.userId, userId),
           ),
         )
-        .limit(1)
     )[0];
 
-    return data ?? undefined;
+    const cardsData = await this.db
+      .select()
+      .from(cards)
+      .where(eq(cards.deckId, sessionAndDeckData.deck.id));
+
+    return {
+      session: sessionAndDeckData.session,
+      deck: sessionAndDeckData.deck,
+      cards: cardsData,
+    };
   }
 }

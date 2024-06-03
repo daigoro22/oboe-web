@@ -1,4 +1,4 @@
-import type { ankiSessions } from "@/db/schema";
+import type { ankiSessions, cards, decks } from "@/db/schema";
 import { inject, injectable } from "tsyringe";
 import type UserService from "@/features/auth/routes/server/user/user.service";
 import type { BatchItem } from "drizzle-orm/batch";
@@ -18,10 +18,20 @@ export interface IAnkiSession {
     deckPublicId: string,
     sessionPublicId: string,
   ) => BatchQuery;
-  getSessionById: (
+  getSessionAndDeckById: (
     userId: number,
-    publicId: string,
-  ) => Promise<typeof ankiSessions.$inferSelect | undefined>;
+    sessionPublicId: string,
+  ) => Promise<
+    | {
+        session: Omit<
+          typeof ankiSessions.$inferSelect,
+          "createdAt" | "deckPublicId" | "userId"
+        >;
+        deck: Omit<typeof decks.$inferSelect, "userId">;
+        cards: (typeof cards.$inferSelect)[];
+      }
+    | undefined
+  >;
   updatePoint: (userId: number, point: number) => BatchQuery;
   updateResumable: (
     userId: number,
@@ -45,8 +55,8 @@ export default class AnkiSessionService {
     return this.ankiSession.getLatestSessionAndPoint(userId);
   }
 
-  async getSessionById(userId: number, publicId: string) {
-    return this.ankiSession.getSessionById(userId, publicId);
+  async getSessionAndDeckById(userId: number, publicId: string) {
+    return this.ankiSession.getSessionAndDeckById(userId, publicId);
   }
 
   async startSession(

@@ -1,7 +1,7 @@
 import { createFixtures, DB, prepare, testDB } from "@/db/fixture";
 import AnkiSessionRepository from "./ankiSession.repository";
 import { beforeAll, describe, expect, test, vi } from "vitest";
-import { ankiSessions, decks, users } from "@/db/schema";
+import { ankiSessions, cards, decks, users } from "@/db/schema";
 import { faker } from "@faker-js/faker";
 import { TESTING_TIME, toIdGenerator } from "@/lib/test-helper";
 import { eq } from "drizzle-orm";
@@ -9,16 +9,18 @@ import { eq } from "drizzle-orm";
 let ankiSessionRepository: AnkiSessionRepository;
 let ankiSessionFixtures: (typeof ankiSessions.$inferSelect)[];
 let deckFixtures: (typeof decks.$inferSelect)[];
+let cardFixtures: (typeof cards.$inferSelect)[];
 const { setupAll, users: usersFixture, accounts } = prepare();
 
 beforeAll(async () => {
   await setupAll();
   ankiSessionRepository = new AnkiSessionRepository(DB);
   vi.setSystemTime(TESTING_TIME);
+  const deckUserId = toIdGenerator(usersFixture());
   deckFixtures = await createFixtures(
     decks,
     () => ({
-      userId: String(toIdGenerator(usersFixture()).next().value),
+      userId: Number(deckUserId.next().value),
       name: faker.commerce.productName(),
       description: faker.commerce.productDescription(),
       publicId: faker.string.nanoid(),
@@ -26,19 +28,42 @@ beforeAll(async () => {
     10,
   );
 
+  const sessionUserId = toIdGenerator(usersFixture());
+  const sessionDeckId = toIdGenerator(deckFixtures, "publicId");
   ankiSessionFixtures = await createFixtures(
     ankiSessions,
     () => ({
-      userId: Number(toIdGenerator(usersFixture()).next().value),
-      deckPublicId: String(
-        toIdGenerator(deckFixtures, "publicId").next().value,
-      ),
+      userId: Number(sessionUserId.next().value),
+      deckPublicId: String(sessionDeckId.next().value),
       startsAt: null,
       endsAt: null,
-      createdAt: new Date(),
       publicId: faker.string.nanoid(),
     }),
     10,
+  );
+
+  const cardDeckId = toIdGenerator(deckFixtures);
+  cardFixtures = await createFixtures(
+    cards,
+    () => ({
+      deckId: Number(cardDeckId.next().value),
+      number: faker.number.int({ min: 1, max: 100 }),
+      frontContent: faker.lorem.sentence(),
+      backContent: faker.lorem.sentence(),
+      stability: faker.number.float({ min: 0.0, max: 1.0 }),
+      difficulty: faker.number.float({ min: 0.0, max: 1.0 }),
+      due: faker.date.future(),
+      elapsedDays: faker.number.int({ min: 0, max: 365 }),
+      lastElapsedDays: faker.number.int({ min: 0, max: 365 }),
+      scheduledDays: faker.number.int({ min: 1, max: 365 }),
+      review: faker.date.future(),
+      duration: faker.number.int({ min: 1, max: 3600 }), // 1秒から1時間
+      lat: faker.location.latitude(),
+      lng: faker.location.longitude(),
+      pitch: faker.number.float({ min: -90, max: 90 }),
+      heading: faker.number.float({ min: 0, max: 360 }),
+    }),
+    5,
   );
 });
 
@@ -51,7 +76,7 @@ describe("getLatestSessionAndPoint", () => {
     expect(res).toEqual({
       point: 6833,
       session: {
-        createdAt: TESTING_TIME,
+        createdAt: expect.any(Date),
         deckPublicId: "GIuM_z8oCkfHADr5IqiuJ",
         endsAt: null,
         id: 1,
@@ -71,21 +96,28 @@ describe("getLatestSessionAndPoint", () => {
   });
 });
 
-describe("getSessionById", () => {
+describe("getSessionAndDeckById", () => {
   test("通常ケース", async () => {
+    const userId = usersFixture()[0].id;
     const sessionId = ankiSessionFixtures[0].publicId;
-    const res = await ankiSessionRepository.getSessionById(1, sessionId);
+    const res = await ankiSessionRepository.getSessionAndDeckById(
+      userId,
+      sessionId,
+    );
+
+    const {
+      createdAt: _,
+      deckPublicId: __,
+      userId: ___,
+      ...sessionTobe
+    } = ankiSessionFixtures[0];
+
+    const { userId: ____, ...deckTobe } = deckFixtures[0];
 
     expect(res).toEqual({
-      createdAt: expect.any(Date),
-      deckPublicId: "GIuM_z8oCkfHADr5IqiuJ",
-      endsAt: null,
-      id: 1,
-      isResumable: 1,
-      publicId: "7r2ipnl-wy7M_4bwtj6Af",
-      resumeCount: 0,
-      startsAt: null,
-      userId: 1,
+      cards: [cardFixtures[0]],
+      deck: { ...deckTobe, createdAt: expect.any(String) },
+      session: { ...sessionTobe, createdAt: expect.any(String) },
     });
   });
 });
