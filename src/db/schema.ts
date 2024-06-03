@@ -110,7 +110,7 @@ export const decks = sqliteTable(
   "Decks",
   {
     id: integer("id").primaryKey({ autoIncrement: true }),
-    userId: text("userId").notNull(),
+    userId: integer("userId").notNull(),
     name: text("name").notNull(),
     description: text("description").notNull(),
     createdAt: integer("created_at", { mode: "timestamp_ms" })

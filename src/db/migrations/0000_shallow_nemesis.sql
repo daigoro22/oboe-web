@@ -44,7 +44,7 @@ CREATE TABLE `Cards` (
 --> statement-breakpoint
 CREATE TABLE `Decks` (
 	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
-	`userId` text NOT NULL,
+	`userId` integer NOT NULL,
 	`name` text NOT NULL,
 	`description` text NOT NULL,
 	`created_at` integer DEFAULT CURRENT_TIMESTAMP NOT NULL,
