@@ -23,7 +23,7 @@ CREATE TABLE `AnkiSessions` (
 --> statement-breakpoint
 CREATE TABLE `Cards` (
 	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
-	`deckId` text NOT NULL,
+	`deckId` integer NOT NULL,
 	`number` integer NOT NULL,
 	`frontContent` text NOT NULL,
 	`backContent` text NOT NULL,

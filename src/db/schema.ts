@@ -130,7 +130,7 @@ export const cards = sqliteTable(
   "Cards",
   {
     id: integer("id").primaryKey({ autoIncrement: true }),
-    deckId: text("deckId").notNull(),
+    deckId: integer("deckId").notNull(),
     number: integer("number").notNull(),
     frontContent: text("frontContent").notNull(),
     backContent: text("backContent").notNull(),
