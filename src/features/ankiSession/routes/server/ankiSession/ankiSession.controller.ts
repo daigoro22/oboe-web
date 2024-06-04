@@ -33,7 +33,8 @@ const latestGet = factory.createHandlers(async (c: Context) => {
   } catch (error) {
     return c.json({ error: "server error" }, 500);
   }
-  return c.json(session);
+  const { publicId, isResumable } = session;
+  return c.json({ publicId, isResumable });
 });
 
 const newPost = factory.createHandlers(

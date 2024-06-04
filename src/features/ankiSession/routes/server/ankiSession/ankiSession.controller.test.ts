@@ -35,12 +35,9 @@ describe("latest:GET", () => {
     const res = await client.api.auth.verified.ankiSession.latest.$get();
     expect(res.status).toBe(200);
     const jsonResponse = await res.json();
-    expect({
-      ...jsonResponse,
-      createdAt: jsonResponse.createdAt.toString(),
-    }).toEqual({
-      ...TEST_SESSION,
-      createdAt: TEST_SESSION.createdAt.toISOString(),
+    expect(jsonResponse).toEqual({
+      publicId: TEST_SESSION.publicId,
+      isResumable: TEST_SESSION.isResumable,
     });
   });
 });
