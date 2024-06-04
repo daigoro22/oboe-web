@@ -9,20 +9,19 @@ export default class AnkiSessionRepository implements IAnkiSession {
     this.db = drizzle(connection);
   }
 
-  async getLatestSessionAndPoint(userId: number): Promise<SessionAndPoint> {
-    const latestSessionAndPoint = (
-      await this.db
-        .select({
-          session: ankiSessions,
-          point: users.point,
-        })
-        .from(users)
-        .innerJoin(ankiSessions, eq(ankiSessions.userId, users.id))
-        .where(eq(users.id, userId))
-        .orderBy(desc(ankiSessions.createdAt))
-        .limit(1)
-    )[0] ?? { point: undefined, session: undefined };
-    return latestSessionAndPoint;
+  async getLatestSession(
+    userId: number,
+  ): Promise<typeof ankiSessions.$inferSelect> {
+    const latestSession =
+      (
+        await this.db
+          .select()
+          .from(ankiSessions)
+          .where(eq(ankiSessions.userId, userId))
+          .orderBy(desc(ankiSessions.createdAt))
+          .limit(1)
+      )[0] ?? undefined;
+    return latestSession;
   }
 
   createSession(userId: number, deckPublicId: string, sessionPublicId: string) {

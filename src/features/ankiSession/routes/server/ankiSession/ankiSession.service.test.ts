@@ -29,24 +29,10 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
-describe("getLatestSessionAndPoint", () => {
+describe("getLatestSession", () => {
   test("通常ケース", async () => {
-    const res = await ankiSession.getLatestSessionAndPoint(1);
-    expect(res).toEqual({
-      point: 100,
-      session: {
-        id: 1,
-        deckId: "1",
-        deckPublicId: "test_deck",
-        startsAt: null,
-        endsAt: null,
-        userId: 1,
-        createdAt: new Date(),
-        isResumable: 1,
-        resumeCount: 0,
-        publicId: "test_session",
-      },
-    });
+    const res = await ankiSession.getLatestSession(1);
+    expect(res).toEqual(TEST_SESSION);
   });
 });
 
@@ -100,7 +86,7 @@ describe("resumeSession", () => {
     };
     const ankiSessionMock = vi.spyOn(
       AnkiSessionFakeRepository.prototype,
-      "getLatestSessionAndPoint",
+      "getLatestSession",
     );
     ankiSessionMock.mockImplementation(async (_) => {
       return {
@@ -124,7 +110,7 @@ describe("resumeSession", () => {
     };
     const ankiSessionMock = vi.spyOn(
       AnkiSessionFakeRepository.prototype,
-      "getLatestSessionAndPoint",
+      "getLatestSession",
     );
     ankiSessionMock.mockImplementation(async (_) => {
       return {

@@ -1,6 +1,7 @@
 import { describe, expect, test, vi } from "vitest";
 import {
   AnkiSessionFakeRepository,
+  TEST_SESSION,
   TEST_SESSION_AND_DECK,
 } from "@/lib/test-helper/ankiSession";
 import { createMiddleware } from "hono/factory";
@@ -33,20 +34,13 @@ describe("latest:GET", () => {
   test("通常ケース", async () => {
     const res = await client.api.auth.verified.ankiSession.latest.$get();
     expect(res.status).toBe(200);
-    expect(await res.json()).toEqual({
-      point: 100,
-      session: {
-        id: 1,
-        deckId: "1",
-        deckPublicId: "test_deck",
-        startsAt: null,
-        endsAt: null,
-        userId: 1,
-        createdAt: new Date().toISOString(),
-        publicId: "test_session",
-        isResumable: 1,
-        resumeCount: 0,
-      },
+    const jsonResponse = await res.json();
+    expect({
+      ...jsonResponse,
+      createdAt: jsonResponse.createdAt.toString(),
+    }).toEqual({
+      ...TEST_SESSION,
+      createdAt: TEST_SESSION.createdAt.toISOString(),
     });
   });
 });

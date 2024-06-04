@@ -2,7 +2,6 @@ import { zValidator } from "@hono/zod-validator";
 import AnkiSessionRepository from "./ankiSession.repository";
 import AnkiSessionService, {
   InsufficientPointError,
-  type SessionAndPoint,
 } from "./ankiSession.service";
 import type { Env } from "env";
 import { type Context as C, Hono } from "hono";
@@ -28,13 +27,13 @@ const factory = createFactory();
 const latestGet = factory.createHandlers(async (c: Context) => {
   const ankiSession = container.resolve(AnkiSessionService);
   const user = c.get("userData");
-  let sessionAndPoint: SessionAndPoint;
+  let session: Awaited<ReturnType<typeof ankiSession.getLatestSession>>;
   try {
-    sessionAndPoint = await ankiSession.getLatestSessionAndPoint(user.id);
+    session = await ankiSession.getLatestSession(user.id);
   } catch (error) {
     return c.json({ error: "server error" }, 500);
   }
-  return c.json(sessionAndPoint);
+  return c.json(session);
 });
 
 const newPost = factory.createHandlers(

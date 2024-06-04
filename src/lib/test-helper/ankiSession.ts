@@ -59,12 +59,10 @@ export class AnkiSessionFakeRepository
   extends AbstractFakerUtil
   implements IAnkiSession
 {
-  async getLatestSessionAndPoint(_: number) {
-    return {
-      point: 100,
-      session: TEST_SESSION,
-    };
+  async getLatestSession(_: number) {
+    return TEST_SESSION;
   }
+
   createSession(_: number, __: string, ___: string) {
     return "test_query";
   }

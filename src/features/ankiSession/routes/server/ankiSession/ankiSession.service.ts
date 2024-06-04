@@ -12,7 +12,9 @@ export type SessionAndPoint = {
 };
 type BatchQuery = BatchItem<"sqlite">;
 export interface IAnkiSession {
-  getLatestSessionAndPoint: (userId: number) => Promise<SessionAndPoint>;
+  getLatestSession: (
+    userId: number,
+  ) => Promise<typeof ankiSessions.$inferSelect>;
   createSession: (
     userId: number,
     deckPublicId: string,
@@ -51,8 +53,8 @@ export default class AnkiSessionService {
     @inject("Transaction") private tx: ITransaction,
   ) {}
 
-  async getLatestSessionAndPoint(userId: number) {
-    return this.ankiSession.getLatestSessionAndPoint(userId);
+  async getLatestSession(userId: number) {
+    return this.ankiSession.getLatestSession(userId);
   }
 
   async getSessionAndDeckById(userId: number, publicId: string) {
@@ -69,8 +71,7 @@ export default class AnkiSessionService {
       if (updatedBalance < 0) {
         throw new InsufficientPointError("所持ポイントが足りません");
       }
-      const { session: latest } =
-        await this.ankiSession.getLatestSessionAndPoint(user.id);
+      const latest = await this.ankiSession.getLatestSession(user.id);
 
       pushBatch(
         this.ankiSession.createSession(user.id, deckPublicId, sessionPublicId),
@@ -82,8 +83,7 @@ export default class AnkiSessionService {
   }
 
   async resumeSession(userId: number) {
-    const { session: latest } =
-      await this.ankiSession.getLatestSessionAndPoint(userId);
+    const latest = await this.ankiSession.getLatestSession(userId);
 
     await this.tx.transaction(async (pushBatch) => {
       //最新のセッションが完了済みならエラー

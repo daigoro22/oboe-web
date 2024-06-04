@@ -10,7 +10,7 @@ let ankiSessionRepository: AnkiSessionRepository;
 let ankiSessionFixtures: (typeof ankiSessions.$inferSelect)[];
 let deckFixtures: (typeof decks.$inferSelect)[];
 let cardFixtures: (typeof cards.$inferSelect)[];
-const { setupAll, users: usersFixture, accounts } = prepare();
+const { setupAll, users: usersFixture } = prepare();
 
 beforeAll(async () => {
   await setupAll();
@@ -67,32 +67,19 @@ beforeAll(async () => {
   );
 });
 
-describe("getLatestSessionAndPoint", () => {
+describe("getLatestSession", () => {
   test("通常ケース", async () => {
-    const res = await ankiSessionRepository.getLatestSessionAndPoint(
+    const res = await ankiSessionRepository.getLatestSession(
       usersFixture()[0].id,
     );
 
-    expect(res).toEqual({
-      point: 6833,
-      session: {
-        createdAt: expect.any(Date),
-        deckPublicId: "GIuM_z8oCkfHADr5IqiuJ",
-        endsAt: null,
-        id: 1,
-        startsAt: null,
-        userId: 1,
-        isResumable: 1,
-        resumeCount: 0,
-        publicId: "7r2ipnl-wy7M_4bwtj6Af",
-      },
-    });
+    expect(res).toEqual(ankiSessionFixtures[0]);
   });
 
   test("アカウントが見つからないケース", async () => {
-    const res = await ankiSessionRepository.getLatestSessionAndPoint(-1);
+    const res = await ankiSessionRepository.getLatestSession(-1);
 
-    expect(res).toEqual({ point: undefined, session: undefined });
+    expect(res).toEqual(undefined);
   });
 });
 
