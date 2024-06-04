@@ -82,10 +82,10 @@ export default class AnkiSessionService {
   }
 
   async resumeSession(userId: number) {
-    return this.tx.transaction(async (pushBatch) => {
-      const { session: latest } =
-        await this.ankiSession.getLatestSessionAndPoint(userId);
+    const { session: latest } =
+      await this.ankiSession.getLatestSessionAndPoint(userId);
 
+    await this.tx.transaction(async (pushBatch) => {
       //最新のセッションが完了済みならエラー
       if (latest.endsAt) {
         throw new ResumeLimitExceededError("復帰回数が上限を超えました");
@@ -111,9 +111,9 @@ export default class AnkiSessionService {
       if (latest.resumeCount + 1 >= ANKI_SESSION_RESUME_LIMIT) {
         pushBatch(this.ankiSession.updateResumable(userId, latest.id, false));
       }
-
-      return latest;
     });
+
+    return latest;
   }
 }
 

@@ -81,7 +81,7 @@ describe("startSession", () => {
 
 describe("resumeSession", () => {
   test("通常ケース", async () => {
-    let res;
+    let res: Awaited<ReturnType<(typeof ankiSession)["resumeSession"]>>;
     try {
       res = await ankiSession.resumeSession(1);
     } catch (e) {
