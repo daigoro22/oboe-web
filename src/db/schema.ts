@@ -83,18 +83,21 @@ export const ankiSessions = sqliteTable(
   "AnkiSessions",
   {
     id: integer("id").primaryKey({ autoIncrement: true }),
-    deckId: text("deckId").notNull(),
-    userId: text("userId").notNull(),
+    deckPublicId: text("deckPublicId").notNull(),
+    userId: integer("userId").notNull(),
     startsAt: integer("startsAt", { mode: "timestamp_ms" }),
     endsAt: integer("endsAt", { mode: "timestamp_ms" }),
     createdAt: integer("created_at", { mode: "timestamp_ms" })
       .notNull()
       .default(sql`CURRENT_TIMESTAMP`),
+    isResumable: integer("isResumable").notNull().default(1),
+    resumeCount: integer("resumeCount").notNull().default(0),
+    publicId: text("publicId").notNull().unique(),
   },
   (ankiSessions) => ({
     deckFk: foreignKey({
-      columns: [ankiSessions.deckId],
-      foreignColumns: [decks.id],
+      columns: [ankiSessions.deckPublicId],
+      foreignColumns: [decks.publicId],
     }),
     userFk: foreignKey({
       columns: [ankiSessions.userId],
@@ -107,12 +110,13 @@ export const decks = sqliteTable(
   "Decks",
   {
     id: integer("id").primaryKey({ autoIncrement: true }),
-    userId: text("userId").notNull(),
+    userId: integer("userId").notNull(),
     name: text("name").notNull(),
     description: text("description").notNull(),
     createdAt: integer("created_at", { mode: "timestamp_ms" })
       .notNull()
       .default(sql`CURRENT_TIMESTAMP`),
+    publicId: text("publicId").notNull().unique(),
   },
   (decks) => ({
     userFk: foreignKey({
@@ -126,7 +130,7 @@ export const cards = sqliteTable(
   "Cards",
   {
     id: integer("id").primaryKey({ autoIncrement: true }),
-    deckId: text("deckId").notNull(),
+    deckId: integer("deckId").notNull(),
     number: integer("number").notNull(),
     frontContent: text("frontContent").notNull(),
     backContent: text("backContent").notNull(),

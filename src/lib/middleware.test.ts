@@ -6,7 +6,7 @@ import { Hono } from "hono";
 import { createMiddleware } from "hono/factory";
 import { testClient } from "hono/testing";
 import { container } from "tsyringe";
-import { describe, expect, test, vi } from "vitest";
+import { afterEach, describe, expect, test, vi } from "vitest";
 
 describe("verifySignupMiddleware", () => {
   const userContainerMiddleware = createMiddleware(async (c, next) => {
@@ -14,6 +14,10 @@ describe("verifySignupMiddleware", () => {
       useClass: UserFakeRepository,
     });
     await next();
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
   });
 
   test("ログインしていなければ401を返す", async () => {
