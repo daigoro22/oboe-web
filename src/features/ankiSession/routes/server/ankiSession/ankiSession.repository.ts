@@ -108,4 +108,20 @@ export default class AnkiSessionRepository implements IAnkiSession {
       cards: cardsData,
     };
   }
+
+  async getSessionById(userId: number, sessionPublicId: string) {
+    const data = (
+      await this.db
+        .select()
+        .from(ankiSessions)
+        .where(
+          and(
+            eq(ankiSessions.publicId, sessionPublicId),
+            eq(ankiSessions.userId, userId),
+          ),
+        )
+    )[0];
+
+    return data;
+  }
 }

@@ -69,7 +69,7 @@ describe("resumeSession", () => {
   test("通常ケース", async () => {
     let res: Awaited<ReturnType<(typeof ankiSession)["resumeSession"]>>;
     try {
-      res = await ankiSession.resumeSession(1);
+      res = await ankiSession.resumeSession(1, TEST_SESSION.publicId);
     } catch (e) {
       expect(true).toBe(false);
     }
@@ -86,7 +86,7 @@ describe("resumeSession", () => {
     };
     const ankiSessionMock = vi.spyOn(
       AnkiSessionFakeRepository.prototype,
-      "getLatestSession",
+      "getSessionById",
     );
     ankiSessionMock.mockImplementation(async (_) => {
       return {
@@ -95,9 +95,9 @@ describe("resumeSession", () => {
       };
     });
     // 復帰回数が上限を超えた場合のエラーを期待
-    await expect(ankiSession.resumeSession(userId)).rejects.toThrow(
-      ResumeLimitExceededError,
-    );
+    await expect(
+      ankiSession.resumeSession(userId, TEST_SESSION.publicId),
+    ).rejects.toThrow(ResumeLimitExceededError);
   });
 
   test("復帰不可能フラグがfalseの場合のエラー", async () => {
@@ -110,7 +110,7 @@ describe("resumeSession", () => {
     };
     const ankiSessionMock = vi.spyOn(
       AnkiSessionFakeRepository.prototype,
-      "getLatestSession",
+      "getSessionById",
     );
     ankiSessionMock.mockImplementation(async (_) => {
       return {
@@ -120,8 +120,8 @@ describe("resumeSession", () => {
     });
 
     // 復帰不可能フラグがfalseの場合のエラーを期待
-    await expect(ankiSession.resumeSession(userId)).rejects.toThrow(
-      ResumeLimitExceededError,
-    );
+    await expect(
+      ankiSession.resumeSession(userId, TEST_SESSION.publicId),
+    ).rejects.toThrow(ResumeLimitExceededError);
   });
 });

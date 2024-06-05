@@ -75,6 +75,10 @@ export class AnkiSessionFakeRepository
     return TEST_SESSION_AND_DECK;
   }
 
+  async getSessionById(_: number, __: string) {
+    return TEST_SESSION;
+  }
+
   updateResumable(_: number, __: string, ___: boolean) {
     return "test_query";
   }

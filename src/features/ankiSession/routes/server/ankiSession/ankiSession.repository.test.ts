@@ -120,6 +120,16 @@ describe("getSessionAndDeckById", () => {
   });
 });
 
+describe("getSessionById", () => {
+  test("通常ケース", async () => {
+    const userId = usersFixture()[0].id;
+    const sessionId = ankiSessionFixtures[0].publicId;
+    const res = await ankiSessionRepository.getSessionById(userId, sessionId);
+
+    expect(res).toEqual(ankiSessionFixtures[0]);
+  });
+});
+
 describe("createSession", () => {
   test("通常ケース", async () => {
     const userId = usersFixture()[0].id;

@@ -61,7 +61,7 @@ const newPost = factory.createHandlers(
   }),
 );
 
-const idGet = factory.createHandlers(async (c: Context) => {
+const resumeIdGet = factory.createHandlers(async (c: Context) => {
   const ankiSession = container.resolve(AnkiSessionService);
   const user = c.get("userData");
   const id = c.req.param("id");
@@ -71,6 +71,8 @@ const idGet = factory.createHandlers(async (c: Context) => {
     if (!data) {
       return c.json({ error: "not found" }, 404);
     }
+
+    await ankiSession.resumeSession(user.id, id);
   } catch (e) {
     return c.json({ error: "server error" }, 500);
   }
@@ -90,4 +92,4 @@ const idGet = factory.createHandlers(async (c: Context) => {
 export const ankiSession = new Hono<Env>()
   .get(`${ROUTE}/latest`, ...latestGet)
   .post(`${ROUTE}/new`, ...newPost)
-  .get(`${ROUTE}/:id`, ...idGet);
+  .get(`${ROUTE}/resume/:id`, ...resumeIdGet);

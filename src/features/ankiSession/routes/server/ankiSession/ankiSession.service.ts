@@ -34,6 +34,10 @@ export interface IAnkiSession {
       }
     | undefined
   >;
+  getSessionById: (
+    userId: number,
+    sessionPublicId: string,
+  ) => Promise<typeof ankiSessions.$inferSelect>;
   updatePoint: (userId: number, point: number) => BatchQuery;
   updateResumable: (
     userId: number,
@@ -82,38 +86,54 @@ export default class AnkiSessionService {
     return sessionPublicId;
   }
 
-  async resumeSession(userId: number) {
-    const latest = await this.ankiSession.getLatestSession(userId);
+  async resumeSession(userId: number, sessionPublicId: string) {
+    const session = await this.ankiSession.getSessionById(
+      userId,
+      sessionPublicId,
+    );
+
+    if (!session) {
+      throw new SessionNotFoundError("セッションが見つかりません");
+    }
 
     await this.tx.transaction(async (pushBatch) => {
-      //最新のセッションが完了済みならエラー
-      if (latest.endsAt) {
-        throw new ResumeLimitExceededError("復帰回数が上限を超えました");
+      //対象のセッションが完了済みならエラー
+      if (session.endsAt) {
+        throw new ResumeLimitExceededError(
+          `復帰回数が上限を超えました${session.isResumable}`,
+        );
       }
 
-      // 最新のセッションの復帰回数がn回以上もしくは復帰可能フラグが false ならエラー
+      // 対象のセッションの復帰回数がn回以上もしくは復帰可能フラグが false ならエラー
       if (
-        latest.resumeCount >= ANKI_SESSION_RESUME_LIMIT ||
-        !latest.isResumable
+        session.resumeCount >= ANKI_SESSION_RESUME_LIMIT ||
+        !session.isResumable
       )
         throw new ResumeLimitExceededError("復帰回数が上限を超えました");
 
-      //最新の ankiSession レコードの復帰回数++
+      //対象の ankiSession レコードの復帰回数++
       pushBatch(
         this.ankiSession.updateResumeCount(
           userId,
-          latest.id,
-          latest.resumeCount + 1,
+          session.id,
+          session.resumeCount + 1,
         ),
       );
 
       // 復帰回数+1 >= nの場合, 復帰可能フラグを false に更新
-      if (latest.resumeCount + 1 >= ANKI_SESSION_RESUME_LIMIT) {
-        pushBatch(this.ankiSession.updateResumable(userId, latest.id, false));
+      if (session.resumeCount + 1 >= ANKI_SESSION_RESUME_LIMIT) {
+        pushBatch(this.ankiSession.updateResumable(userId, session.id, false));
       }
     });
 
-    return latest;
+    return session;
+  }
+}
+
+export class SessionNotFoundError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "SessionNotFoundError";
   }
 }
 

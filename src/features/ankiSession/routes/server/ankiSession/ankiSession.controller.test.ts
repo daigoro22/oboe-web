@@ -79,9 +79,9 @@ describe("new:POST", () => {
   });
 });
 
-describe("id:GET", () => {
+describe("resume/:id:GET", () => {
   test("通常ケース", async () => {
-    const res = await client.api.auth.verified.ankiSession[":id"].$get({
+    const res = await client.api.auth.verified.ankiSession.resume[":id"].$get({
       param: { id: "test_session" },
     });
     expect(res.status).toBe(200);
@@ -119,7 +119,7 @@ describe("id:GET", () => {
         return undefined;
       });
 
-    const res = await client.api.auth.verified.ankiSession[":id"].$get({
+    const res = await client.api.auth.verified.ankiSession.resume[":id"].$get({
       param: { id: "non_existent_session" },
     });
 
