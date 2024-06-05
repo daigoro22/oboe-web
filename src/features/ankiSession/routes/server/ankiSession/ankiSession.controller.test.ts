@@ -1,4 +1,4 @@
-import { describe, expect, test, vi } from "vitest";
+import { afterAll, describe, expect, test, vi } from "vitest";
 import {
   AnkiSessionFakeRepository,
   TEST_SESSION,
@@ -9,17 +9,25 @@ import { container } from "tsyringe";
 import { ankiSession } from "./ankiSession.controller";
 import { Hono } from "hono";
 import { testClient } from "hono/testing";
-import { setFakeUserMiddleware } from "@/lib/test-helper";
+import { FakeTransaction, setFakeUserMiddleware } from "@/lib/test-helper";
 import { verifySignupMiddleware } from "@/lib/middleware";
 import { faker } from "@/db/faker";
 import AnkiSessionService, {
   InsufficientPointError,
 } from "@/features/ankiSession/routes/server/ankiSession/ankiSession.service";
+import { UserFakeRepository } from "@/lib/test-helper/user";
 
 const ankiSessionContainerMiddleware = createMiddleware(async (c, next) => {
   container.register("IAnkiSession", {
     useValue: new AnkiSessionFakeRepository(),
   });
+  container.register("IUser", {
+    useValue: new UserFakeRepository(),
+  });
+  container.register("Transaction", {
+    useClass: FakeTransaction,
+  });
+
   await next();
 });
 
@@ -29,6 +37,10 @@ app.use("*", verifySignupMiddleware);
 app.use("*", ankiSessionContainerMiddleware);
 app.route("/", ankiSession);
 const client = testClient<typeof ankiSession>(app);
+
+afterAll(() => {
+  container.clearInstances();
+});
 
 describe("latest:GET", () => {
   test("通常ケース", async () => {
