@@ -16,6 +16,7 @@ export default class SignUpRepository implements ISignUp {
       .limit(1);
     const targetUserId = (lastUserId[0]?.id ?? 0) + 1;
 
+    //FIXME: トランザクション境界を service に持ってくる
     await this.db.batch([
       this.db.insert(users).values({ id: targetUserId, ...user }),
       this.db.insert(accounts).values({
