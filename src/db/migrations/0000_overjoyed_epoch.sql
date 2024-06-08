@@ -7,49 +7,51 @@ CREATE TABLE `accounts` (
 	FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON UPDATE no action ON DELETE no action
 );
 --> statement-breakpoint
-CREATE TABLE `AnkiSessions` (
+CREATE TABLE `anki_sessions` (
 	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
-	`deckPublicId` text NOT NULL,
-	`userId` integer NOT NULL,
-	`startsAt` integer,
-	`endsAt` integer,
+	`deck_public_id` text NOT NULL,
+	`user_id` integer NOT NULL,
+	`starts_at` integer,
+	`ends_at` integer,
 	`created_at` integer DEFAULT CURRENT_TIMESTAMP NOT NULL,
-	`isResumable` integer DEFAULT 1 NOT NULL,
-	`resumeCount` integer DEFAULT 0 NOT NULL,
-	`publicId` text NOT NULL,
-	FOREIGN KEY (`deckPublicId`) REFERENCES `Decks`(`publicId`) ON UPDATE no action ON DELETE no action,
-	FOREIGN KEY (`userId`) REFERENCES `users`(`id`) ON UPDATE no action ON DELETE no action
+	`is_resumable` integer DEFAULT 1 NOT NULL,
+	`resume_count` integer DEFAULT 0 NOT NULL,
+	`public_id` text NOT NULL,
+	FOREIGN KEY (`deck_public_id`) REFERENCES `decks`(`public_id`) ON UPDATE no action ON DELETE no action,
+	FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON UPDATE no action ON DELETE no action
 );
 --> statement-breakpoint
-CREATE TABLE `Cards` (
+CREATE TABLE `cards` (
 	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
-	`deckId` integer NOT NULL,
+	`deck_id` integer NOT NULL,
 	`number` integer NOT NULL,
-	`frontContent` text NOT NULL,
-	`backContent` text NOT NULL,
+	`public_id` text NOT NULL,
+	`front_content` text NOT NULL,
+	`back_content` text NOT NULL,
+	`due` integer,
 	`stability` real NOT NULL,
 	`difficulty` real NOT NULL,
-	`due` integer NOT NULL,
-	`elapsedDays` integer NOT NULL,
-	`lastElapsedDays` integer NOT NULL,
-	`scheduledDays` integer NOT NULL,
-	`review` integer NOT NULL,
-	`duration` integer NOT NULL,
+	`elapsed_days` integer NOT NULL,
+	`scheduled_days` integer NOT NULL,
+	`reps` integer NOT NULL,
+	`lapses` integer NOT NULL,
+	`state` text DEFAULT 'New' NOT NULL,
+	`last_review` integer,
 	`lat` real NOT NULL,
 	`lng` real NOT NULL,
 	`pitch` real NOT NULL,
 	`heading` real NOT NULL,
-	FOREIGN KEY (`deckId`) REFERENCES `Decks`(`id`) ON UPDATE no action ON DELETE no action
+	FOREIGN KEY (`deck_id`) REFERENCES `decks`(`id`) ON UPDATE no action ON DELETE no action
 );
 --> statement-breakpoint
-CREATE TABLE `Decks` (
+CREATE TABLE `decks` (
 	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
-	`userId` integer NOT NULL,
+	`user_id` integer NOT NULL,
 	`name` text NOT NULL,
 	`description` text NOT NULL,
 	`created_at` integer DEFAULT CURRENT_TIMESTAMP NOT NULL,
-	`publicId` text NOT NULL,
-	FOREIGN KEY (`userId`) REFERENCES `users`(`id`) ON UPDATE no action ON DELETE no action
+	`public_id` text NOT NULL,
+	FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON UPDATE no action ON DELETE no action
 );
 --> statement-breakpoint
 CREATE TABLE `objectives` (
@@ -78,6 +80,7 @@ CREATE TABLE `users` (
 );
 --> statement-breakpoint
 CREATE UNIQUE INDEX `accounts_provider_provider_account_id_unique` ON `accounts` (`provider`,`provider_account_id`);--> statement-breakpoint
-CREATE UNIQUE INDEX `AnkiSessions_publicId_unique` ON `AnkiSessions` (`publicId`);--> statement-breakpoint
-CREATE UNIQUE INDEX `Decks_publicId_unique` ON `Decks` (`publicId`);--> statement-breakpoint
+CREATE UNIQUE INDEX `anki_sessions_public_id_unique` ON `anki_sessions` (`public_id`);--> statement-breakpoint
+CREATE UNIQUE INDEX `cards_public_id_unique` ON `cards` (`public_id`);--> statement-breakpoint
+CREATE UNIQUE INDEX `decks_public_id_unique` ON `decks` (`public_id`);--> statement-breakpoint
 CREATE UNIQUE INDEX `users_customer_id_unique` ON `users` (`customer_id`);
