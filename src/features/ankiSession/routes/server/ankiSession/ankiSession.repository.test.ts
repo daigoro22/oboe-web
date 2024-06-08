@@ -216,3 +216,20 @@ describe("updateResumeCount", () => {
     expect(updatedSession[0]?.resumeCount).toBe(count);
   });
 });
+
+describe("getCardsByIds", () => {
+  test("通常ケース", async () => {
+    const userId = usersFixture()[0].id;
+    const deckId = deckFixtures[0].id;
+    const deckPublicId = deckFixtures[0].publicId;
+    const cardIds = cardFixtures
+      .filter((card) => card.deckId === deckId)
+      .map((card) => card.publicId);
+    const res = await ankiSessionRepository.getCardsByIds(
+      userId,
+      deckPublicId,
+      cardIds,
+    );
+    expect(res).toEqual([cardFixtures[0]]);
+  });
+});

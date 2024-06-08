@@ -49,6 +49,11 @@ export interface IAnkiSession {
     sessionId: number,
     count: number,
   ) => BatchQuery;
+  getCardsByIds: (
+    userId: number,
+    deckPublicId: string,
+    cardPublicIds: string[],
+  ) => Promise<(typeof cards.$inferSelect)[]>;
 }
 @injectable()
 export default class AnkiSessionService {

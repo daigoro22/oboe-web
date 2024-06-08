@@ -1,7 +1,7 @@
 import { ankiSessions, cards, decks, users } from "@/db/schema";
 import type { IAnkiSession, SessionAndPoint } from "./ankiSession.service";
 import { type DrizzleD1Database, drizzle } from "drizzle-orm/d1";
-import { desc, eq, and, sql } from "drizzle-orm";
+import { desc, eq, and, sql, inArray } from "drizzle-orm";
 
 export default class AnkiSessionRepository implements IAnkiSession {
   private db: DrizzleD1Database;
@@ -123,5 +123,40 @@ export default class AnkiSessionRepository implements IAnkiSession {
     )[0];
 
     return data;
+  }
+
+  async getCardsByIds(
+    userId: number,
+    deckPublicId: string,
+    cardPublicIds: string[],
+  ) {
+    const cardsData = await this.db
+      .select({
+        id: cards.id,
+        deckId: cards.deckId,
+        number: cards.number,
+        publicId: cards.publicId,
+        frontContent: cards.frontContent,
+        backContent: cards.backContent,
+        due: cards.due,
+        stability: cards.stability,
+        difficulty: cards.difficulty,
+        elapsedDays: cards.elapsedDays,
+        scheduledDays: cards.scheduledDays,
+        reps: cards.reps,
+        lapses: cards.lapses,
+        state: cards.state,
+        lastReview: cards.lastReview,
+        lat: cards.lat,
+        lng: cards.lng,
+        pitch: cards.pitch,
+        heading: cards.heading,
+      })
+      .from(cards)
+      .where(and(inArray(cards.publicId, cardPublicIds), eq(users.id, userId)))
+      .innerJoin(decks, eq(decks.publicId, deckPublicId))
+      .innerJoin(users, eq(users.id, decks.userId));
+
+    return cardsData;
   }
 }
