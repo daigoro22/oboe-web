@@ -5,6 +5,7 @@ import { ankiSessions, cards, decks, users } from "@/db/schema";
 import { faker } from "@faker-js/faker";
 import { TESTING_TIME, toIdGenerator } from "@/lib/test-helper";
 import { eq } from "drizzle-orm";
+import { c } from "node_modules/vite/dist/node/types.d-aGj9QkWt";
 
 let ankiSessionRepository: AnkiSessionRepository;
 let ankiSessionFixtures: (typeof ankiSessions.$inferSelect)[];
@@ -231,5 +232,22 @@ describe("getCardsByIds", () => {
       cardIds,
     );
     expect(res).toEqual([cardFixtures[0]]);
+  });
+});
+
+describe("updateCards", () => {
+  test("通常ケース", async () => {
+    const cardsData = {
+      ...cardFixtures[0],
+      frontContent: "TEST_FRONT",
+      backContent: "TEST_BACK",
+    };
+    const queries = await ankiSessionRepository.updateCards([cardsData]);
+    await Promise.all(queries);
+    const updatedCards = await testDB
+      .select()
+      .from(cards)
+      .where(eq(cards.publicId, cardsData.publicId));
+    expect(updatedCards).toEqual([cardsData]);
   });
 });

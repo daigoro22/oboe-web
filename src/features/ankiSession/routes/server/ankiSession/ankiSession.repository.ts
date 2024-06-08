@@ -1,5 +1,5 @@
 import { ankiSessions, cards, decks, users } from "@/db/schema";
-import type { IAnkiSession, SessionAndPoint } from "./ankiSession.service";
+import type { CardsForUpdate, IAnkiSession } from "./ankiSession.service";
 import { type DrizzleD1Database, drizzle } from "drizzle-orm/d1";
 import { desc, eq, and, sql, inArray } from "drizzle-orm";
 
@@ -158,5 +158,19 @@ export default class AnkiSessionRepository implements IAnkiSession {
       .innerJoin(users, eq(users.id, decks.userId));
 
     return cardsData;
+  }
+
+  updateCards(cardsData: CardsForUpdate) {
+    const cardPublicIds = cardsData.map((card) => card.publicId);
+    const cardsDataWithoutID = cardsData.map(
+      ({ publicId: _, ...rest }) => rest,
+    );
+    const res = cardPublicIds.map((pid, i) =>
+      this.db
+        .update(cards)
+        .set(cardsDataWithoutID[i])
+        .where(and(eq(cards.publicId, pid))),
+    );
+    return res;
   }
 }

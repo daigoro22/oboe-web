@@ -54,7 +54,21 @@ export interface IAnkiSession {
     deckPublicId: string,
     cardPublicIds: string[],
   ) => Promise<(typeof cards.$inferSelect)[]>;
+  updateCards: (cardsData: CardsForUpdate) => BatchQuery[];
 }
+
+export type CardsForUpdate = {
+  publicId: (typeof cards.$inferInsert)["publicId"];
+  due: (typeof cards.$inferInsert)["due"];
+  stability: (typeof cards.$inferInsert)["stability"];
+  difficulty: (typeof cards.$inferInsert)["difficulty"];
+  elapsedDays: (typeof cards.$inferInsert)["elapsedDays"];
+  scheduledDays: (typeof cards.$inferInsert)["scheduledDays"];
+  reps: (typeof cards.$inferInsert)["reps"];
+  lapses: (typeof cards.$inferInsert)["lapses"];
+  lastReview: (typeof cards.$inferInsert)["lastReview"];
+}[];
+
 @injectable()
 export default class AnkiSessionService {
   constructor(
