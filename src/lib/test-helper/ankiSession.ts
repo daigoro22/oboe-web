@@ -30,7 +30,7 @@ export const TEST_SESSION_AND_DECK: Awaited<
   },
   deck: {
     id: faker.number.int(),
-    publicId: faker.string.uuid(),
+    publicId: faker.string.nanoid(),
     name: faker.commerce.productName(),
     description: faker.lorem.sentences(),
     createdAt: faker.date.recent(),
