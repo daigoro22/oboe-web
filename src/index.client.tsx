@@ -1,4 +1,5 @@
 import { Toaster } from "@/components/ui/toaster";
+import { AnkiSession } from "@/features/ankiSession/routes/client/ankisession";
 import { SignIn } from "@/features/auth/routes/client/signIn";
 import { SignUp, signUpLoader } from "@/features/auth/routes/client/signUp";
 import Index from "@/routes";
@@ -25,6 +26,7 @@ const router = createBrowserRouter([
     loader: signUpLoader,
   },
   { path: "/", element: <Index /> },
+  { path: "/anki-sessions/:id", element: <AnkiSession /> },
 ]);
 
 const App = () => {
