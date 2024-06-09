@@ -116,10 +116,10 @@ describe("resume/:id:GET", () => {
         createdAt: deck.createdAt.toISOString(),
         id: undefined,
       },
-      cards: cards.map(({ id, due, review, ...rest }) => ({
+      cards: cards.map(({ id, lastReview, due, ...rest }) => ({
         ...rest,
+        lastReview: lastReview.toISOString(),
         due: due.toISOString(),
-        review: review.toISOString(),
       })),
     });
   });
