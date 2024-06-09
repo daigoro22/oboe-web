@@ -1,5 +1,4 @@
 import "reflect-metadata";
-
 import AnkiSessionService, {
   InsufficientPointError,
   ResumeLimitExceededError,

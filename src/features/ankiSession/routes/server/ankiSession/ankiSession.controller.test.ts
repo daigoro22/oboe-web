@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import { afterAll, describe, expect, test, vi } from "vitest";
 import {
   AnkiSessionFakeRepository,
@@ -14,8 +15,11 @@ import { verifySignupMiddleware } from "@/lib/middleware";
 import { faker } from "@/db/faker";
 import AnkiSessionService, {
   InsufficientPointError,
+  SessionAlreadyEndedError,
+  SessionNotFoundError,
 } from "@/features/ankiSession/routes/server/ankiSession/ankiSession.service";
 import { UserFakeRepository } from "@/lib/test-helper/user";
+import { afterEach } from "bun:test";
 
 const ankiSessionContainerMiddleware = createMiddleware(async (c, next) => {
   container.register("IAnkiSession", {
@@ -33,8 +37,8 @@ const ankiSessionContainerMiddleware = createMiddleware(async (c, next) => {
 
 const app = new Hono({ strict: false });
 app.use("*", setFakeUserMiddleware);
-app.use("*", verifySignupMiddleware);
 app.use("*", ankiSessionContainerMiddleware);
+app.use("*", verifySignupMiddleware);
 app.route("/", ankiSession);
 const client = testClient<typeof ankiSession>(app);
 
@@ -138,6 +142,60 @@ describe("resume/:id:GET", () => {
     expect(res.status).toBe(404);
     const jsonResponse = await res.json();
     expect(jsonResponse).toEqual({ error: "not found" });
+    spy.mockRestore();
+  });
+});
+
+describe(":id:PUT", () => {
+  const json = {
+    deckPublicId: TEST_SESSION_AND_DECK?.deck.publicId ?? "",
+    cards:
+      TEST_SESSION_AND_DECK?.cards.map(({ publicId: cardPublicId }) => ({
+        cardPublicId,
+        grade: faker.helpers.arrayElement([1, 2, 3, 4]),
+      })) ?? [],
+  };
+  test("通常ケース", async () => {
+    const res = await client.api.auth.verified.ankiSession[":id"].$put({
+      param: { id: TEST_SESSION_AND_DECK?.session.publicId ?? "" },
+      json,
+    });
+    expect(res.status).toBe(200);
+  });
+
+  test("セッションが見つからないエラーケース", async () => {
+    const spy = vi
+      .spyOn(AnkiSessionService.prototype, "endSession")
+      .mockImplementation(async () => {
+        throw new SessionNotFoundError("セッションが見つかりません");
+      });
+
+    const res = await client.api.auth.verified.ankiSession[":id"].$put({
+      param: { id: "non_existent_session" },
+      json,
+    });
+
+    expect(res.status).toBe(404);
+    const jsonResponse = await res.json();
+    expect(jsonResponse).toEqual({ error: "セッションが見つかりません" });
+    spy.mockRestore();
+  });
+
+  test("セッションがすでに終了しているエラーケース", async () => {
+    const spy = vi
+      .spyOn(AnkiSessionService.prototype, "endSession")
+      .mockImplementation(async () => {
+        throw new SessionAlreadyEndedError("セッションはすでに終了しています");
+      });
+
+    const res = await client.api.auth.verified.ankiSession[":id"].$put({
+      param: { id: "already_ended_session" },
+      json,
+    });
+
+    expect(res.status).toBe(409);
+    const jsonResponse = await res.json();
+    expect(jsonResponse).toEqual({ error: "セッションはすでに終了しています" });
     spy.mockRestore();
   });
 });

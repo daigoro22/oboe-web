@@ -1,13 +1,16 @@
 import { zValidator } from "@hono/zod-validator";
 import AnkiSessionRepository from "./ankiSession.repository";
 import AnkiSessionService, {
+  CardNotFoundError,
   InsufficientPointError,
+  SessionAlreadyEndedError,
+  SessionNotFoundError,
 } from "./ankiSession.service";
 import type { Env } from "env";
 import { type Context as C, Hono } from "hono";
 import { createFactory, createMiddleware } from "hono/factory";
 import { container } from "tsyringe";
-import { newSessionSchema } from "@/schemas/ankiSession";
+import { endSessionSchema, newSessionSchema } from "@/schemas/ankiSession";
 
 type Context = C<Env>;
 
@@ -89,7 +92,42 @@ const resumeIdGet = factory.createHandlers(async (c: Context) => {
   });
 });
 
+const idPut = factory.createHandlers(
+  zValidator("json", endSessionSchema, async (result, c) => {
+    const { success, data } = result;
+    if (!success) {
+      return c.json(result.error, 400);
+    }
+    const ankiSession = container.resolve(AnkiSessionService);
+    const user = c.get("userData");
+    const sessionPublicId = c.req.param("id");
+
+    const { cards, deckPublicId } = data;
+
+    try {
+      await ankiSession.endSession(
+        user.id,
+        sessionPublicId,
+        deckPublicId,
+        cards,
+      );
+    } catch (error) {
+      if (
+        error instanceof SessionNotFoundError ||
+        error instanceof CardNotFoundError
+      ) {
+        return c.json({ error: error.message }, 404);
+      }
+      if (error instanceof SessionAlreadyEndedError) {
+        return c.json({ error: error.message }, 409);
+      }
+      return c.json({ error: "server error" }, 500);
+    }
+    return c.text("success", 200);
+  }),
+);
 export const ankiSession = new Hono<Env>()
   .get(`${ROUTE}/latest`, ...latestGet)
   .post(`${ROUTE}/new`, ...newPost)
-  .get(`${ROUTE}/resume/:id`, ...resumeIdGet);
+  .get(`${ROUTE}/resume/:id`, ...resumeIdGet)
+  .put(`${ROUTE}/:id`, ...idPut);
