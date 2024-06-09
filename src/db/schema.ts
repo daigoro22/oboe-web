@@ -135,7 +135,7 @@ export const cards = sqliteTable(
     publicId: text("public_id").notNull().unique(),
     frontContent: text("front_content").notNull(),
     backContent: text("back_content").notNull(),
-    due: integer("due", { mode: "timestamp_ms" }),
+    due: integer("due", { mode: "timestamp_ms" }).notNull(),
     stability: real("stability").notNull(),
     difficulty: real("difficulty").notNull(),
     elapsedDays: integer("elapsed_days").notNull(),

@@ -28,7 +28,7 @@ CREATE TABLE `cards` (
 	`public_id` text NOT NULL,
 	`front_content` text NOT NULL,
 	`back_content` text NOT NULL,
-	`due` integer,
+	`due` integer NOT NULL,
 	`stability` real NOT NULL,
 	`difficulty` real NOT NULL,
 	`elapsed_days` integer NOT NULL,
