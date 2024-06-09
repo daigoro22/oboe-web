@@ -95,4 +95,8 @@ export class AnkiSessionFakeRepository
   updateCards(_: number, __: string, ___: string) {
     return "test_query";
   }
+
+  updateIsResumableAndEndsAt(_: number, __: number, ___: boolean, ____: Date) {
+    return "test_query";
+  }
 }

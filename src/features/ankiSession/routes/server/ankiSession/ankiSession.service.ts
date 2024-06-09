@@ -240,7 +240,14 @@ export default class AnkiSessionService {
       for (const query of updateQueries) {
         pushBatch(query);
       }
-      //TODO: ankiSession の isResumable, endsAt を更新する
+      pushBatch(
+        this.ankiSession.updateIsResumableAndEndsAt(
+          userId,
+          session.id,
+          false,
+          new Date(),
+        ),
+      );
     });
   }
 }
