@@ -3,6 +3,8 @@ import "reflect-metadata";
 import AnkiSessionService, {
   InsufficientPointError,
   ResumeLimitExceededError,
+  SessionAlreadyEndedError,
+  SessionNotFoundError,
 } from "./ankiSession.service";
 import { container } from "tsyringe";
 import { afterEach, beforeAll, describe, expect, test, vi } from "vitest";
@@ -123,5 +125,61 @@ describe("resumeSession", () => {
     await expect(
       ankiSession.resumeSession(userId, TEST_SESSION.publicId),
     ).rejects.toThrow(ResumeLimitExceededError);
+  });
+});
+
+describe("endSession", () => {
+  const sessionInput = [
+    1,
+    TEST_SESSION_AND_DECK?.session.publicId ?? "",
+    TEST_SESSION_AND_DECK?.deck.publicId ?? "",
+    TEST_SESSION_AND_DECK?.cards.map(({ publicId }) => ({
+      cardPublicId: publicId,
+      grade: 1,
+    })) ?? [],
+  ];
+  test("通常ケース", async () => {
+    await expect(
+      ankiSession.endSession(...sessionInput),
+    ).resolves.not.toThrowError();
+  });
+
+  test("セッションが見つからないエラーケース", async () => {
+    const userId = 1;
+    const sessionPublicId = "non_existent_session";
+    const ankiSessionMock = vi.spyOn(
+      AnkiSessionFakeRepository.prototype,
+      "getSessionById",
+    );
+    ankiSessionMock.mockImplementation(async (_) => undefined);
+
+    // セッションが見つからない場合のエラーを期待
+    await expect(ankiSession.endSession(...sessionInput)).rejects.toThrow(
+      SessionNotFoundError,
+    );
+
+    ankiSessionMock.mockRestore();
+  });
+
+  test("セッションがすでに終了しているエラーケース", async () => {
+    const userId = 1;
+    const sessionPublicId = "ended_session";
+    const ankiSessionMock = vi.spyOn(
+      AnkiSessionFakeRepository.prototype,
+      "getSessionById",
+    );
+    ankiSessionMock.mockImplementation(async (_) => {
+      return {
+        ...TEST_SESSION,
+        endsAt: new Date(), // 終了日時を設定して終了済みを示す
+      };
+    });
+
+    // セッションが終了している場合のエラーを期待
+    await expect(ankiSession.endSession(...sessionInput)).rejects.toThrow(
+      SessionAlreadyEndedError,
+    );
+
+    ankiSessionMock.mockRestore();
   });
 });
