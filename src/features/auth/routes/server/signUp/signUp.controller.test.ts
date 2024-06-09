@@ -1,5 +1,4 @@
 import "reflect-metadata";
-
 import { signUp } from "@/features/auth/routes/server/signUp/signUp.controller";
 import { SignUpFakeRepository } from "@/lib/test-helper/signUp";
 import type { AuthUser } from "@hono/auth-js";
@@ -31,13 +30,13 @@ const signUpContainerMiddleware = createMiddleware(async (c, next) => {
   await next();
 });
 
-describe("signUp.controller", () => {
-  const app = new Hono({ strict: false });
-  app.use("*", setFakeUserMiddleware);
-  app.use("*", signUpContainerMiddleware);
-  app.route("/", signUp);
-  const client = testClient<typeof signUp>(app);
+const app = new Hono({ strict: false });
+app.use("*", setFakeUserMiddleware);
+app.use("*", signUpContainerMiddleware);
+app.route("/", signUp);
+const client = testClient<typeof signUp>(app);
 
+describe("signUp.controller", () => {
   test("controller が正常に呼び出されるかどうか", async () => {
     const res = await client.api.auth.signup.$post({
       json: {

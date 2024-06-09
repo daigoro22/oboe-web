@@ -1,5 +1,4 @@
 import "reflect-metadata";
-
 import FormOptionsService, {
   type IFormOptions,
 } from "@/features/auth/routes/server/formOptions/formOptions.service";
