@@ -16,7 +16,10 @@ export default defineConfig({
     }),
     commonjs({
       filter(id) {
-        if (id.includes("node_modules/cookie")) {
+        if (
+          id.includes("node_modules/cookie") ||
+          id.includes("node_modules/seedrandom")
+        ) {
           return true;
         }
       },
