@@ -5,6 +5,7 @@ import { ankiSessions, cards, decks, users } from "@/db/schema";
 import { faker } from "@faker-js/faker";
 import { TESTING_TIME, toIdGenerator } from "@/lib/test-helper";
 import { eq } from "drizzle-orm";
+import { c } from "node_modules/vite/dist/node/types.d-aGj9QkWt";
 
 let ankiSessionRepository: AnkiSessionRepository;
 let ankiSessionFixtures: (typeof ankiSessions.$inferSelect)[];
@@ -48,16 +49,18 @@ beforeAll(async () => {
     () => ({
       deckId: Number(cardDeckId.next().value),
       number: faker.number.int({ min: 1, max: 100 }),
+      publicId: faker.string.nanoid(),
       frontContent: faker.lorem.sentence(),
       backContent: faker.lorem.sentence(),
       stability: faker.number.float({ min: 0.0, max: 1.0 }),
       difficulty: faker.number.float({ min: 0.0, max: 1.0 }),
       due: faker.date.future(),
       elapsedDays: faker.number.int({ min: 0, max: 365 }),
-      lastElapsedDays: faker.number.int({ min: 0, max: 365 }),
       scheduledDays: faker.number.int({ min: 1, max: 365 }),
-      review: faker.date.future(),
-      duration: faker.number.int({ min: 1, max: 3600 }), // 1秒から1時間
+      reps: faker.number.int({ min: 0, max: 1000 }),
+      lapses: faker.number.int({ min: 0, max: 100 }),
+      state: faker.helpers.arrayElement(["New", "Learning", "Review"]),
+      lastReview: faker.date.past(),
       lat: faker.location.latitude(),
       lng: faker.location.longitude(),
       pitch: faker.number.float({ min: -90, max: 90 }),
@@ -212,5 +215,61 @@ describe("updateResumeCount", () => {
       .where(eq(ankiSessions.id, sessionId))
       .limit(1);
     expect(updatedSession[0]?.resumeCount).toBe(count);
+  });
+});
+
+describe("getCardsByIds", () => {
+  test("通常ケース", async () => {
+    const userId = usersFixture()[0].id;
+    const deckId = deckFixtures[0].id;
+    const deckPublicId = deckFixtures[0].publicId;
+    const cardIds = cardFixtures
+      .filter((card) => card.deckId === deckId)
+      .map((card) => card.publicId);
+    const res = await ankiSessionRepository.getCardsByIds(
+      userId,
+      deckPublicId,
+      cardIds,
+    );
+    expect(res).toEqual([cardFixtures[0]]);
+  });
+});
+
+describe("updateCards", () => {
+  test("通常ケース", async () => {
+    const cardsData = {
+      ...cardFixtures[0],
+      frontContent: "TEST_FRONT",
+      backContent: "TEST_BACK",
+    };
+    const queries = await ankiSessionRepository.updateCards([cardsData]);
+    await Promise.all(queries);
+    const updatedCards = await testDB
+      .select()
+      .from(cards)
+      .where(eq(cards.publicId, cardsData.publicId));
+    expect(updatedCards).toEqual([cardsData]);
+  });
+});
+
+describe("updateIsResumableAndEndsAt", () => {
+  test("通常ケース", async () => {
+    const userId = usersFixture()[0].id;
+    const sessionId = ankiSessionFixtures[0].id;
+    const isResumable = false;
+    const endsAt = new Date();
+    await ankiSessionRepository.updateIsResumableAndEndsAt(
+      userId,
+      sessionId,
+      isResumable,
+      endsAt,
+    );
+    const updatedSession = await testDB
+      .select()
+      .from(ankiSessions)
+      .where(eq(ankiSessions.id, sessionId))
+      .limit(1);
+    expect(updatedSession[0]?.isResumable).toBe(0);
+    expect(updatedSession[0]?.endsAt).toEqual(endsAt);
   });
 });

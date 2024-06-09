@@ -1,7 +1,8 @@
 import { ankiSessions, cards, decks, users } from "@/db/schema";
-import type { IAnkiSession, SessionAndPoint } from "./ankiSession.service";
+import type { CardsForUpdate, IAnkiSession } from "./ankiSession.service";
 import { type DrizzleD1Database, drizzle } from "drizzle-orm/d1";
-import { desc, eq, and, sql } from "drizzle-orm";
+import { desc, eq, and, sql, inArray } from "drizzle-orm";
+import type { RunnableQuery } from "drizzle-orm/runnable-query";
 
 export default class AnkiSessionRepository implements IAnkiSession {
   private db: DrizzleD1Database;
@@ -123,5 +124,68 @@ export default class AnkiSessionRepository implements IAnkiSession {
     )[0];
 
     return data;
+  }
+
+  async getCardsByIds(
+    userId: number,
+    deckPublicId: string,
+    cardPublicIds: string[],
+  ) {
+    const cardsData = await this.db
+      .select({
+        id: cards.id,
+        deckId: cards.deckId,
+        number: cards.number,
+        publicId: cards.publicId,
+        frontContent: cards.frontContent,
+        backContent: cards.backContent,
+        due: cards.due,
+        stability: cards.stability,
+        difficulty: cards.difficulty,
+        elapsedDays: cards.elapsedDays,
+        scheduledDays: cards.scheduledDays,
+        reps: cards.reps,
+        lapses: cards.lapses,
+        state: cards.state,
+        lastReview: cards.lastReview,
+        lat: cards.lat,
+        lng: cards.lng,
+        pitch: cards.pitch,
+        heading: cards.heading,
+      })
+      .from(cards)
+      .where(and(inArray(cards.publicId, cardPublicIds), eq(users.id, userId)))
+      .innerJoin(decks, eq(decks.publicId, deckPublicId))
+      .innerJoin(users, eq(users.id, decks.userId));
+
+    return cardsData;
+  }
+
+  updateCards(cardsData: CardsForUpdate) {
+    const cardPublicIds = cardsData.map((card) => card.publicId);
+    const cardsDataWithoutID = cardsData.map(
+      ({ publicId: _, ...rest }) => rest,
+    );
+    const res = cardPublicIds.map((pid, i) =>
+      this.db
+        .update(cards)
+        .set(cardsDataWithoutID[i])
+        .where(and(eq(cards.publicId, pid))),
+    );
+    return res;
+  }
+
+  updateIsResumableAndEndsAt(
+    userId: number,
+    sessionId: number,
+    isResumable: boolean,
+    endsAt: Date,
+  ) {
+    return this.db
+      .update(ankiSessions)
+      .set({ isResumable: isResumable ? 1 : 0, endsAt })
+      .where(
+        and(eq(ankiSessions.userId, userId), eq(ankiSessions.id, sessionId)),
+      );
   }
 }

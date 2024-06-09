@@ -39,16 +39,18 @@ export const TEST_SESSION_AND_DECK: Awaited<
     id: faker.number.int(),
     deckId: faker.number.int(),
     number: faker.number.int(),
+    publicId: faker.string.nanoid(),
     frontContent: faker.lorem.sentence(),
     backContent: faker.lorem.sentence(),
+    due: faker.date.future(),
     stability: faker.number.float({ min: 0.0, max: 1.0 }),
     difficulty: faker.number.float({ min: 0.0, max: 1.0 }),
-    due: faker.date.future(),
     elapsedDays: faker.number.int({ min: 0, max: 365 }),
-    lastElapsedDays: faker.number.int({ min: 0, max: 365 }),
     scheduledDays: faker.number.int({ min: 1, max: 365 }),
-    review: faker.date.future(),
-    duration: faker.number.int({ min: 1, max: 3600 }), // 1秒から1時間
+    reps: faker.number.int(),
+    lapses: faker.number.int(),
+    state: faker.helpers.arrayElement(["new", "learning", "review"]),
+    lastReview: faker.date.past(),
     lat: faker.location.latitude(),
     lng: faker.location.longitude(),
     pitch: faker.number.float({ min: -90, max: 90 }),
@@ -83,6 +85,18 @@ export class AnkiSessionFakeRepository
     return "test_query";
   }
   updateResumeCount(_: number, __: string, ___: number) {
+    return "test_query";
+  }
+
+  getCardsByIds(_: number, __: string, ___: string[]) {
+    return TEST_SESSION_AND_DECK.cards;
+  }
+
+  updateCards(_: number, __: string, ___: string) {
+    return "test_query";
+  }
+
+  updateIsResumableAndEndsAt(_: number, __: number, ___: boolean, ____: Date) {
     return "test_query";
   }
 }

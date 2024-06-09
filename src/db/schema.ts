@@ -80,19 +80,19 @@ export const objectives = sqliteTable("objectives", {
 });
 
 export const ankiSessions = sqliteTable(
-  "AnkiSessions",
+  "anki_sessions",
   {
     id: integer("id").primaryKey({ autoIncrement: true }),
-    deckPublicId: text("deckPublicId").notNull(),
-    userId: integer("userId").notNull(),
-    startsAt: integer("startsAt", { mode: "timestamp_ms" }),
-    endsAt: integer("endsAt", { mode: "timestamp_ms" }),
+    deckPublicId: text("deck_public_id").notNull(),
+    userId: integer("user_id").notNull(),
+    startsAt: integer("starts_at", { mode: "timestamp_ms" }),
+    endsAt: integer("ends_at", { mode: "timestamp_ms" }),
     createdAt: integer("created_at", { mode: "timestamp_ms" })
       .notNull()
       .default(sql`CURRENT_TIMESTAMP`),
-    isResumable: integer("isResumable").notNull().default(1),
-    resumeCount: integer("resumeCount").notNull().default(0),
-    publicId: text("publicId").notNull().unique(),
+    isResumable: integer("is_resumable").notNull().default(1),
+    resumeCount: integer("resume_count").notNull().default(0),
+    publicId: text("public_id").notNull().unique(),
   },
   (ankiSessions) => ({
     deckFk: foreignKey({
@@ -107,16 +107,16 @@ export const ankiSessions = sqliteTable(
 );
 
 export const decks = sqliteTable(
-  "Decks",
+  "decks",
   {
     id: integer("id").primaryKey({ autoIncrement: true }),
-    userId: integer("userId").notNull(),
+    userId: integer("user_id").notNull(),
     name: text("name").notNull(),
     description: text("description").notNull(),
     createdAt: integer("created_at", { mode: "timestamp_ms" })
       .notNull()
       .default(sql`CURRENT_TIMESTAMP`),
-    publicId: text("publicId").notNull().unique(),
+    publicId: text("public_id").notNull().unique(),
   },
   (decks) => ({
     userFk: foreignKey({
@@ -127,21 +127,23 @@ export const decks = sqliteTable(
 );
 
 export const cards = sqliteTable(
-  "Cards",
+  "cards",
   {
     id: integer("id").primaryKey({ autoIncrement: true }),
-    deckId: integer("deckId").notNull(),
+    deckId: integer("deck_id").notNull(),
     number: integer("number").notNull(),
-    frontContent: text("frontContent").notNull(),
-    backContent: text("backContent").notNull(),
+    publicId: text("public_id").notNull().unique(),
+    frontContent: text("front_content").notNull(),
+    backContent: text("back_content").notNull(),
+    due: integer("due", { mode: "timestamp_ms" }).notNull(),
     stability: real("stability").notNull(),
     difficulty: real("difficulty").notNull(),
-    due: integer("due", { mode: "timestamp_ms" }).notNull(),
-    elapsedDays: integer("elapsedDays").notNull(),
-    lastElapsedDays: integer("lastElapsedDays").notNull(),
-    scheduledDays: integer("scheduledDays").notNull(),
-    review: integer("review", { mode: "timestamp_ms" }).notNull(),
-    duration: integer("duration").notNull(),
+    elapsedDays: integer("elapsed_days").notNull(),
+    scheduledDays: integer("scheduled_days").notNull(),
+    reps: integer("reps").notNull(),
+    lapses: integer("lapses").notNull(),
+    state: text("state").notNull().default("New"),
+    lastReview: integer("last_review", { mode: "timestamp_ms" }),
     lat: real("lat").notNull(),
     lng: real("lng").notNull(),
     pitch: real("pitch").notNull(),
