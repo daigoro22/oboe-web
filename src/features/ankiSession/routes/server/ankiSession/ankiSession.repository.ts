@@ -2,6 +2,7 @@ import { ankiSessions, cards, decks, users } from "@/db/schema";
 import type { CardsForUpdate, IAnkiSession } from "./ankiSession.service";
 import { type DrizzleD1Database, drizzle } from "drizzle-orm/d1";
 import { desc, eq, and, sql, inArray } from "drizzle-orm";
+import type { RunnableQuery } from "drizzle-orm/runnable-query";
 
 export default class AnkiSessionRepository implements IAnkiSession {
   private db: DrizzleD1Database;
@@ -172,5 +173,19 @@ export default class AnkiSessionRepository implements IAnkiSession {
         .where(and(eq(cards.publicId, pid))),
     );
     return res;
+  }
+
+  updateIsResumableAndEndsAt(
+    userId: number,
+    sessionId: number,
+    isResumable: boolean,
+    endsAt: Date,
+  ) {
+    return this.db
+      .update(ankiSessions)
+      .set({ isResumable: isResumable ? 1 : 0, endsAt })
+      .where(
+        and(eq(ankiSessions.userId, userId), eq(ankiSessions.id, sessionId)),
+      );
   }
 }

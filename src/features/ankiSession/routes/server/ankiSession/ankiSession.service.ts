@@ -57,6 +57,12 @@ export interface IAnkiSession {
     cardPublicIds: string[],
   ) => Promise<(typeof cards.$inferSelect)[]>;
   updateCards: (cardsData: CardsForUpdate) => BatchQuery[];
+  updateIsResumableAndEndsAt: (
+    userId: number,
+    sessionId: number,
+    isResumable: boolean,
+    endsAt: Date,
+  ) => BatchQuery;
 }
 
 export type CardsForUpdate = {

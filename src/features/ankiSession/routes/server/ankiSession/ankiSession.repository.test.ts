@@ -251,3 +251,25 @@ describe("updateCards", () => {
     expect(updatedCards).toEqual([cardsData]);
   });
 });
+
+describe("updateIsResumableAndEndsAt", () => {
+  test("通常ケース", async () => {
+    const userId = usersFixture()[0].id;
+    const sessionId = ankiSessionFixtures[0].id;
+    const isResumable = false;
+    const endsAt = new Date();
+    await ankiSessionRepository.updateIsResumableAndEndsAt(
+      userId,
+      sessionId,
+      isResumable,
+      endsAt,
+    );
+    const updatedSession = await testDB
+      .select()
+      .from(ankiSessions)
+      .where(eq(ankiSessions.id, sessionId))
+      .limit(1);
+    expect(updatedSession[0]?.isResumable).toBe(0);
+    expect(updatedSession[0]?.endsAt).toEqual(endsAt);
+  });
+});
