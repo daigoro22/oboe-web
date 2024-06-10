@@ -64,7 +64,7 @@ const newPost = factory.createHandlers(
   }),
 );
 
-const resumeIdGet = factory.createHandlers(async (c: Context) => {
+const resumeIdPost = factory.createHandlers(async (c: Context) => {
   const ankiSession = container.resolve(AnkiSessionService);
   const user = c.get("userData");
   const id = c.req.param("id");
@@ -129,5 +129,5 @@ const idPut = factory.createHandlers(
 export const ankiSession = new Hono<Env>()
   .get(`${ROUTE}/latest`, ...latestGet)
   .post(`${ROUTE}/new`, ...newPost)
-  .get(`${ROUTE}/resume/:id`, ...resumeIdGet)
+  .post(`${ROUTE}/resume/:id`, ...resumeIdPost)
   .put(`${ROUTE}/:id`, ...idPut);

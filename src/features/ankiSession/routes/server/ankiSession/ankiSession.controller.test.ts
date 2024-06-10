@@ -97,7 +97,7 @@ describe("new:POST", () => {
 
 describe("resume/:id:GET", () => {
   test("通常ケース", async () => {
-    const res = await client.api.auth.verified.ankiSession.resume[":id"].$get({
+    const res = await client.api.auth.verified.ankiSession.resume[":id"].$post({
       param: { id: "test_session" },
     });
     expect(res.status).toBe(200);
@@ -135,7 +135,7 @@ describe("resume/:id:GET", () => {
         return undefined;
       });
 
-    const res = await client.api.auth.verified.ankiSession.resume[":id"].$get({
+    const res = await client.api.auth.verified.ankiSession.resume[":id"].$post({
       param: { id: "non_existent_session" },
     });
 
