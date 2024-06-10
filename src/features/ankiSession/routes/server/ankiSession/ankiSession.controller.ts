@@ -14,7 +14,7 @@ import { endSessionSchema, newSessionSchema } from "@/schemas/ankiSession";
 
 type Context = C<Env>;
 
-const ROUTE = "/api/auth/verified/ankiSession" as const;
+export const ROUTE = "/api/auth/verified/ankiSession" as const;
 
 export const ankiSessionContainerMiddleware = createMiddleware(
   async (c, next) => {
@@ -127,7 +127,10 @@ const idPut = factory.createHandlers(
   }),
 );
 export const ankiSession = new Hono<Env>()
-  .get(`${ROUTE}/latest`, ...latestGet)
-  .post(`${ROUTE}/new`, ...newPost)
-  .post(`${ROUTE}/resume/:id`, ...resumeIdPost)
-  .put(`${ROUTE}/:id`, ...idPut);
+  .basePath(ROUTE)
+  .get("/latest", ...latestGet)
+  .post("/new", ...newPost)
+  .post("/resume/:id", ...resumeIdPost)
+  .put("/:id", ...idPut);
+
+export type AnkiSessionRoute = typeof ankiSession;

@@ -1,5 +1,7 @@
 import type { BatchItem, BatchResponse } from "drizzle-orm/batch";
 import { drizzle, type DrizzleD1Database } from "drizzle-orm/d1";
+import { createMiddleware } from "hono/factory";
+import { container } from "tsyringe";
 
 export interface ITransaction {
   transaction: <U extends BatchItem<"sqlite">>(
@@ -26,6 +28,15 @@ export class Transaction implements ITransaction {
     return res;
   }
 }
+
+export const transactionContainerMiddleware = createMiddleware(
+  async (c, next) => {
+    container.register("Transaction", {
+      useValue: new Transaction(c.env.DB),
+    });
+    await next();
+  },
+);
 
 class BatchEmptyError extends Error {
   constructor(message: string) {

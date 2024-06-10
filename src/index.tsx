@@ -27,6 +27,8 @@ import {
 } from "@/features/ankiSession/routes/server/ankiSession/ankiSession.controller";
 import { verifySignupMiddleware } from "@/lib/middleware";
 import { userContainerMiddleware } from "@/features/auth/routes/server/user/user.controller";
+import { transactionContainerMiddleware } from "@/lib/transaction";
+import { ROUTE as ANKI_SESSION_ROUTE } from "@/features/ankiSession/routes/server/ankiSession/ankiSession.controller";
 
 const app = new Hono<Env>({ strict: false });
 
@@ -46,6 +48,7 @@ app.use("/api/oauth/*", authHandler());
 app.use("/api/*", verifyAuth());
 
 app.use("/api/auth/*", userContainerMiddleware);
+app.use("/api/auth/*", transactionContainerMiddleware);
 app.use("/api/auth/verified/*", verifySignupMiddleware);
 
 formOptions.use("/", formOptionsContainerMiddleware);
@@ -54,7 +57,7 @@ app.route("/", formOptions);
 signUp.use("/", signUpContainerMiddleware);
 app.route("/", signUp);
 
-ankiSession.use("/", ankiSessionContainerMiddleware);
+app.use(`${ANKI_SESSION_ROUTE}/*`, ankiSessionContainerMiddleware); //FIXME: ankiSession に対して userContainerMiddleware を適用
 app.route("/", ankiSession);
 
 function getAuthConfig(c: Context): AuthConfig {
