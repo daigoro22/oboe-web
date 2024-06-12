@@ -12,12 +12,12 @@ import { useParams } from "react-router-dom";
 
 export const AnkiSession = () => {
   const { id } = useParams();
-  const resumeSession = useResumeSession(id ?? "", () => {});
+  const { mutateAsync, data } = useResumeSession(id ?? "", () => {});
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
-    void (async () => await resumeSession.mutateAsync(undefined))();
-    console.log(resumeSession.data);
+    void (async () => await mutateAsync(undefined))();
+    console.log(data);
   }, []);
 
   const apiKey = useMemo(() => import.meta.env.VITE_GOOGLE_MAPS_API_KEY, []);

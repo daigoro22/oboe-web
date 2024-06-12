@@ -1,6 +1,28 @@
-import { drizzle } from "drizzle-orm/d1";
+import { drizzle, type DrizzleD1Database } from "drizzle-orm/d1";
 import { getPlatformProxy } from "wrangler";
-import { accounts, objectives, occupations, users } from "./schema";
+import {
+  accounts,
+  ankiSessions,
+  cards,
+  decks,
+  objectives,
+  occupations,
+  users,
+} from "./schema";
+import { FAKER_SEED, toIdGenerator } from "@/lib/test-helper";
+import { faker } from "@/db/faker";
+import type { InferInsertModel, Table, TableConfig } from "drizzle-orm";
+import { generateFakeObject } from "@/lib/test-helper";
+import { PROVIDER } from "@/lib/constant";
+
+export function createSeeds<
+  U extends InferInsertModel<Table<T>>,
+  T extends TableConfig = TableConfig,
+>(schema: Table<T>, object: () => U, count: number, DB: DrizzleD1Database) {
+  return DB.insert(schema)
+    .values(generateFakeObject(count, object))
+    .returning();
+}
 
 export interface Env {
   DB: D1Database;
@@ -76,7 +98,11 @@ const objectivesData: (typeof objectives.$inferInsert)[] = [
 async function main() {
   console.log("start");
   const { env } = await getPlatformProxy<Env>();
+  faker.seed(FAKER_SEED);
   const db = drizzle(env.DB);
+  await db.delete(ankiSessions);
+  await db.delete(cards);
+  await db.delete(decks);
   await db.delete(accounts);
   await db.delete(users);
   await db.delete(occupations);
@@ -85,6 +111,71 @@ async function main() {
   await db.insert(objectives).values(objectivesData);
   await db.insert(occupations).values(occupationsData);
   await db.insert(users).values(usersData).returning();
+  await db
+    .insert(accounts)
+    .values([
+      {
+        userId: 1,
+        provider: PROVIDER.LINE,
+        providerAccountId: import.meta.env.VITE_LINE_DEV_USER_ID,
+      },
+    ])
+    .returning();
+
+  const deckUserId = toIdGenerator(usersData);
+  const deckFixtures = await createSeeds(
+    decks,
+    () => ({
+      userId: Number(deckUserId.next().value),
+      name: faker.commerce.productName(),
+      description: faker.commerce.productDescription(),
+      publicId: faker.string.nanoid(),
+    }),
+    3,
+    db,
+  );
+
+  const sessionUserId = toIdGenerator(usersData);
+  const sessionDeckId = toIdGenerator(deckFixtures, "publicId");
+  await createSeeds(
+    ankiSessions,
+    () => ({
+      userId: Number(sessionUserId.next().value),
+      deckPublicId: String(sessionDeckId.next().value),
+      startsAt: new Date(),
+      endsAt: null,
+      publicId: faker.string.nanoid(),
+    }),
+    3,
+    db,
+  );
+
+  const cardDeckId = toIdGenerator(deckFixtures);
+  await createSeeds(
+    cards,
+    () => ({
+      deckId: Number(cardDeckId.next().value),
+      number: faker.number.int({ min: 1, max: 100 }),
+      publicId: faker.string.nanoid(),
+      frontContent: faker.lorem.sentence(),
+      backContent: faker.lorem.sentence(),
+      stability: faker.number.float({ min: 0.0, max: 1.0 }),
+      difficulty: faker.number.float({ min: 0.0, max: 1.0 }),
+      due: faker.date.future(),
+      elapsedDays: faker.number.int({ min: 0, max: 365 }),
+      scheduledDays: faker.number.int({ min: 1, max: 365 }),
+      reps: faker.number.int({ min: 0, max: 1000 }),
+      lapses: faker.number.int({ min: 0, max: 100 }),
+      state: faker.helpers.arrayElement(["New", "Learning", "Review"]),
+      lastReview: faker.date.past(),
+      lat: faker.location.latitude(),
+      lng: faker.location.longitude(),
+      pitch: faker.number.float({ min: -90, max: 90 }),
+      heading: faker.number.float({ min: 0, max: 360 }),
+    }),
+    3,
+    db,
+  );
   console.log("finish");
   process.exit();
 }
