@@ -23,6 +23,7 @@ const View = ({ position, pov }: Omit<StreetViewProps, "apiKey">) => {
     <GoogleMap
       id="main"
       defaultZoom={3}
+      defaultCenter={{ lat: 0, lng: 0 }}
       gestureHandling="none"
       disableDefaultUI={true}
     />
