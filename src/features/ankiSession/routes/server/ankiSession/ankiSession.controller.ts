@@ -3,6 +3,7 @@ import AnkiSessionRepository from "./ankiSession.repository";
 import AnkiSessionService, {
   CardNotFoundError,
   InsufficientPointError,
+  ResumeLimitExceededError,
   SessionAlreadyEndedError,
   SessionNotFoundError,
 } from "./ankiSession.service";
@@ -77,6 +78,12 @@ const resumeIdPost = factory.createHandlers(async (c: Context) => {
 
     await ankiSession.resumeSession(user.id, id);
   } catch (e) {
+    if (e instanceof SessionNotFoundError) {
+      return c.json({ error: e.message }, 404);
+    }
+    if (e instanceof ResumeLimitExceededError) {
+      return c.json({ error: e.message }, 409);
+    }
     return c.json({ error: "server error" }, 500);
   }
 
