@@ -150,30 +150,41 @@ async function main() {
     db,
   );
 
-  const cardDeckId = toIdGenerator(deckFixtures);
+  const latLngs = [
+    { lat: 35.740103681433425, lng: 139.74128675902182 },
+    { lat: 35.74041153976215, lng: 139.74129831769412 },
+    { lat: 35.74032036273507, lng: 139.74161877536605 },
+    { lat: 35.7402025919986, lng: 139.74195354223124 },
+  ];
+
+  const lats = toIdGenerator(latLngs, "lat");
+  const lngs = toIdGenerator(latLngs, "lng");
+
   await createSeeds(
     cards,
-    () => ({
-      deckId: Number(cardDeckId.next().value),
-      number: faker.number.int({ min: 1, max: 100 }),
-      publicId: faker.string.nanoid(),
-      frontContent: faker.lorem.sentence(),
-      backContent: faker.lorem.sentence(),
-      stability: faker.number.float({ min: 0.0, max: 1.0 }),
-      difficulty: faker.number.float({ min: 0.0, max: 1.0 }),
-      due: faker.date.future(),
-      elapsedDays: faker.number.int({ min: 0, max: 365 }),
-      scheduledDays: faker.number.int({ min: 1, max: 365 }),
-      reps: faker.number.int({ min: 0, max: 1000 }),
-      lapses: faker.number.int({ min: 0, max: 100 }),
-      state: faker.helpers.arrayElement(["New", "Learning", "Review"]),
-      lastReview: faker.date.past(),
-      lat: faker.location.latitude(),
-      lng: faker.location.longitude(),
-      pitch: faker.number.float({ min: -90, max: 90 }),
-      heading: faker.number.float({ min: 0, max: 360 }),
-    }),
-    3,
+    () => {
+      return {
+        deckId: deckFixtures[0].id,
+        number: faker.number.int({ min: 1, max: 100 }),
+        publicId: faker.string.nanoid(),
+        frontContent: faker.lorem.sentence(),
+        backContent: faker.lorem.sentence(),
+        stability: faker.number.float({ min: 0.0, max: 1.0 }),
+        difficulty: faker.number.float({ min: 0.0, max: 1.0 }),
+        due: faker.date.future(),
+        elapsedDays: faker.number.int({ min: 0, max: 365 }),
+        scheduledDays: faker.number.int({ min: 1, max: 365 }),
+        reps: faker.number.int({ min: 0, max: 1000 }),
+        lapses: faker.number.int({ min: 0, max: 100 }),
+        state: faker.helpers.arrayElement(["New", "Learning", "Review"]),
+        lastReview: faker.date.past(),
+        lat: Number(lats.next().value),
+        lng: Number(lngs.next().value),
+        pitch: faker.number.float({ min: -90, max: 90 }),
+        heading: faker.number.float({ min: 0, max: 360 }),
+      };
+    },
+    4,
     db,
   );
   console.log("finish");
