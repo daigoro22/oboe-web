@@ -40,7 +40,7 @@ export const StreetView = () => {
     () => import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
     [],
   );
-  const { data: d, isLoading } = useAtomValue(resumeSessionAtom);
+  const { data: d, isSuccess } = useAtomValue(resumeSessionAtom);
   const data = isErrorResponse(d) ? undefined : d;
   const targetCardNum = useAtomValue(targetCardNumAtom);
 
@@ -54,7 +54,7 @@ export const StreetView = () => {
     pitch: data?.cards[targetCardNum]?.pitch ?? 0,
   };
 
-  return isLoading ? (
+  return !isSuccess ? (
     <Skeleton className="w-full h-full" /> //TODO: Suspense 使いたいな
   ) : (
     <APIProvider apiKey={apiKey}>

@@ -11,12 +11,12 @@ import * as React from "react";
 import { useParams } from "react-router-dom";
 export type FlashCardProps = {} & React.ComponentProps<typeof Card>;
 export const FlashCard = ({ className, ...props }: FlashCardProps) => {
-  const { data: d, isLoading } = useAtomValue(resumeSessionAtom);
+  const { data: d, isSuccess } = useAtomValue(resumeSessionAtom);
   const data = isErrorResponse(d) ? undefined : d;
   const targetCardNum = useAtomValue(targetCardNumAtom);
   const [flip, setFlip] = React.useState(false);
 
-  return isLoading ? (
+  return !isSuccess ? (
     <Skeleton className="w-full h-32" />
   ) : (
     <Card

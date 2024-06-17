@@ -29,10 +29,11 @@ export const resumeSessionAtom = atomWithQuery((get) => ({
     );
     return await data.json();
   },
-  enabled: !!get(idAtom).length,
+  enabled: !!get(idAtom).length && get(apiCallAllowedAtom),
 }));
 
 export const idAtom = atom("");
+export const apiCallAllowedAtom = atom(false);
 
 export const targetCardNumAtom = atom(0);
 type RatingInput = {
