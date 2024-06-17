@@ -27,9 +27,14 @@ export const resumeSessionAtom = atomWithQuery((get) => ({
         param: { id: get(idAtom) },
       },
     );
-    return await data.json();
+    const json = await data.json();
+    if (!data.ok) {
+      throw new Error(isErrorResponse(json) ? json.error : "エラー");
+    }
+    return json;
   },
   enabled: !!get(idAtom).length && get(apiCallAllowedAtom),
+  retry: false,
 }));
 
 export const idAtom = atom("");

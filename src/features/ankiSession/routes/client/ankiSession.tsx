@@ -12,6 +12,7 @@ import { AbortButton } from "@/features/ankiSession/components/AbortButton";
 import { ConfirmResumeModal } from "@/features/ankiSession/components/ConfirmResumeModal";
 import { FlashCard } from "@/features/ankiSession/components/FlashCard";
 import { RatingButton } from "@/features/ankiSession/components/RatingButton";
+import { ResumeErrorModal } from "@/features/ankiSession/components/ResumeErrorModal";
 import { StreetView } from "@/features/ankiSession/components/StreetView";
 import { useAtomValue, useSetAtom } from "jotai";
 import { useEffect } from "react";
@@ -51,6 +52,7 @@ export const AnkiSession = () => {
   return (
     <>
       <ConfirmResumeModal />
+      <ResumeErrorModal />
       <Grid className="h-svh">
         <GridContainer className="h-full">
           <CardLayout title="暗記セッション">
