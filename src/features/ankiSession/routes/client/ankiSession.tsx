@@ -59,14 +59,7 @@ export const AnkiSession = () => {
     };
   }, []);
 
-  const [open, setOpen] = useState(false);
-  const referer = document.referrer;
-  useEffect(() => {
-    const isFromSamePage = referer === window.location.href;
-    setApiCallAllowed(!isFromSamePage);
-    setOpen(isFromSamePage);
-  }, [referer, setApiCallAllowed]);
-
+  const [open, setOpen] = useState(true); //TODO: 初回のセッションの場合は出さずにセッション開始
   const navigate = useNavigate();
 
   return (
