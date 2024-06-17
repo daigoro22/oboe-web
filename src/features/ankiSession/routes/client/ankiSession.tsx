@@ -3,21 +3,10 @@ import { Flex } from "@/components/elements/Flex";
 import { Grid } from "@/components/elements/Grid";
 import { GridContainer } from "@/components/elements/GridContainer";
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogOverlay,
-  AlertDialogPortal,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import {
   isErrorResponse,
   idAtom,
-  ratingAtomPrimitive,
+  gradeAtomPrimitive,
   resumeSessionAtom,
-  apiCallAllowedAtom,
 } from "@/features/ankiSession/atoms/ankiSessionAtom";
 import { AbortButton } from "@/features/ankiSession/components/AbortButton";
 import { ConfirmResumeModal } from "@/features/ankiSession/components/ConfirmResumeModal";
@@ -31,7 +20,7 @@ import { Rating } from "ts-fsrs";
 
 export const AnkiSession = () => {
   const { id } = useParams();
-  const setRating = useSetAtom(ratingAtomPrimitive);
+  const setRating = useSetAtom(gradeAtomPrimitive);
   const setId = useSetAtom(idAtom);
 
   const { data } = useAtomValue(resumeSessionAtom);
@@ -40,7 +29,7 @@ export const AnkiSession = () => {
       if (!isErrorResponse(data)) {
         setRating(
           (data?.cards ?? []).map((card) => ({
-            rating: 0,
+            grade: 0,
             cardPublicId: card.publicId,
           })),
         );

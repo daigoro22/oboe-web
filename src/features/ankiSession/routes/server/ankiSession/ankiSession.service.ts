@@ -135,6 +135,10 @@ export default class AnkiSessionService {
         !session.isResumable
       )
         throw new ResumeLimitExceededError("復帰回数が上限を超えました");
+
+      //TODO: 復習可能な暗記カードを取得
+      //TODO: 復習可能な暗記カードが一枚も無ければエラー
+
       //対象の ankiSession レコードの復帰回数++
       pushBatch(
         this.ankiSession.updateResumeCount(

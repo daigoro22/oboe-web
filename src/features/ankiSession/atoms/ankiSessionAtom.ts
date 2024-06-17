@@ -36,20 +36,20 @@ export const idAtom = atom("");
 export const apiCallAllowedAtom = atom(false);
 
 export const targetCardNumAtom = atom(0);
-type RatingInput = {
-  rating: Rating;
+type GradeInput = {
+  grade: Rating;
   cardPublicId: string;
 }[];
 
-export const ratingAtomPrimitive = atom<RatingInput>([]);
-export const ratingAtom = atom(
-  (get) => get(ratingAtomPrimitive),
-  (get, set, newRating: RatingInput[number]) =>
+export const gradeAtomPrimitive = atom<GradeInput>([]);
+export const gradeAtom = atom(
+  (get) => get(gradeAtomPrimitive),
+  (get, set, newRating: GradeInput[number]) =>
     set(
-      ratingAtomPrimitive,
-      get(ratingAtomPrimitive).map((item) =>
+      gradeAtomPrimitive,
+      get(gradeAtomPrimitive).map((item) =>
         item.cardPublicId === newRating.cardPublicId
-          ? { ...item, rating: newRating.rating }
+          ? { ...item, grade: newRating.grade }
           : item,
       ),
     ),
