@@ -20,18 +20,18 @@ import {
   apiCallAllowedAtom,
 } from "@/features/ankiSession/atoms/ankiSessionAtom";
 import { AbortButton } from "@/features/ankiSession/components/AbortButton";
+import { ConfirmResumeModal } from "@/features/ankiSession/components/ConfirmResumeModal";
 import { FlashCard } from "@/features/ankiSession/components/FlashCard";
 import { RatingButton } from "@/features/ankiSession/components/RatingButton";
 import { StreetView } from "@/features/ankiSession/components/StreetView";
 import { useAtomValue, useSetAtom } from "jotai";
-import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useEffect } from "react";
+import { useParams } from "react-router-dom";
 import { Rating } from "ts-fsrs";
 
 export const AnkiSession = () => {
   const { id } = useParams();
   const setRating = useSetAtom(ratingAtomPrimitive);
-  const setApiCallAllowed = useSetAtom(apiCallAllowedAtom);
   const setId = useSetAtom(idAtom);
 
   const { data } = useAtomValue(resumeSessionAtom);
@@ -59,46 +59,9 @@ export const AnkiSession = () => {
     };
   }, []);
 
-  const [open, setOpen] = useState(true); //TODO: 初回のセッションの場合は出さずにセッション開始
-  const navigate = useNavigate();
-
   return (
     <>
-      <AlertDialog open={open} onOpenChange={setOpen}>
-        <AlertDialogPortal>
-          <AlertDialogOverlay />
-          <AlertDialogContent
-            onEscapeKeyDown={(event) => event.preventDefault()}
-          >
-            <AlertDialogTitle>セッション復帰</AlertDialogTitle>
-            <AlertDialogDescription>
-              復帰しますか？
-              {/* TODO:（残り復帰回数：
-              {ANKI_SESSION_RESUME_LIMIT -
-                (!isErrorResponse(data) ? data?.session?.resumeCount ?? 0 : 0)}
-              ） */}
-            </AlertDialogDescription>
-            <Flex
-              direction="row"
-              justifyContent="center"
-              gap="md"
-              alignItems="end"
-            >
-              <AlertDialogAction onClick={() => setApiCallAllowed(true)}>
-                復帰
-              </AlertDialogAction>
-              <AlertDialogCancel
-                onClick={() => {
-                  navigate("/");
-                }}
-              >
-                キャンセル
-              </AlertDialogCancel>
-            </Flex>
-          </AlertDialogContent>
-        </AlertDialogPortal>
-      </AlertDialog>
-
+      <ConfirmResumeModal />
       <Grid className="h-svh">
         <GridContainer className="h-full">
           <CardLayout title="暗記セッション">
