@@ -1,4 +1,5 @@
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   isErrorResponse,
   resumeSessionAtom,
@@ -10,12 +11,14 @@ import * as React from "react";
 import { useParams } from "react-router-dom";
 export type FlashCardProps = {} & React.ComponentProps<typeof Card>;
 export const FlashCard = ({ className, ...props }: FlashCardProps) => {
-  const { data: d } = useAtomValue(resumeSessionAtom);
+  const { data: d, isLoading } = useAtomValue(resumeSessionAtom);
   const data = isErrorResponse(d) ? undefined : d;
   const targetCardNum = useAtomValue(targetCardNumAtom);
   const [flip, setFlip] = React.useState(false);
 
-  return (
+  return isLoading ? (
+    <Skeleton className="w-full h-32" />
+  ) : (
     <Card
       {...props}
       className={cn(className, "drop-shadow-sm border")}

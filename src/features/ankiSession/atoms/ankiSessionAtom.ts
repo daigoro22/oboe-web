@@ -29,6 +29,7 @@ export const resumeSessionAtom = atomWithQuery((get) => ({
     );
     return await data.json();
   },
+  enabled: !!get(idAtom).length,
 }));
 
 export const idAtom = atom("");

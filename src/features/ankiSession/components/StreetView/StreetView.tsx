@@ -10,6 +10,7 @@ import {
 } from "@/features/ankiSession/atoms/ankiSessionAtom";
 import { useAtomValue } from "jotai";
 import { targetCardNumAtom } from "@/features/ankiSession/atoms/ankiSessionAtom";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export type StreetViewProps = {
   position: { lat: number; lng: number };
@@ -39,7 +40,7 @@ export const StreetView = () => {
     () => import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
     [],
   );
-  const { data: d } = useAtomValue(resumeSessionAtom);
+  const { data: d, isLoading } = useAtomValue(resumeSessionAtom);
   const data = isErrorResponse(d) ? undefined : d;
   const targetCardNum = useAtomValue(targetCardNumAtom);
 
@@ -53,7 +54,9 @@ export const StreetView = () => {
     pitch: data?.cards[targetCardNum]?.pitch ?? 0,
   };
 
-  return (
+  return isLoading ? (
+    <Skeleton className="w-full h-full" /> //TODO: Suspense 使いたいな
+  ) : (
     <APIProvider apiKey={apiKey}>
       <View position={position} pov={pov} />
     </APIProvider>
