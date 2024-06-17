@@ -126,7 +126,7 @@ export default class AnkiSessionService {
     await this.tx.transaction(async (pushBatch) => {
       //対象のセッションが完了済みならエラー
       if (session.endsAt) {
-        throw new ResumeLimitExceededError("復帰回数が上限を超えました");
+        throw new ResumeLimitExceededError("セッションは完了済みです");
       }
 
       // 対象のセッションの復帰回数がn回以上もしくは復帰可能フラグが false ならエラー
