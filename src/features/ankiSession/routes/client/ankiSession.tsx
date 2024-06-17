@@ -37,6 +37,17 @@ export const AnkiSession = () => {
     })();
   }, [d, setRating, setId, id]);
 
+  useEffect(() => {
+    const openDialog = (event: BeforeUnloadEvent) => {
+      event.preventDefault();
+      event.returnValue = "";
+    };
+    window.addEventListener("beforeunload", openDialog);
+    return () => {
+      window.removeEventListener("beforeunload", openDialog);
+    };
+  }, []);
+
   return (
     <Grid className="h-svh">
       <GridContainer className="h-full">
