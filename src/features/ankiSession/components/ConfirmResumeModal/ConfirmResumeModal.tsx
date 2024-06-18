@@ -24,11 +24,20 @@ export const ConfirmResumeModal = (props: ConfirmResumeModalProps) => {
   const setApiCallAllowed = useSetAtom(apiCallAllowedAtom);
   const { data: d } = useAtomValue(getSessionAtom);
   const data = isErrorResponse(d) ? undefined : d;
+  React.useEffect(() => {
+    if (data) {
+      setApiCallAllowed(data?.resumeCount < 1);
+    }
+  }, [setApiCallAllowed, data]);
+
   const [open, setOpen] = React.useState(true); //TODO: 初回のセッションの場合は出さずにセッション開始
   const navigate = useNavigate();
 
   return (
-    <AlertDialog open={open} onOpenChange={setOpen}>
+    <AlertDialog
+      open={open && (data?.resumeCount ?? 0) > 0}
+      onOpenChange={setOpen}
+    >
       <AlertDialogPortal>
         <AlertDialogOverlay />
         <AlertDialogContent onEscapeKeyDown={(event) => event.preventDefault()}>
