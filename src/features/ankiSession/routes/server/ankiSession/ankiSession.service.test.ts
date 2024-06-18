@@ -156,7 +156,12 @@ describe("resumeSession", () => {
       return {
         ...TEST_SESSION_AND_DECK,
         session: sessionWithNoReviewableCards,
-        cards: [], // 復習可能なカードが0枚
+        cards: [
+          {
+            id: "card1",
+            due: new Date(Date.now() + 1000 * 60 * 60 * 24), // 現在時刻より1日後
+          },
+        ],
       };
     });
 

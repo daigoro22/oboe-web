@@ -42,7 +42,7 @@ export const TEST_SESSION_AND_DECK: Awaited<
     publicId: faker.string.nanoid(),
     frontContent: faker.lorem.sentence(),
     backContent: faker.lorem.sentence(),
-    due: faker.date.future(),
+    due: faker.date.past(),
     stability: faker.number.float({ min: 0.0, max: 1.0 }),
     difficulty: faker.number.float({ min: 0.0, max: 1.0 }),
     elapsedDays: faker.number.int({ min: 0, max: 365 }),

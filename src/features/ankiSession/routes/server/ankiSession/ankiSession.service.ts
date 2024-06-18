@@ -7,7 +7,7 @@ import { ANKI_SESSION_POINT, ANKI_SESSION_RESUME_LIMIT } from "@/lib/constant";
 import { nanoid } from "nanoid";
 import { Rating, type Grade, type StateType } from "ts-fsrs";
 import { f } from "@/lib/fsrs";
-import { isAfter } from "date-fns";
+import { isBefore } from "date-fns";
 
 export type SessionAndPoint = {
   session: typeof ankiSessions.$inferSelect;
@@ -125,7 +125,7 @@ export default class AnkiSessionService {
     // 復習可能な暗記カードを取得
     const cardsRes = cards.reduce(
       (prev: Omit<(typeof cards)[number], "id">[], { id: _, due, ...rest }) => {
-        if (isAfter(due, new Date())) {
+        if (isBefore(due, new Date())) {
           prev.push({ due, ...rest });
         }
         return prev;
@@ -133,7 +133,7 @@ export default class AnkiSessionService {
       [],
     );
     //復習可能な暗記カードが一枚も無ければエラー
-    if (cardsRes.length === 0) {
+    if (cardsRes.length < 1) {
       throw new NoReviewableCardsError("復習可能なカードがありません");
     }
 
@@ -148,9 +148,6 @@ export default class AnkiSessionService {
       !session.isResumable
     )
       throw new ResumeLimitExceededError("復帰回数が上限を超えました");
-
-    //TODO: 復習可能な暗記カードを取得
-    //TODO: 復習可能な暗記カードが一枚も無ければエラー
 
     await this.tx.transaction(async (pushBatch) => {
       //対象の ankiSession レコードの復帰回数++
