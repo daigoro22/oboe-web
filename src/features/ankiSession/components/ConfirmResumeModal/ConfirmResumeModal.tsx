@@ -9,14 +9,21 @@ import {
   AlertDialogPortal,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { apiCallAllowedAtom } from "@/features/ankiSession/atoms/ankiSessionAtom";
-import { useSetAtom } from "jotai";
+import {
+  apiCallAllowedAtom,
+  getSessionAtom,
+  isErrorResponse,
+} from "@/features/ankiSession/atoms/ankiSessionAtom";
+import { ANKI_SESSION_RESUME_LIMIT } from "@/lib/constant";
+import { useAtomValue, useSetAtom } from "jotai";
 import * as React from "react";
 import { useNavigate } from "react-router-dom";
 // biome-ignore lint/complexity/noBannedTypes: <explanation></explanation>
 export type ConfirmResumeModalProps = {};
 export const ConfirmResumeModal = (props: ConfirmResumeModalProps) => {
   const setApiCallAllowed = useSetAtom(apiCallAllowedAtom);
+  const { data: d } = useAtomValue(getSessionAtom);
+  const data = isErrorResponse(d) ? undefined : d;
   const [open, setOpen] = React.useState(true); //TODO: 初回のセッションの場合は出さずにセッション開始
   const navigate = useNavigate();
 
@@ -27,11 +34,9 @@ export const ConfirmResumeModal = (props: ConfirmResumeModalProps) => {
         <AlertDialogContent onEscapeKeyDown={(event) => event.preventDefault()}>
           <AlertDialogTitle>セッション復帰</AlertDialogTitle>
           <AlertDialogDescription>
-            復帰しますか？
-            {/* TODO:（残り復帰回数：
-					{ANKI_SESSION_RESUME_LIMIT -
-						(!isErrorResponse(data) ? data?.session?.resumeCount ?? 0 : 0)}
-					） */}
+            復帰しますか？ 残り復帰回数：
+            {ANKI_SESSION_RESUME_LIMIT -
+              (!isErrorResponse(data) ? data?.resumeCount ?? 0 : 0)}
           </AlertDialogDescription>
           <Flex
             direction="row"

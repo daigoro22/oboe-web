@@ -37,6 +37,20 @@ export const resumeSessionAtom = atomWithQuery((get) => ({
   retry: false,
 }));
 
+export const getSessionAtom = atomWithQuery((get) => ({
+  queryKey: ["getSession", get(idAtom)],
+  queryFn: async () => {
+    const data = await client.api.auth.verified.ankiSession[":id"].$get({
+      param: { id: get(idAtom) },
+    });
+    const json = await data.json();
+    if (!data.ok) {
+      throw new Error(isErrorResponse(json) ? json.error : "エラー");
+    }
+    return json;
+  },
+}));
+
 export const idAtom = atom("");
 export const apiCallAllowedAtom = atom(false);
 
