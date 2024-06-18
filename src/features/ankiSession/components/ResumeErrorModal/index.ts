@@ -1,1 +1,1 @@
-export * from './ResumeErrorModal';
+export * from "./ResumeErrorModal";
