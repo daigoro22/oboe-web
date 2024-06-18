@@ -22,9 +22,9 @@ export const TEST_SESSION_AND_DECK: Awaited<
   session: {
     id: faker.number.int(),
     startsAt: faker.date.past(),
-    endsAt: faker.date.future(),
+    endsAt: null,
     isResumable: faker.number.int({ min: 0, max: 1 }),
-    resumeCount: faker.number.int(),
+    resumeCount: 0,
     publicId: faker.string.nanoid(),
     createdAt: faker.date.recent(),
   },

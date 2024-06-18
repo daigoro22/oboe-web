@@ -69,14 +69,9 @@ const resumeIdPost = factory.createHandlers(async (c: Context) => {
   const ankiSession = container.resolve(AnkiSessionService);
   const user = c.get("userData");
   const id = c.req.param("id");
-  let data: Awaited<ReturnType<typeof ankiSession.getSessionAndDeckById>>;
+  let data: Awaited<ReturnType<typeof ankiSession.resumeSession>>;
   try {
-    data = await ankiSession.getSessionAndDeckById(user.id, id);
-    if (!data) {
-      return c.json({ error: "not found" }, 404);
-    }
-
-    await ankiSession.resumeSession(user.id, id);
+    data = await ankiSession.resumeSession(user.id, id);
   } catch (e) {
     if (e instanceof SessionNotFoundError) {
       return c.json({ error: e.message }, 404);
@@ -87,15 +82,11 @@ const resumeIdPost = factory.createHandlers(async (c: Context) => {
     return c.json({ error: "server error" }, 500);
   }
 
-  const {
-    session: { id: _, ...session },
-    deck: { id: __, ...deck },
-    cards,
-  } = data;
+  const { session, deck, cards } = data;
   return c.json({
     session,
     deck,
-    cards: cards.map(({ id: _, ...card }) => card),
+    cards,
   });
 });
 

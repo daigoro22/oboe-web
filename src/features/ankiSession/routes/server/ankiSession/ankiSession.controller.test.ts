@@ -130,9 +130,9 @@ describe("resume/:id:GET", () => {
 
   test("セッションが見つからないエラーケース", async () => {
     const spy = vi
-      .spyOn(AnkiSessionService.prototype, "getSessionAndDeckById")
+      .spyOn(AnkiSessionService.prototype, "resumeSession")
       .mockImplementation(async () => {
-        return undefined;
+        throw new SessionNotFoundError("セッションが見つかりません");
       });
 
     const res = await client.api.auth.verified.ankiSession.resume[":id"].$post({
@@ -141,7 +141,7 @@ describe("resume/:id:GET", () => {
 
     expect(res.status).toBe(404);
     const jsonResponse = await res.json();
-    expect(jsonResponse).toEqual({ error: "not found" });
+    expect(jsonResponse).toEqual({ error: "セッションが見つかりません" });
     spy.mockRestore();
   });
 });

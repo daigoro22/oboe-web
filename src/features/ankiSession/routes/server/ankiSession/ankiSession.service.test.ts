@@ -37,14 +37,6 @@ describe("getLatestSession", () => {
   });
 });
 
-describe("getSessionById", () => {
-  test("通常ケース", async () => {
-    const publicId = "test";
-    const res = await ankiSession.getSessionAndDeckById(1, publicId);
-    expect(res).toEqual(TEST_SESSION_AND_DECK);
-  });
-});
-
 describe("startSession", () => {
   test("通常ケース", async () => {
     await expect(
@@ -70,34 +62,50 @@ describe("resumeSession", () => {
   test("通常ケース", async () => {
     let res: Awaited<ReturnType<(typeof ankiSession)["resumeSession"]>>;
     try {
-      res = await ankiSession.resumeSession(1, TEST_SESSION.publicId);
+      res = await ankiSession.resumeSession(
+        1,
+        TEST_SESSION_AND_DECK?.session.publicId,
+      );
     } catch (e) {
+      console.log(e);
       expect(true).toBe(false);
     }
-    expect(res).toEqual(TEST_SESSION);
+    const {
+      session: { id: _, ...session },
+      deck: { id: __, ...deck },
+      cards,
+    } = TEST_SESSION_AND_DECK;
+    expect(res).toEqual({
+      session,
+      deck,
+      cards: cards.map(({ id: _, ...rest }) => rest),
+    });
   });
 
   test("復帰回数が上限を超えた場合のエラー", async () => {
     const userId = 1;
     // 復帰回数が上限に達しているセッションを設定
     const sessionWithMaxResumes = {
-      ...TEST_SESSION,
+      ...TEST_SESSION_AND_DECK?.session,
       resumeCount: ANKI_SESSION_RESUME_LIMIT,
       isResumable: 1,
     };
     const ankiSessionMock = vi.spyOn(
       AnkiSessionFakeRepository.prototype,
-      "getSessionById",
+      "getSessionAndDeckById",
     );
     ankiSessionMock.mockImplementation(async (_) => {
       return {
-        point: 100,
+        ...TEST_SESSION_AND_DECK,
         session: sessionWithMaxResumes,
       };
     });
     // 復帰回数が上限を超えた場合のエラーを期待
     await expect(
-      ankiSession.resumeSession(userId, TEST_SESSION.publicId),
+      ankiSession.resumeSession(
+        userId,
+        TEST_SESSION_AND_DECK?.session.publicId,
+      ),
     ).rejects.toThrow(ResumeLimitExceededError);
   });
 
@@ -105,24 +113,27 @@ describe("resumeSession", () => {
     const userId = 1;
     // 復帰不可能フラグがfalseのセッションを設定
     const sessionWithResumableFalse = {
-      ...TEST_SESSION,
+      ...TEST_SESSION_AND_DECK?.session,
       resumeCount: 0,
       isResumable: 0,
     };
     const ankiSessionMock = vi.spyOn(
       AnkiSessionFakeRepository.prototype,
-      "getSessionById",
+      "getSessionAndDeckById",
     );
     ankiSessionMock.mockImplementation(async (_) => {
       return {
-        point: 100,
+        ...TEST_SESSION_AND_DECK,
         session: sessionWithResumableFalse,
       };
     });
 
     // 復帰不可能フラグがfalseの場合のエラーを期待
     await expect(
-      ankiSession.resumeSession(userId, TEST_SESSION.publicId),
+      ankiSession.resumeSession(
+        userId,
+        TEST_SESSION_AND_DECK?.session.publicId,
+      ),
     ).rejects.toThrow(ResumeLimitExceededError);
   });
 });

@@ -7,6 +7,7 @@ import { ANKI_SESSION_POINT, ANKI_SESSION_RESUME_LIMIT } from "@/lib/constant";
 import { nanoid } from "nanoid";
 import { Rating, type Grade, type StateType } from "ts-fsrs";
 import { f } from "@/lib/fsrs";
+import { isAfter } from "date-fns";
 
 export type SessionAndPoint = {
   session: typeof ankiSessions.$inferSelect;
@@ -88,10 +89,6 @@ export default class AnkiSessionService {
     return this.ankiSession.getLatestSession(userId);
   }
 
-  async getSessionAndDeckById(userId: number, publicId: string) {
-    return this.ankiSession.getSessionAndDeckById(userId, publicId);
-  }
-
   async startSession(
     user: NonNullable<Awaited<ReturnType<UserService["getUser"]>>>,
     deckPublicId: string,
@@ -114,31 +111,32 @@ export default class AnkiSessionService {
   }
 
   async resumeSession(userId: number, sessionPublicId: string) {
-    const session = await this.ankiSession.getSessionById(
+    const data = await this.ankiSession.getSessionAndDeckById(
       userId,
       sessionPublicId,
     );
 
-    if (!session) {
+    if (!data) {
       throw new SessionNotFoundError("セッションが見つかりません");
     }
 
+    const { session, cards, deck } = data;
+    //対象のセッションが完了済みならエラー
+    if (session.endsAt) {
+      throw new ResumeLimitExceededError("セッションは完了済みです");
+    }
+
+    // 対象のセッションの復帰回数がn回以上もしくは復帰可能フラグが false ならエラー
+    if (
+      session.resumeCount >= ANKI_SESSION_RESUME_LIMIT ||
+      !session.isResumable
+    )
+      throw new ResumeLimitExceededError("復帰回数が上限を超えました");
+
+    //TODO: 復習可能な暗記カードを取得
+    //TODO: 復習可能な暗記カードが一枚も無ければエラー
+
     await this.tx.transaction(async (pushBatch) => {
-      //対象のセッションが完了済みならエラー
-      if (session.endsAt) {
-        throw new ResumeLimitExceededError("セッションは完了済みです");
-      }
-
-      // 対象のセッションの復帰回数がn回以上もしくは復帰可能フラグが false ならエラー
-      if (
-        session.resumeCount >= ANKI_SESSION_RESUME_LIMIT ||
-        !session.isResumable
-      )
-        throw new ResumeLimitExceededError("復帰回数が上限を超えました");
-
-      //TODO: 復習可能な暗記カードを取得
-      //TODO: 復習可能な暗記カードが一枚も無ければエラー
-
       //対象の ankiSession レコードの復帰回数++
       pushBatch(
         this.ankiSession.updateResumeCount(
@@ -155,7 +153,19 @@ export default class AnkiSessionService {
       }
     });
 
-    return session;
+    const { id: _, ...sessionRes } = session;
+    const { id: ___, ...deckRes } = deck;
+    const cardsRes = cards.reduce(
+      (prev: Omit<(typeof cards)[number], "id">[], { id: _, due, ...rest }) => {
+        if (isAfter(due, new Date())) {
+          prev.push({ due, ...rest });
+        }
+        return prev;
+      },
+      [],
+    );
+
+    return { session: sessionRes, cards: cardsRes, deck: deckRes };
   }
 
   async endSession(
@@ -299,5 +309,12 @@ export class CardNotFoundError extends Error {
   constructor(message: string) {
     super(message);
     this.name = "CardNotFoundError";
+  }
+}
+
+export class NoReviewableCardsError extends Error {
+  constructor(message = "復習可能な暗記カードがありません") {
+    super(message);
+    this.name = "NoReviewableCardsError";
   }
 }
