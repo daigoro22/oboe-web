@@ -1,7 +1,10 @@
+import { cn } from "@/lib/utils";
 import { type VariantProps, cva } from "class-variance-authority";
 import type * as React from "react";
 
-export type FlexProps = React.PropsWithChildren<VariantProps<typeof flex>>;
+export type FlexProps = React.PropsWithChildren<
+  VariantProps<typeof flex> & React.ComponentProps<"div">
+>;
 const flex = cva("flex", {
   variants: {
     direction: {
@@ -40,8 +43,16 @@ export const Flex = ({
   gap,
   alignItems,
   justifyContent,
+  className,
+  ...props
 }: FlexProps) => (
-  <div className={flex({ direction, gap, alignItems, justifyContent })}>
+  <div
+    className={cn(
+      className,
+      flex({ direction, gap, alignItems, justifyContent }),
+    )}
+    {...props}
+  >
     {children}
   </div>
 );

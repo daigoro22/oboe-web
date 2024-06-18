@@ -10,6 +10,7 @@ const config: StorybookConfig = {
     "@storybook/addon-interactions",
     "@storybook/addon-mdx-gfm",
     "@storybook/addon-backgrounds",
+    "storybook-addon-remix-react-router",
   ],
   core: {
     builder: {

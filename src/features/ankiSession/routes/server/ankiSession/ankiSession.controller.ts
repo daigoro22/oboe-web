@@ -3,6 +3,7 @@ import AnkiSessionRepository from "./ankiSession.repository";
 import AnkiSessionService, {
   CardNotFoundError,
   InsufficientPointError,
+  ResumeLimitExceededError,
   SessionAlreadyEndedError,
   SessionNotFoundError,
 } from "./ankiSession.service";
@@ -14,7 +15,7 @@ import { endSessionSchema, newSessionSchema } from "@/schemas/ankiSession";
 
 type Context = C<Env>;
 
-const ROUTE = "/api/auth/verified/ankiSession" as const;
+export const ROUTE = "/api/auth/verified/ankiSession" as const;
 
 export const ankiSessionContainerMiddleware = createMiddleware(
   async (c, next) => {
@@ -64,7 +65,7 @@ const newPost = factory.createHandlers(
   }),
 );
 
-const resumeIdGet = factory.createHandlers(async (c: Context) => {
+const resumeIdPost = factory.createHandlers(async (c: Context) => {
   const ankiSession = container.resolve(AnkiSessionService);
   const user = c.get("userData");
   const id = c.req.param("id");
@@ -77,6 +78,12 @@ const resumeIdGet = factory.createHandlers(async (c: Context) => {
 
     await ankiSession.resumeSession(user.id, id);
   } catch (e) {
+    if (e instanceof SessionNotFoundError) {
+      return c.json({ error: e.message }, 404);
+    }
+    if (e instanceof ResumeLimitExceededError) {
+      return c.json({ error: e.message }, 409);
+    }
     return c.json({ error: "server error" }, 500);
   }
 
@@ -126,8 +133,29 @@ const idPut = factory.createHandlers(
     return c.text("success", 200);
   }),
 );
+
+const idGet = factory.createHandlers(async (c) => {
+  const ankiSession = container.resolve(AnkiSessionService);
+  const user = c.get("userData");
+  const sessionPublicId = c.req.param("id");
+
+  try {
+    const data = await ankiSession.getSession(user.id, sessionPublicId);
+    return c.json(data, 200);
+  } catch (error) {
+    if (error instanceof SessionNotFoundError) {
+      return c.json({ error: error.message }, 404);
+    }
+    return c.json({ error: "server error" }, 500);
+  }
+});
+
 export const ankiSession = new Hono<Env>()
-  .get(`${ROUTE}/latest`, ...latestGet)
-  .post(`${ROUTE}/new`, ...newPost)
-  .get(`${ROUTE}/resume/:id`, ...resumeIdGet)
-  .put(`${ROUTE}/:id`, ...idPut);
+  .basePath(ROUTE)
+  .get("/latest", ...latestGet)
+  .post("/new", ...newPost)
+  .post("/resume/:id", ...resumeIdPost)
+  .put("/:id", ...idPut)
+  .get("/:id", ...idGet);
+
+export type AnkiSessionRoute = typeof ankiSession;

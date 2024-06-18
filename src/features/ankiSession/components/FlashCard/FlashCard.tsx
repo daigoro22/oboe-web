@@ -1,11 +1,35 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+import {
+  isErrorResponse,
+  resumeSessionAtom,
+  targetCardNumAtom,
+} from "@/features/ankiSession/atoms/ankiSessionAtom";
+import { cn } from "@/lib/utils";
+import { useAtomValue } from "jotai";
 import * as React from "react";
-export type FlashCardProps = { front: string; back: string; flip: boolean };
-export const FlashCard = ({ front, back, flip }: FlashCardProps) => {
-  return (
-    <Card>
+import { useParams } from "react-router-dom";
+export type FlashCardProps = {} & React.ComponentProps<typeof Card>;
+export const FlashCard = ({ className, ...props }: FlashCardProps) => {
+  const { data: d, isSuccess } = useAtomValue(resumeSessionAtom);
+  const data = isErrorResponse(d) ? undefined : d;
+  const targetCardNum = useAtomValue(targetCardNumAtom);
+  const [flip, setFlip] = React.useState(false);
+
+  return !isSuccess ? (
+    <Skeleton className="w-full h-32" />
+  ) : (
+    <Card
+      {...props}
+      className={cn(className, "drop-shadow-sm border")}
+      onClick={() => setFlip(!flip)}
+    >
       <CardHeader className="items-center">
-        <CardTitle>{flip ? back : front}</CardTitle>
+        <CardTitle>
+          {flip
+            ? data?.cards[targetCardNum]?.backContent
+            : data?.cards[targetCardNum]?.frontContent}
+        </CardTitle>
       </CardHeader>
     </Card>
   );

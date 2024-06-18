@@ -126,7 +126,7 @@ export default class AnkiSessionService {
     await this.tx.transaction(async (pushBatch) => {
       //対象のセッションが完了済みならエラー
       if (session.endsAt) {
-        throw new ResumeLimitExceededError("復帰回数が上限を超えました");
+        throw new ResumeLimitExceededError("セッションは完了済みです");
       }
 
       // 対象のセッションの復帰回数がn回以上もしくは復帰可能フラグが false ならエラー
@@ -135,6 +135,10 @@ export default class AnkiSessionService {
         !session.isResumable
       )
         throw new ResumeLimitExceededError("復帰回数が上限を超えました");
+
+      //TODO: 復習可能な暗記カードを取得
+      //TODO: 復習可能な暗記カードが一枚も無ければエラー
+
       //対象の ankiSession レコードの復帰回数++
       pushBatch(
         this.ankiSession.updateResumeCount(
@@ -249,6 +253,17 @@ export default class AnkiSessionService {
         ),
       );
     });
+  }
+
+  async getSession(userId: number, sessionPublicId: string) {
+    const session = await this.ankiSession.getSessionById(
+      userId,
+      sessionPublicId,
+    );
+    if (!session) {
+      throw new SessionNotFoundError("セッションが見つかりません");
+    }
+    return session;
   }
 }
 

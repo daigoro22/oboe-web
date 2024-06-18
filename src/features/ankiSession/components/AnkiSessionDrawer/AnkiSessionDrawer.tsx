@@ -33,10 +33,11 @@ export const AnkiSessionDrawer = ({
   pointFrom,
   pointTo,
   deck: { id, name },
-}: AnkiSessionDrawerProps) => {
+  children,
+}: React.PropsWithChildren<AnkiSessionDrawerProps>) => {
   return (
     <Drawer>
-      <DrawerTrigger>Open</DrawerTrigger>
+      <DrawerTrigger asChild>{children}</DrawerTrigger>
       <DrawerContent>
         <DrawerHeader>
           <DrawerTitle>暗記セッション</DrawerTitle>

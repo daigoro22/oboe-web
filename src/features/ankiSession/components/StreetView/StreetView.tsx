@@ -1,38 +1,18 @@
-import type * as React from "react";
-import {
-  APIProvider,
-  Map as GoogleMap,
-  useMap,
-  useMapsLibrary,
-} from "@vis.gl/react-google-maps";
+import * as React from "react";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useAtomValue } from "jotai";
+import { resumeSessionAtom } from "@/features/ankiSession/atoms/ankiSessionAtom";
 
-export type StreetViewProps = {
-  apiKey: string;
-  position: { lat: number; lng: number };
-  pov: { heading: number; pitch: number };
-};
+const Core = React.lazy(
+  () => import("@/features/ankiSession/components/StreetView/Core"),
+);
 
-const View = ({ position, pov }: Omit<StreetViewProps, "apiKey">) => {
-  const map = useMap("main");
-  const panorama = map?.getStreetView();
-  panorama?.setPosition(position);
-  panorama?.setPov(pov);
-  panorama?.setVisible(true);
+export const StreetView = () => {
+  const { isSuccess } = useAtomValue(resumeSessionAtom);
 
-  return (
-    <GoogleMap
-      id="main"
-      defaultZoom={3}
-      gestureHandling="none"
-      disableDefaultUI={true}
-    />
-  );
-};
-
-export const StreetView = ({ apiKey, position, pov }: StreetViewProps) => {
-  return (
-    <APIProvider apiKey={apiKey}>
-      <View position={position} pov={pov} />
-    </APIProvider>
+  return !isSuccess ? (
+    <Skeleton className="w-full h-full" /> //TODO: Suspense 使いたいな
+  ) : (
+    <Core />
   );
 };

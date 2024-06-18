@@ -5,7 +5,6 @@ import { ankiSessions, cards, decks, users } from "@/db/schema";
 import { faker } from "@faker-js/faker";
 import { TESTING_TIME, toIdGenerator } from "@/lib/test-helper";
 import { eq } from "drizzle-orm";
-import { c } from "node_modules/vite/dist/node/types.d-aGj9QkWt";
 
 let ankiSessionRepository: AnkiSessionRepository;
 let ankiSessionFixtures: (typeof ankiSessions.$inferSelect)[];
