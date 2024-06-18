@@ -30,7 +30,7 @@ export const ConfirmResumeModal = (props: ConfirmResumeModalProps) => {
     }
   }, [setApiCallAllowed, data]);
 
-  const [open, setOpen] = React.useState(true); //TODO: 初回のセッションの場合は出さずにセッション開始
+  const [open, setOpen] = React.useState(true);
   const navigate = useNavigate();
 
   return (
