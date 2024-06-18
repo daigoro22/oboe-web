@@ -199,3 +199,28 @@ describe(":id:PUT", () => {
     spy.mockRestore();
   });
 });
+
+describe(":id:GET", () => {
+  test("通常ケース", async () => {
+    const res = await client.api.auth.verified.ankiSession[":id"].$get({
+      param: { id: TEST_SESSION_AND_DECK?.session.publicId ?? "" },
+    });
+    expect(res.status).toBe(200);
+  });
+  test("セッションが見つからないケース", async () => {
+    const spy = vi
+      .spyOn(AnkiSessionService.prototype, "getSession")
+      .mockImplementation(async () => {
+        throw new SessionNotFoundError("セッションが見つかりません");
+      });
+
+    const res = await client.api.auth.verified.ankiSession[":id"].$get({
+      param: { id: "non_existent_session" },
+    });
+
+    expect(res.status).toBe(404);
+    const jsonResponse = await res.json();
+    expect(jsonResponse).toEqual({ error: "セッションが見つかりません" });
+    spy.mockRestore();
+  });
+});

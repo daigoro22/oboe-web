@@ -133,11 +133,29 @@ const idPut = factory.createHandlers(
     return c.text("success", 200);
   }),
 );
+
+const idGet = factory.createHandlers(async (c) => {
+  const ankiSession = container.resolve(AnkiSessionService);
+  const user = c.get("userData");
+  const sessionPublicId = c.req.param("id");
+
+  try {
+    const data = await ankiSession.getSession(user.id, sessionPublicId);
+    return c.json(data, 200);
+  } catch (error) {
+    if (error instanceof SessionNotFoundError) {
+      return c.json({ error: error.message }, 404);
+    }
+    return c.json({ error: "server error" }, 500);
+  }
+});
+
 export const ankiSession = new Hono<Env>()
   .basePath(ROUTE)
   .get("/latest", ...latestGet)
   .post("/new", ...newPost)
   .post("/resume/:id", ...resumeIdPost)
-  .put("/:id", ...idPut);
+  .put("/:id", ...idPut)
+  .get("/:id", ...idGet);
 
 export type AnkiSessionRoute = typeof ankiSession;
