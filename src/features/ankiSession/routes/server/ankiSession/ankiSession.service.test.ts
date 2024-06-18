@@ -1,6 +1,7 @@
 import "reflect-metadata";
 import AnkiSessionService, {
   InsufficientPointError,
+  NoReviewableCardsError,
   ResumeLimitExceededError,
   SessionAlreadyEndedError,
   SessionNotFoundError,
@@ -135,6 +136,37 @@ describe("resumeSession", () => {
         TEST_SESSION_AND_DECK?.session.publicId,
       ),
     ).rejects.toThrow(ResumeLimitExceededError);
+  });
+
+  test("復習可能な暗記カードが存在しない場合のエラー", async () => {
+    const userId = 1;
+
+    // 復習可能な暗記カードが存在しないセッションを設定
+    const sessionWithNoReviewableCards = {
+      ...TEST_SESSION_AND_DECK?.session,
+      resumeCount: 0,
+      isResumable: 1,
+    };
+    const ankiSessionMock = vi.spyOn(
+      AnkiSessionFakeRepository.prototype,
+      "getSessionAndDeckById",
+    );
+
+    ankiSessionMock.mockImplementation(async (_) => {
+      return {
+        ...TEST_SESSION_AND_DECK,
+        session: sessionWithNoReviewableCards,
+        cards: [], // 復習可能なカードが0枚
+      };
+    });
+
+    // 復習可能な暗記カードが存在しない場合のエラーを期待
+    await expect(
+      ankiSession.resumeSession(
+        userId,
+        TEST_SESSION_AND_DECK?.session.publicId,
+      ),
+    ).rejects.toThrow(NoReviewableCardsError);
   });
 });
 

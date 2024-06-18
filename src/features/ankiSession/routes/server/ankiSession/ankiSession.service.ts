@@ -121,6 +121,22 @@ export default class AnkiSessionService {
     }
 
     const { session, cards, deck } = data;
+
+    // 復習可能な暗記カードを取得
+    const cardsRes = cards.reduce(
+      (prev: Omit<(typeof cards)[number], "id">[], { id: _, due, ...rest }) => {
+        if (isAfter(due, new Date())) {
+          prev.push({ due, ...rest });
+        }
+        return prev;
+      },
+      [],
+    );
+    //復習可能な暗記カードが一枚も無ければエラー
+    if (cardsRes.length === 0) {
+      throw new NoReviewableCardsError("復習可能なカードがありません");
+    }
+
     //対象のセッションが完了済みならエラー
     if (session.endsAt) {
       throw new ResumeLimitExceededError("セッションは完了済みです");
@@ -155,15 +171,6 @@ export default class AnkiSessionService {
 
     const { id: _, ...sessionRes } = session;
     const { id: ___, ...deckRes } = deck;
-    const cardsRes = cards.reduce(
-      (prev: Omit<(typeof cards)[number], "id">[], { id: _, due, ...rest }) => {
-        if (isAfter(due, new Date())) {
-          prev.push({ due, ...rest });
-        }
-        return prev;
-      },
-      [],
-    );
 
     return { session: sessionRes, cards: cardsRes, deck: deckRes };
   }

@@ -15,6 +15,7 @@ import { verifySignupMiddleware } from "@/lib/middleware";
 import { faker } from "@/db/faker";
 import AnkiSessionService, {
   InsufficientPointError,
+  NoReviewableCardsError,
   SessionAlreadyEndedError,
   SessionNotFoundError,
 } from "@/features/ankiSession/routes/server/ankiSession/ankiSession.service";
@@ -142,6 +143,23 @@ describe("resume/:id:GET", () => {
     expect(res.status).toBe(404);
     const jsonResponse = await res.json();
     expect(jsonResponse).toEqual({ error: "セッションが見つかりません" });
+    spy.mockRestore();
+  });
+
+  test("復習可能な暗記カードが存在しない場合のエラーケース", async () => {
+    const spy = vi
+      .spyOn(AnkiSessionService.prototype, "resumeSession")
+      .mockImplementation(async () => {
+        throw new NoReviewableCardsError("復習可能なカードがありません");
+      });
+
+    const res = await client.api.auth.verified.ankiSession.resume[":id"].$post({
+      param: { id: "session_with_no_reviewable_cards" },
+    });
+
+    expect(res.status).toBe(409);
+    const jsonResponse = await res.json();
+    expect(jsonResponse).toEqual({ error: "復習可能なカードがありません" });
     spy.mockRestore();
   });
 });
