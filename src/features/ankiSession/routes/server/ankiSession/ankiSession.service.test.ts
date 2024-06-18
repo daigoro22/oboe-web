@@ -182,3 +182,26 @@ describe("endSession", () => {
     ankiSessionMock.mockRestore();
   });
 });
+
+describe("getSession", () => {
+  test("通常ケース", async () => {
+    const res = await ankiSession.getSession(1, TEST_SESSION.publicId);
+    expect(res).toEqual(TEST_SESSION);
+  });
+  test("セッションが見つからないエラーケース", async () => {
+    const userId = 1;
+    const sessionPublicId = "non_existent_session";
+    const ankiSessionMock = vi.spyOn(
+      AnkiSessionFakeRepository.prototype,
+      "getSessionById",
+    );
+    ankiSessionMock.mockImplementation(async (_) => undefined);
+
+    // セッションが見つからない場合のエラーを期待
+    await expect(
+      ankiSession.getSession(userId, sessionPublicId),
+    ).rejects.toThrow(SessionNotFoundError);
+
+    ankiSessionMock.mockRestore();
+  });
+});

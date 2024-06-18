@@ -254,6 +254,17 @@ export default class AnkiSessionService {
       );
     });
   }
+
+  async getSession(userId: number, sessionPublicId: string) {
+    const session = await this.ankiSession.getSessionById(
+      userId,
+      sessionPublicId,
+    );
+    if (!session) {
+      throw new SessionNotFoundError("セッションが見つかりません");
+    }
+    return session;
+  }
 }
 
 export class SessionNotFoundError extends Error {
