@@ -36,17 +36,22 @@ export const RatingButton = ({
   const navigate = useNavigate();
   const endSession = useMutation({
     mutationFn: async (
-      data: Omit<
+      param: Omit<
         Parameters<
           (typeof client.api.auth.verified.ankiSession)[":id"]["$put"]
         >[0],
         "param"
       >,
     ) => {
-      await client.api.auth.verified.ankiSession[":id"].$put({
-        ...data,
+      const data = await client.api.auth.verified.ankiSession[":id"].$put({
+        ...param,
         param: { id },
       });
+      const json = await data.json();
+      if (!data.ok) {
+        throw new Error(isErrorResponse(json) ? json.error : "エラー");
+      }
+      return json;
     },
     onSuccess(_, variables) {
       toast({

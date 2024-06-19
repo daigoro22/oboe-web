@@ -3,6 +3,7 @@ import AnkiSessionRepository from "./ankiSession.repository";
 import AnkiSessionService, {
   CardNotFoundError,
   InsufficientPointError,
+  NoReviewableCardsError,
   ResumeLimitExceededError,
   SessionAlreadyEndedError,
   SessionNotFoundError,
@@ -41,8 +42,10 @@ const latestGet = factory.createHandlers(async (c: Context) => {
   return c.json({ publicId, isResumable });
 });
 
-const newPost = factory.createHandlers(
-  zValidator("json", newSessionSchema, async (result, c) => {
+const newPost = zValidator(
+  "json",
+  newSessionSchema,
+  async (result, c: Context) => {
     const { success, data } = result;
 
     if (!success) {
@@ -62,45 +65,41 @@ const newPost = factory.createHandlers(
       return c.json({ error: "server error" }, 500);
     }
     return c.json({ sessionId: newSessionId }, 201);
-  }),
+  },
 );
 
 const resumeIdPost = factory.createHandlers(async (c: Context) => {
   const ankiSession = container.resolve(AnkiSessionService);
   const user = c.get("userData");
   const id = c.req.param("id");
-  let data: Awaited<ReturnType<typeof ankiSession.getSessionAndDeckById>>;
+  let data: Awaited<ReturnType<typeof ankiSession.resumeSession>>;
   try {
-    data = await ankiSession.getSessionAndDeckById(user.id, id);
-    if (!data) {
-      return c.json({ error: "not found" }, 404);
-    }
-
-    await ankiSession.resumeSession(user.id, id);
+    data = await ankiSession.resumeSession(user.id, id);
   } catch (e) {
     if (e instanceof SessionNotFoundError) {
       return c.json({ error: e.message }, 404);
     }
-    if (e instanceof ResumeLimitExceededError) {
+    if (
+      e instanceof ResumeLimitExceededError ||
+      e instanceof NoReviewableCardsError
+    ) {
       return c.json({ error: e.message }, 409);
     }
     return c.json({ error: "server error" }, 500);
   }
 
-  const {
-    session: { id: _, ...session },
-    deck: { id: __, ...deck },
-    cards,
-  } = data;
+  const { session, deck, cards } = data;
   return c.json({
     session,
     deck,
-    cards: cards.map(({ id: _, ...card }) => card),
+    cards,
   });
 });
 
-const idPut = factory.createHandlers(
-  zValidator("json", endSessionSchema, async (result, c) => {
+const idPut = zValidator(
+  "json",
+  endSessionSchema,
+  async (result, c: Context) => {
     const { success, data } = result;
     if (!success) {
       return c.json(result.error, 400);
@@ -130,8 +129,8 @@ const idPut = factory.createHandlers(
       }
       return c.json({ error: "server error" }, 500);
     }
-    return c.text("success", 200);
-  }),
+    return c.json("success", 200);
+  },
 );
 
 const idGet = factory.createHandlers(async (c) => {
@@ -153,9 +152,9 @@ const idGet = factory.createHandlers(async (c) => {
 export const ankiSession = new Hono<Env>()
   .basePath(ROUTE)
   .get("/latest", ...latestGet)
-  .post("/new", ...newPost)
+  .post("/new", newPost)
   .post("/resume/:id", ...resumeIdPost)
-  .put("/:id", ...idPut)
+  .put("/:id", idPut)
   .get("/:id", ...idGet);
 
 export type AnkiSessionRoute = typeof ankiSession;

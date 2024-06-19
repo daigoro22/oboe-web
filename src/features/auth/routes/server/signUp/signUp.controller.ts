@@ -44,7 +44,6 @@ export const signUp = new Hono<Env>().post(
       if (e instanceof DrizzleError) {
         return c.json({ error: "cannot create user data" }, 500);
       }
-      console.log(e);
       return c.json({ error: "server error" }, 500);
     }
 
