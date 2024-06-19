@@ -131,10 +131,6 @@ export default class AnkiSessionService {
       },
       [],
     );
-    //復習可能な暗記カードが一枚も無ければエラー
-    if (cardsRes.length < 1) {
-      throw new NoReviewableCardsError("復習可能なカードがありません");
-    }
 
     //対象のセッションが完了済みならエラー
     if (session.endsAt) {
@@ -147,6 +143,11 @@ export default class AnkiSessionService {
       !session.isResumable
     )
       throw new ResumeLimitExceededError("復帰回数が上限を超えました");
+
+    //復習可能な暗記カードが一枚も無ければエラー
+    if (cardsRes.length < 1) {
+      throw new NoReviewableCardsError("復習可能なカードがありません");
+    }
 
     await this.tx.transaction(async (pushBatch) => {
       //対象の ankiSession レコードの復帰回数++
