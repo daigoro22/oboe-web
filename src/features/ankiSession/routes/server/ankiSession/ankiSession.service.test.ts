@@ -68,7 +68,6 @@ describe("resumeSession", () => {
         TEST_SESSION_AND_DECK?.session.publicId,
       );
     } catch (e) {
-      console.log(e);
       expect(true).toBe(false);
     }
     const {
