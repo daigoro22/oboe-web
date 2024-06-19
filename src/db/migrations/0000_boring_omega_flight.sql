@@ -35,7 +35,7 @@ CREATE TABLE `cards` (
 	`scheduled_days` integer NOT NULL,
 	`reps` integer NOT NULL,
 	`lapses` integer NOT NULL,
-	`state` text DEFAULT 'New' NOT NULL,
+	`state` integer DEFAULT 0 NOT NULL,
 	`last_review` integer,
 	`lat` real NOT NULL,
 	`lng` real NOT NULL,

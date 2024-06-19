@@ -121,7 +121,6 @@ export default class AnkiSessionService {
     }
 
     const { session, cards, deck } = data;
-
     // 復習可能な暗記カードを取得
     const cardsRes = cards.reduce(
       (prev: Omit<(typeof cards)[number], "id">[], { id: _, due, ...rest }) => {
@@ -221,7 +220,7 @@ export default class AnkiSessionService {
             scheduled_days: scheduledDays,
             reps,
             lapses,
-            state: state as StateType,
+            state,
             last_review: lastReview,
           },
           new Date(),

@@ -29,6 +29,8 @@ import { verifySignupMiddleware } from "@/lib/middleware";
 import { userContainerMiddleware } from "@/features/auth/routes/server/user/user.controller";
 import { transactionContainerMiddleware } from "@/lib/transaction";
 import { ROUTE as ANKI_SESSION_ROUTE } from "@/features/ankiSession/routes/server/ankiSession/ankiSession.controller";
+import { logger } from "hono/logger";
+import { customLogger } from "@/lib/logger";
 
 const app = new Hono<Env>({ strict: false });
 
@@ -42,6 +44,7 @@ app.use(
 );
 
 app.use("*", initAuthConfig(getAuthConfig));
+app.use("*", logger(customLogger));
 
 app.use("/api/oauth/*", authHandler());
 

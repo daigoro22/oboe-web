@@ -42,8 +42,10 @@ const latestGet = factory.createHandlers(async (c: Context) => {
   return c.json({ publicId, isResumable });
 });
 
-const newPost = factory.createHandlers(
-  zValidator("json", newSessionSchema, async (result, c) => {
+const newPost = zValidator(
+  "json",
+  newSessionSchema,
+  async (result, c: Context) => {
     const { success, data } = result;
 
     if (!success) {
@@ -63,7 +65,7 @@ const newPost = factory.createHandlers(
       return c.json({ error: "server error" }, 500);
     }
     return c.json({ sessionId: newSessionId }, 201);
-  }),
+  },
 );
 
 const resumeIdPost = factory.createHandlers(async (c: Context) => {
@@ -94,8 +96,10 @@ const resumeIdPost = factory.createHandlers(async (c: Context) => {
   });
 });
 
-const idPut = factory.createHandlers(
-  zValidator("json", endSessionSchema, async (result, c) => {
+const idPut = zValidator(
+  "json",
+  endSessionSchema,
+  async (result, c: Context) => {
     const { success, data } = result;
     if (!success) {
       return c.json(result.error, 400);
@@ -125,8 +129,8 @@ const idPut = factory.createHandlers(
       }
       return c.json({ error: "server error" }, 500);
     }
-    return c.text("success", 200);
-  }),
+    return c.json("success", 200);
+  },
 );
 
 const idGet = factory.createHandlers(async (c) => {
@@ -148,9 +152,9 @@ const idGet = factory.createHandlers(async (c) => {
 export const ankiSession = new Hono<Env>()
   .basePath(ROUTE)
   .get("/latest", ...latestGet)
-  .post("/new", ...newPost)
+  .post("/new", newPost)
   .post("/resume/:id", ...resumeIdPost)
-  .put("/:id", ...idPut)
+  .put("/:id", idPut)
   .get("/:id", ...idGet);
 
 export type AnkiSessionRoute = typeof ankiSession;
