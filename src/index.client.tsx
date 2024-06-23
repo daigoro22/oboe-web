@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { AnkiSession } from "@/features/ankiSession/routes/client/ankiSession";
 import { SignIn } from "@/features/auth/routes/client/signIn";
 import { SignUp, signUpLoader } from "@/features/auth/routes/client/signUp";
-import Index from "@/routes";
+import Index from "@/features/misc/routes/client";
 import { authConfigManager, SessionProvider } from "@hono/auth-js/react";
 import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
