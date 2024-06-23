@@ -1,7 +1,6 @@
 import { CardLayout } from "@/components/elements/CardLayout";
 import { Grid } from "@/components/elements/Grid";
-import { AnkiSessionDrawer } from "@/features/ankiSession/components/AnkiSessionDrawer";
-import { StudyStreakCard } from "@/features/ankiSession/components/StudyStreakCard";
+import { StudyStreakCard } from "@/features/misc/components/StudyStreakCard";
 
 const Index = () => {
   return (

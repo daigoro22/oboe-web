@@ -7,7 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { AnkiSessionDrawer } from "@/features/ankiSession/components/AnkiSessionDrawer";
+import { AnkiSessionDrawer } from "@/features/misc/components/AnkiSessionDrawer";
 import { CalendarDays } from "lucide-react";
 import * as React from "react";
 
