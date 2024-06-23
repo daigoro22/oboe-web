@@ -26,7 +26,7 @@ import {
   ankiSessionContainerMiddleware,
 } from "@/features/ankiSession/routes/server/ankiSession/ankiSession.controller";
 import { verifySignupMiddleware } from "@/lib/middleware";
-import { userContainerMiddleware } from "@/features/auth/routes/server/user/user.controller";
+import { userContainerMiddleware } from "@/features/misc/routes/server/user/user.controller";
 import { transactionContainerMiddleware } from "@/lib/transaction";
 import { ROUTE as ANKI_SESSION_ROUTE } from "@/features/ankiSession/routes/server/ankiSession/ankiSession.controller";
 import { logger } from "hono/logger";

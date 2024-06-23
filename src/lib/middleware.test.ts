@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import UserService from "@/features/auth/routes/server/user/user.service";
+import UserService from "@/features/misc/routes/server/user/user.service";
 import { verifySignupMiddleware } from "@/lib/middleware";
 import { setFakeUserMiddleware } from "@/lib/test-helper";
 import { UserFakeRepository } from "@/lib/test-helper/user";
