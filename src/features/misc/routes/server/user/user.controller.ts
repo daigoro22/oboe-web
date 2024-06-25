@@ -29,3 +29,4 @@ const indexGet = factory.createHandlers(async (c: Context) => {
 // user.use(ROUTE, userContainerMiddleware);
 
 export const user = new Hono<Env>().basePath(ROUTE).get("/", ...indexGet);
+export type UsersRoute = typeof user;
