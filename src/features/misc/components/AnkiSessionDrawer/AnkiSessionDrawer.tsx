@@ -24,17 +24,12 @@ const Point = ({
   </Flex>
 );
 
-export type AnkiSessionDrawerProps = {
-  pointFrom: number;
-  pointTo: number;
-  deck: { id: string; name: string };
-};
+export type AnkiSessionDrawerProps = {};
 export const AnkiSessionDrawer = ({
-  pointFrom,
-  pointTo,
-  deck: { id, name },
   children,
 }: React.PropsWithChildren<AnkiSessionDrawerProps>) => {
+  // TODO: pointFrom, pointTo, deck, streak を取得もしくは form 入力
+  const [pointFrom, pointTo, name] = [120, 100, "テストデッキ"];
   return (
     <Drawer>
       <DrawerTrigger asChild>{children}</DrawerTrigger>
