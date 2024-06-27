@@ -24,6 +24,7 @@ const Point = ({
   </Flex>
 );
 
+// biome-ignore lint/complexity/noBannedTypes: <explanation>
 export type AnkiSessionDrawerProps = {};
 export const AnkiSessionDrawer = ({
   children,

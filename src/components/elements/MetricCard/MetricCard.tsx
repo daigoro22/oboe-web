@@ -8,6 +8,7 @@ export type MetricCardProps = {
   icon: React.ReactNode;
   desc: string;
   buttonParent?: (
+    // biome-ignore lint/complexity/noBannedTypes: <explanation>
     props: React.PropsWithChildren<{}>,
   ) => React.ReactElement | null;
   buttonText: string;
