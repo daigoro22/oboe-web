@@ -15,6 +15,7 @@ import type { InferInsertModel, Table, TableConfig } from "drizzle-orm";
 import { generateFakeObject } from "@/lib/test-helper";
 import { PROVIDER } from "@/lib/constant";
 import { type Card, createEmptyCard } from "ts-fsrs";
+import Stripe from "stripe";
 
 export function createSeeds<
   U extends InferInsertModel<Table<T>>,
@@ -188,8 +189,37 @@ async function main() {
     4,
     db,
   );
+  await stripeData();
   console.log("finish");
   process.exit();
 }
+
+const stripeData = async () => {
+  const stripe = new Stripe(import.meta.env.VITE_STRIPE_SECRET_KEY);
+  const prices = await stripe.prices.list({ limit: 100 });
+  const productIds = [faker.string.nanoid(), faker.string.nanoid()];
+  if (prices.data.some(({ product }) => productIds.includes(String(product)))) {
+    console.log("product already exists");
+    return;
+  }
+
+  await stripe.products.create({
+    name: "ポイントパック（500 pt）",
+    id: productIds[0],
+    default_price_data: {
+      currency: "jpy",
+      unit_amount: 500,
+    },
+  });
+  await stripe.products.create({
+    name: "ポイントパック（1000 pt）",
+    id: productIds[1],
+    default_price_data: {
+      currency: "jpy",
+      unit_amount: 1000,
+    },
+  });
+  console.log("products created");
+};
 
 main();
