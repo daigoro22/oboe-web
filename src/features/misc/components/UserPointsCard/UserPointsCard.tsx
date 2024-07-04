@@ -5,6 +5,7 @@ import { useAtomValue } from "jotai";
 import { Coins } from "lucide-react";
 import * as React from "react";
 
+// biome-ignore lint/complexity/noBannedTypes: <explanation>
 export type UserPointsCardProps = {};
 export const UserPointsCard = (props: UserPointsCardProps) => {
   const { data } = useAtomValue(getUsersAtom);
