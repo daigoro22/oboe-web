@@ -43,3 +43,5 @@ export const purchase = new Hono<Env>()
   .basePath(ROUTE)
   .get("/", ...getAllProductsAndPrices)
   .post("/purchase/:priceId", ..._purchase);
+
+export type PurchaseRoute = typeof purchase;
