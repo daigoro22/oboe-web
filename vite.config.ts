@@ -5,7 +5,29 @@ import adapter from "@hono/vite-dev-server/cloudflare";
 import svgr from "vite-plugin-svgr";
 
 import { defineConfig } from "vite";
-import commonjs from "vite-plugin-commonjs";
+
+const cjsPackages = [
+  "cookie",
+  "seedrandom",
+  "qs",
+  "side-channel",
+  "get-intrinsic",
+  "es-errors",
+  "has-symbols",
+  "has-proto",
+  "function-bind",
+  "hasown",
+  "call-bind",
+  "set-function-length",
+  "define-data-property",
+  "es-define-property",
+  "gopd",
+  "has-property-descriptors",
+  "object-inspect",
+  "crypto-browserify",
+  "randombytes",
+  "safe-buffer",
+];
 
 export default defineConfig({
   plugins: [
@@ -14,16 +36,6 @@ export default defineConfig({
       adapter,
       entry: "src/index.tsx",
     }),
-    commonjs({
-      filter(id) {
-        if (
-          id.includes("node_modules/cookie") ||
-          id.includes("node_modules/seedrandom")
-        ) {
-          return true;
-        }
-      },
-    }),
     svgr(),
   ],
   resolve: {
@@ -31,5 +43,8 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
-  ssr: { external: ["react", "react-dom"] },
+  ssr: {
+    external: [...["react", "react-dom"], ...cjsPackages],
+    target: "webworker",
+  },
 });
