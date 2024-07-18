@@ -8,7 +8,7 @@ import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Purchase } from "@/features/purchase/routes/client/purchase";
-import { PurchaseLoader } from "@/features/purchase/components/PurchaseList";
+import { purchaseLoader } from "@/features/purchase/components/PurchaseList";
 
 authConfigManager.setConfig({
   basePath: "/api/oauth",
@@ -28,7 +28,7 @@ const router = createBrowserRouter([
     element: <SignUp />,
     loader: signUpLoader,
   },
-  { path: "/purchase", element: <Purchase /> },
+  { path: "/purchase", element: <Purchase />, loader: purchaseLoader },
   { path: "/", element: <Index /> },
   { path: "/anki-sessions/:id", element: <AnkiSession /> },
 ]);

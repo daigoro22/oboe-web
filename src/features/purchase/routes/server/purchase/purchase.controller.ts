@@ -3,11 +3,10 @@ import PurchaseService, { InvalidQuantityError } from "./purchase.service";
 import type { Env } from "env";
 import { Hono } from "hono";
 import { createFactory, createMiddleware } from "hono/factory";
-import { error } from "node:console";
 
 import { container } from "tsyringe";
 
-const ROUTE = "/api/auth/verified/purchase" as const;
+export const ROUTE = "/api/auth/verified/purchase" as const;
 const factory = createFactory();
 
 export const purchaseContainerMiddleware = createMiddleware(async (c, next) => {

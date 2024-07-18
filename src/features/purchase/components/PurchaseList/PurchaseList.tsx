@@ -3,19 +3,16 @@ import {
   type AllProductsAndPricesResponse,
   getAllProductsAndPrices,
 } from "@/features/purchase/api/purchase";
-import * as React from "react";
 import { useLoaderData } from "react-router-dom";
 
 // biome-ignore lint/complexity/noBannedTypes: <explanation></explanation>
 export type PurchaseListProps = {};
-
-export const PurchaseLoader = async () => await getAllProductsAndPrices();
+export const purchaseLoader = async () => await getAllProductsAndPrices();
 
 export const PurchaseList = (props: PurchaseListProps) => {
-  // const allProductsAndPrices = useLoaderData() as AllProductsAndPricesResponse; //FIXME: as を使わず型付け
+  const allProductsAndPrices = useLoaderData() as AllProductsAndPricesResponse; //FIXME: as を使わず型付け
+  console.log(allProductsAndPrices);
 
-  // const rows = allProductsAndPrices.map(({ id: key }) => ({ key, cells: [] }));
-  // console.log(rows);
   return (
     <List
       rows={[
