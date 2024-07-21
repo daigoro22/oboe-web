@@ -3,6 +3,7 @@ import { inject, injectable } from "tsyringe";
 
 export interface IUser {
   getUser: (providerAccountId: string) => Promise<typeof users.$inferSelect>;
+  setPoint: (userId: number, point: number) => Promise<void>;
 }
 
 @injectable()

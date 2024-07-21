@@ -1,6 +1,6 @@
 import PurchaseRepository from "./purchase.repository";
 import PurchaseService, { InvalidQuantityError } from "./purchase.service";
-import type { Env } from "env";
+import type { Env, Context } from "env";
 import { Hono } from "hono";
 import { createFactory, createMiddleware } from "hono/factory";
 
@@ -22,12 +22,13 @@ const getAllProductsAndPrices = factory.createHandlers(async (c) => {
   return c.json(products);
 });
 
-const _purchase = factory.createHandlers(async (c) => {
+const _purchase = factory.createHandlers(async (c: Context) => {
   const priceId = c.req.param("priceId");
+  const user = c.get("userData");
 
   const purchase = container.resolve(PurchaseService);
   try {
-    const session = await purchase.purchase(priceId, "1");
+    const session = await purchase.purchase(user.id, user.point, priceId, "1");
     return c.json(session);
   } catch (e) {
     if (e instanceof InvalidQuantityError) {

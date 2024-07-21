@@ -19,4 +19,8 @@ export default class UserRepository implements IUser {
 
     return res[0]?.users;
   }
+
+  async setPoint(userId: number, point: number) {
+    await this.db.update(users).set({ point }).where(eq(users.id, userId));
+  }
 }
