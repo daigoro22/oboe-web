@@ -1,14 +1,12 @@
 import UserRepository from "./user.repository";
 import UserService from "./user.service";
-import type { Env } from "env";
-import { type Context as C, Hono } from "hono";
+import type { Context, Env } from "env";
+import { Hono } from "hono";
 import { createFactory, createMiddleware } from "hono/factory";
 
 import { container } from "tsyringe";
 
 const ROUTE = "/api/auth/verified/users" as const;
-
-type Context = C<Env>;
 
 export const userContainerMiddleware = createMiddleware(async (c, next) => {
   container.register("IUser", {

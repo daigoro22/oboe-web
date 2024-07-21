@@ -8,13 +8,11 @@ import AnkiSessionService, {
   SessionAlreadyEndedError,
   SessionNotFoundError,
 } from "./ankiSession.service";
-import type { Env } from "env";
-import { type Context as C, Hono } from "hono";
+import type { Env, Context } from "env";
+import { Hono } from "hono";
 import { createFactory, createMiddleware } from "hono/factory";
 import { container } from "tsyringe";
 import { endSessionSchema, newSessionSchema } from "@/schemas/ankiSession";
-
-type Context = C<Env>;
 
 export const ROUTE = "/api/auth/verified/ankiSession" as const;
 
