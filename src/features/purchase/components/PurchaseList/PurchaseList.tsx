@@ -4,6 +4,7 @@ import {
   type AllProductsAndPricesResponse,
   getAllProductsAndPrices,
 } from "@/features/purchase/api/purchase";
+import { PurchaseModal } from "@/features/purchase/components/PurchaseModal";
 import { Coins, JapaneseYen } from "lucide-react";
 import type { ComponentProps } from "react";
 import { useLoaderData } from "react-router-dom";
@@ -34,12 +35,17 @@ export const PurchaseList = (props: PurchaseListProps) => {
           {
             key: "button",
             content: (
-              <Button>
-                <>
-                  <JapaneseYen />
-                  {unit_amount}
-                </>
-              </Button>
+              <PurchaseModal
+                triggerButton={
+                  <Button>
+                    <>
+                      <JapaneseYen />
+                      {unit_amount}
+                    </>
+                  </Button>
+                }
+                priceId={id}
+              />
             ),
           },
         ],
