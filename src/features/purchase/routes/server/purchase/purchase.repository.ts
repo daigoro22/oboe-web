@@ -22,10 +22,10 @@ export default class PurchaseRepository implements IPurchase {
     const origin = import.meta.env.VITE_ORIGIN;
     const session = await this.stripe.checkout.sessions.create({
       mode: "payment",
-      success_url: `${origin}/success`,
-      cancel_url: `${origin}/cancel`,
       payment_method_types: ["card"],
       billing_address_collection: "auto",
+      return_url: `${origin}/purchase/return?session_id={CHECKOUT_SESSION_ID}`,
+      ui_mode: "embedded",
       line_items: [{ price: priceId, quantity }],
     });
 

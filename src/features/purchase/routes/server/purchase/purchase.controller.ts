@@ -24,11 +24,10 @@ const getAllProductsAndPrices = factory.createHandlers(async (c) => {
 
 const _purchase = factory.createHandlers(async (c) => {
   const priceId = c.req.param("priceId");
-  const quantity = c.req.query("quantity");
 
   const purchase = container.resolve(PurchaseService);
   try {
-    const session = await purchase.purchase(priceId, quantity);
+    const session = await purchase.purchase(priceId, "1");
     return c.json(session);
   } catch (e) {
     if (e instanceof InvalidQuantityError) {
@@ -41,6 +40,6 @@ const _purchase = factory.createHandlers(async (c) => {
 export const purchase = new Hono<Env>()
   .basePath(ROUTE)
   .get("/", ...getAllProductsAndPrices)
-  .post("/purchase/:priceId", ..._purchase);
+  .post("/checkout/:priceId", ..._purchase);
 
 export type PurchaseRoute = typeof purchase;
