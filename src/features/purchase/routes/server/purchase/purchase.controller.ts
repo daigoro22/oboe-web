@@ -28,7 +28,13 @@ const _purchase = factory.createHandlers(async (c: Context) => {
 
   const purchase = container.resolve(PurchaseService);
   try {
-    const session = await purchase.purchase(user.id, user.point, priceId, "1");
+    const session = await purchase.purchase(
+      user.id,
+      user.point,
+      priceId,
+      "1",
+      user.customerId,
+    );
     return c.json(session);
   } catch (e) {
     if (e instanceof InvalidQuantityError) {

@@ -18,6 +18,7 @@ export default class PurchaseRepository implements IPurchase {
   async purchase(
     priceId: string,
     quantity: number,
+    customerId: string,
   ): Promise<Stripe.Checkout.Session> {
     const origin = import.meta.env.VITE_ORIGIN;
     const session = await this.stripe.checkout.sessions.create({
@@ -26,6 +27,7 @@ export default class PurchaseRepository implements IPurchase {
       billing_address_collection: "auto",
       return_url: `${origin}/purchase/return?session_id={CHECKOUT_SESSION_ID}`,
       ui_mode: "embedded",
+      customer: customerId,
       line_items: [{ price: priceId, quantity }],
     });
 

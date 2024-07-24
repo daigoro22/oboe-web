@@ -4,7 +4,11 @@ import { inject, injectable } from "tsyringe";
 
 export interface IPurchase {
   getAllProductsAndPrices(): Promise<Stripe.Price[]>;
-  purchase(priceId: string, quantity: number): Promise<Stripe.Checkout.Session>;
+  purchase(
+    priceId: string,
+    quantity: number,
+    customerId: string,
+  ): Promise<Stripe.Checkout.Session>;
   createCustomer(
     userName: string,
     idempotencyKey: string,
@@ -28,11 +32,16 @@ export default class PurchaseService {
     currentPoint: number,
     priceId: string,
     quantity: string | undefined,
+    customerId: string,
   ) {
     if (!(quantity && !Number.isNaN(Number(quantity)))) {
       throw new InvalidQuantityError();
     }
-    const session = await this._purchase.purchase(priceId, Number(quantity));
+    const session = await this._purchase.purchase(
+      priceId,
+      Number(quantity),
+      customerId,
+    );
 
     if (!session.amount_total) {
       throw new InvalidAmountTotalError();
