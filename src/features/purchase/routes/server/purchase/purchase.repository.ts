@@ -31,4 +31,17 @@ export default class PurchaseRepository implements IPurchase {
 
     return session;
   }
+
+  async createCustomer(
+    userName: string,
+    idempotencyKey: string,
+  ): Promise<Stripe.Customer> {
+    const customer = await this.stripe.customers.create(
+      {
+        name: userName,
+      },
+      { idempotencyKey },
+    );
+    return customer;
+  }
 }

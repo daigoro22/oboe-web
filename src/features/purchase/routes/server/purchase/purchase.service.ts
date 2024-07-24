@@ -5,6 +5,10 @@ import { inject, injectable } from "tsyringe";
 export interface IPurchase {
   getAllProductsAndPrices(): Promise<Stripe.Price[]>;
   purchase(priceId: string, quantity: number): Promise<Stripe.Checkout.Session>;
+  createCustomer(
+    userName: string,
+    idempotencyKey: string,
+  ): Promise<Stripe.Customer>;
 }
 
 @injectable()
@@ -36,6 +40,14 @@ export default class PurchaseService {
     await this._user.setPoint(userId, currentPoint + session.amount_total); //TODO: amount_total ではなくStripe のメタデータ使う
 
     return session;
+  }
+
+  async createCustomer(userName: string, idempotencyKey: string) {
+    const customer = await this._purchase.createCustomer(
+      userName,
+      idempotencyKey,
+    );
+    return customer;
   }
 }
 

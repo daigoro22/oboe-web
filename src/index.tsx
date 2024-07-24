@@ -63,6 +63,7 @@ formOptions.use("/", formOptionsContainerMiddleware);
 app.route("/", formOptions);
 
 signUp.use("/", signUpContainerMiddleware);
+signUp.use("/", purchaseContainerMiddleware);
 app.route("/", signUp);
 
 app.use(`${ANKI_SESSION_ROUTE}/*`, ankiSessionContainerMiddleware); //FIXME: ankiSession に対して userContainerMiddleware を適用

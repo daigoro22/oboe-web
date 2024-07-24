@@ -8,6 +8,7 @@ import { zValidator } from "@hono/zod-validator";
 import { container } from "tsyringe";
 import { signUpSchema } from "@/schemas/signUp";
 import { DrizzleError } from "drizzle-orm";
+import PurchaseService from "@/features/purchase/routes/server/purchase/purchase.service";
 
 const ROUTE = "/api/auth/signup" as const;
 
@@ -28,6 +29,12 @@ export const signUp = new Hono<Env>().post(
     if (!success) {
       return c.json(result.error, 400);
     }
+    if (!auth?.token?.sub) {
+      return c.json({ error: "user not found" }, 500);
+    }
+
+    const purchase = container.resolve(PurchaseService);
+    const customer = await purchase.createCustomer(data.name, auth.token.sub);
 
     const signUp = container.resolve(SignUpService);
     try {
@@ -35,10 +42,10 @@ export const signUp = new Hono<Env>().post(
         {
           ...data,
           birthDate: new Date(data.birthDate),
-          customerId: String(new Date().getTime()), //TODO: Stripe API を使用して ID を取得
+          customerId: customer.id, //TODO: Stripe API を使用して ID を取得
           image: auth.session?.user?.image,
         },
-        auth?.token,
+        auth.token,
       );
     } catch (e) {
       if (e instanceof DrizzleError) {
