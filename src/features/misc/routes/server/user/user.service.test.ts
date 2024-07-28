@@ -17,6 +17,6 @@ beforeAll(async () => {
 describe("user.service", () => {
   test("通常ケース", async () => {
     const userData = await user.getUser("test");
-    expect(userData).toEqual({ id: 1, point: 10000 });
+    expect(userData).toEqual({ id: 1, point: 10000, customerId: "test" });
   });
 });
