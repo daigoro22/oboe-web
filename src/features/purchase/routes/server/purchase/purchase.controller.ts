@@ -27,6 +27,7 @@ const _purchase = factory.createHandlers(async (c: Context) => {
   const user = c.get("userData");
 
   const purchase = container.resolve(PurchaseService);
+  const origin = import.meta.env.VITE_ORIGIN;
   try {
     const session = await purchase.purchase(
       user.id,
@@ -34,6 +35,7 @@ const _purchase = factory.createHandlers(async (c: Context) => {
       priceId,
       "1",
       user.customerId,
+      `${origin}/purchase/checkout/{CHECKOUT_SESSION_ID}`,
     );
     return c.json(session);
   } catch (e) {
@@ -44,9 +46,17 @@ const _purchase = factory.createHandlers(async (c: Context) => {
   }
 });
 
+const getSession = factory.createHandlers(async (c) => {
+  const sessionId = c.req.param("sessionId");
+  const purchase = container.resolve(PurchaseService);
+  const session = await purchase.getSessionLineItem(sessionId);
+  return c.json(session);
+});
+
 export const purchase = new Hono<Env>()
   .basePath(ROUTE)
   .get("/", ...getAllProductsAndPrices)
-  .post("/checkout/:priceId", ..._purchase);
+  .post("/checkout/:priceId", ..._purchase)
+  .get("/session/:sessionId", ...getSession);
 
 export type PurchaseRoute = typeof purchase;

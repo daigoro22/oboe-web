@@ -8,11 +8,13 @@ export interface IPurchase {
     priceId: string,
     quantity: number,
     customerId: string,
+    returnUrl: string,
   ): Promise<Stripe.Checkout.Session>;
   createCustomer(
     userName: string,
     idempotencyKey: string,
   ): Promise<Stripe.Customer>;
+  getSessionLineItem(sessionId: string): Promise<Stripe.LineItem[]>;
 }
 
 @injectable()
@@ -33,6 +35,7 @@ export default class PurchaseService {
     priceId: string,
     quantity: string | undefined,
     customerId: string,
+    returnUrl: string,
   ) {
     if (!(quantity && !Number.isNaN(Number(quantity)))) {
       throw new InvalidQuantityError();
@@ -41,6 +44,7 @@ export default class PurchaseService {
       priceId,
       Number(quantity),
       customerId,
+      returnUrl,
     );
 
     if (!session.amount_total) {
@@ -57,6 +61,11 @@ export default class PurchaseService {
       idempotencyKey,
     );
     return customer;
+  }
+
+  async getSessionLineItem(sessionId: string) {
+    const session = await this._purchase.getSessionLineItem(sessionId);
+    return session;
   }
 }
 
