@@ -1,13 +1,12 @@
 import PurchaseRepository from "./purchase.repository";
 import PurchaseService, { InvalidQuantityError } from "./purchase.service";
-import type { Env } from "env";
+import type { Env, Context } from "env";
 import { Hono } from "hono";
 import { createFactory, createMiddleware } from "hono/factory";
-import { error } from "node:console";
 
 import { container } from "tsyringe";
 
-const ROUTE = "/api/auth/verified/purchase" as const;
+export const ROUTE = "/api/auth/verified/purchase" as const;
 const factory = createFactory();
 
 export const purchaseContainerMiddleware = createMiddleware(async (c, next) => {
@@ -23,13 +22,21 @@ const getAllProductsAndPrices = factory.createHandlers(async (c) => {
   return c.json(products);
 });
 
-const _purchase = factory.createHandlers(async (c) => {
+const _purchase = factory.createHandlers(async (c: Context) => {
   const priceId = c.req.param("priceId");
-  const quantity = c.req.query("quantity");
+  const user = c.get("userData");
 
   const purchase = container.resolve(PurchaseService);
+  const origin = import.meta.env.VITE_ORIGIN;
   try {
-    const session = await purchase.purchase(priceId, quantity);
+    const session = await purchase.purchase(
+      user.id,
+      user.point,
+      priceId,
+      "1",
+      user.customerId,
+      `${origin}/purchase/checkout/{CHECKOUT_SESSION_ID}`,
+    );
     return c.json(session);
   } catch (e) {
     if (e instanceof InvalidQuantityError) {
@@ -39,7 +46,17 @@ const _purchase = factory.createHandlers(async (c) => {
   }
 });
 
+const getSession = factory.createHandlers(async (c) => {
+  const sessionId = c.req.param("sessionId");
+  const purchase = container.resolve(PurchaseService);
+  const session = await purchase.getSessionLineItem(sessionId);
+  return c.json(session);
+});
+
 export const purchase = new Hono<Env>()
   .basePath(ROUTE)
   .get("/", ...getAllProductsAndPrices)
-  .post("/purchase/:priceId", ..._purchase);
+  .post("/checkout/:priceId", ..._purchase)
+  .get("/session/:sessionId", ...getSession);
+
+export type PurchaseRoute = typeof purchase;

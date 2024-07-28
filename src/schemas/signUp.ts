@@ -20,6 +20,12 @@ export const signUpSchema = createInsertSchema(users, {
   gender: z.enum(users.gender.enumValues, { message: MESSAGE.REQUIRED }),
   occupationId: z.coerce.number({ message: MESSAGE.REQUIRED }).positive(),
   objectiveId: z.coerce.number({ message: MESSAGE.REQUIRED }).positive(),
-}).omit({ id: true, image: true, customerId: true, createdAt: true });
+}).omit({
+  id: true,
+  image: true,
+  customerId: true,
+  createdAt: true,
+  point: true,
+});
 
 export type SignUpSchema = z.infer<typeof signUpSchema>;

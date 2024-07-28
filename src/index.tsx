@@ -24,13 +24,22 @@ import {
 import {
   ankiSession,
   ankiSessionContainerMiddleware,
+  ROUTE as USER_ROUTE,
 } from "@/features/ankiSession/routes/server/ankiSession/ankiSession.controller";
 import { verifySignupMiddleware } from "@/lib/middleware";
-import { userContainerMiddleware } from "@/features/misc/routes/server/user/user.controller";
+import {
+  user,
+  userContainerMiddleware,
+} from "@/features/misc/routes/server/user/user.controller";
 import { transactionContainerMiddleware } from "@/lib/transaction";
 import { ROUTE as ANKI_SESSION_ROUTE } from "@/features/ankiSession/routes/server/ankiSession/ankiSession.controller";
 import { logger } from "hono/logger";
 import { customLogger } from "@/lib/logger";
+import {
+  purchase,
+  ROUTE as PURCHASE_ROUTE,
+} from "@/features/purchase/routes/server/purchase/purchase.controller";
+import { purchaseContainerMiddleware } from "@/features/purchase/routes/server/purchase/purchase.controller";
 
 const app = new Hono<Env>({ strict: false });
 
@@ -58,10 +67,17 @@ formOptions.use("/", formOptionsContainerMiddleware);
 app.route("/", formOptions);
 
 signUp.use("/", signUpContainerMiddleware);
+signUp.use("/", purchaseContainerMiddleware);
 app.route("/", signUp);
 
 app.use(`${ANKI_SESSION_ROUTE}/*`, ankiSessionContainerMiddleware); //FIXME: ankiSession に対して userContainerMiddleware を適用
 app.route("/", ankiSession);
+
+app.use(`${PURCHASE_ROUTE}/*`, purchaseContainerMiddleware);
+app.route("/", purchase);
+
+app.use(`${USER_ROUTE}/*`, userContainerMiddleware);
+app.route("/", user);
 
 function getAuthConfig(c: Context): AuthConfig {
   const {

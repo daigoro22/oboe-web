@@ -7,6 +7,12 @@ import { authConfigManager, SessionProvider } from "@hono/auth-js/react";
 import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { Purchase } from "@/features/purchase/routes/client/purchase";
+import { purchaseLoader } from "@/features/purchase/components/PurchaseList";
+import {
+  CheckOut,
+  checkoutLoader,
+} from "@/features/purchase/routes/client/checkout";
 
 authConfigManager.setConfig({
   basePath: "/api/oauth",
@@ -25,6 +31,12 @@ const router = createBrowserRouter([
     path: "/signup",
     element: <SignUp />,
     loader: signUpLoader,
+  },
+  { path: "/purchase", element: <Purchase />, loader: purchaseLoader },
+  {
+    path: "/purchase/checkout/:sessionId",
+    element: <CheckOut />,
+    loader: checkoutLoader,
   },
   { path: "/", element: <Index /> },
   { path: "/anki-sessions/:id", element: <AnkiSession /> },

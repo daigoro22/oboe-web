@@ -38,7 +38,7 @@ const usersData: (typeof users.$inferInsert)[] = [
     gender: "男",
     occupationId: 1,
     objectiveId: 1,
-    customerId: "yamada_taro",
+    customerId: null,
     createdAt: new Date(),
   },
   {
@@ -109,6 +109,9 @@ async function main() {
   await db.delete(users);
   await db.delete(occupations);
   await db.delete(objectives);
+
+  const customer = await stripeCustomers();
+  usersData[0].customerId = customer?.id ?? "";
 
   await db.insert(objectives).values(objectivesData);
   await db.insert(occupations).values(occupationsData);
@@ -189,13 +192,13 @@ async function main() {
     4,
     db,
   );
-  await stripeData();
+  await stripeProducts();
   console.log("finish");
   process.exit();
 }
+const stripe = new Stripe(import.meta.env.VITE_STRIPE_SECRET_KEY);
 
-const stripeData = async () => {
-  const stripe = new Stripe(import.meta.env.VITE_STRIPE_SECRET_KEY);
+const stripeProducts = async () => {
   const prices = await stripe.prices.list({ limit: 100 });
   const productIds = [faker.string.nanoid(), faker.string.nanoid()];
   if (prices.data.some(({ product }) => productIds.includes(String(product)))) {
@@ -220,6 +223,23 @@ const stripeData = async () => {
     },
   });
   console.log("products created");
+};
+
+const stripeCustomers = async () => {
+  const customers = await stripe.customers.list();
+
+  if (customers.data.some(({ email }) => email === "taro.yamada@example.com")) {
+    console.log("customer already exists");
+    return customers.data.find(
+      ({ email }) => email === "taro.yamada@example.com",
+    );
+  }
+
+  const customer = await stripe.customers.create({
+    email: "taro.yamada@example.com",
+    name: usersData[0].name,
+  });
+  return customer;
 };
 
 main();

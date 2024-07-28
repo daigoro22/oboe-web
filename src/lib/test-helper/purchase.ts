@@ -34,4 +34,33 @@ export class PurchaseFakeRepository
   async getAllProductsAndPrices() {
     return TEST_PRICES;
   }
+
+  async purchase(_: string, __: number): Promise<Stripe.Checkout.Session> {
+    return new Promise<Stripe.Checkout.Session>((resolve) => {
+      resolve({
+        id: faker.string.uuid(),
+        object: "checkout.session",
+        payment_status: "unpaid",
+        status: "open",
+        url: faker.internet.url(),
+        after_expiration: null,
+        allow_promotion_codes: null,
+        amount_subtotal: null,
+        amount_total: null,
+        automatic_tax: {
+          enabled: false,
+        },
+        cancel_url: null,
+        client_reference_id: null,
+      });
+    });
+  }
+
+  async createCustomer(userName: string, _: string): Promise<Stripe.Customer> {
+    return {
+      id: faker.string.uuid(),
+      object: "customer",
+      name: userName,
+    } as Stripe.Customer;
+  }
 }

@@ -11,6 +11,7 @@ import SignUpService from "@/features/auth/routes/server/signUp/signUp.service";
 import { DrizzleError } from "drizzle-orm";
 import { setFakeUserMiddleware } from "@/lib/test-helper";
 import { UserFakeRepository } from "@/lib/test-helper/user";
+import { PurchaseFakeRepository } from "@/lib/test-helper/purchase";
 
 beforeEach(() => {
   container.clearInstances();
@@ -26,6 +27,9 @@ const signUpContainerMiddleware = createMiddleware(async (c, next) => {
   });
   container.register("IUser", {
     useValue: new UserFakeRepository(),
+  });
+  container.register("IPurchase", {
+    useValue: new PurchaseFakeRepository(),
   });
   await next();
 });
