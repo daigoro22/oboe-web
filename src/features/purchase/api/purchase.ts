@@ -20,3 +20,13 @@ export const checkout = async (priceId: string) => {
 export type AllProductsAndPricesResponse = Awaited<
   ReturnType<typeof getAllProductsAndPrices>
 >;
+
+export const getSession = async (sessionId: string) => {
+  const res = await client.api.auth.verified.purchase.session[
+    ":sessionId"
+  ].$get({
+    param: { sessionId },
+  });
+
+  return await res.json();
+};
