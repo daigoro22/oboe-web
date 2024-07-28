@@ -1,3 +1,4 @@
+import { customLogger } from "@/lib/logger";
 import UserRepository from "./user.repository";
 import UserService from "./user.service";
 import type { Context, Env } from "env";
@@ -6,7 +7,7 @@ import { createFactory, createMiddleware } from "hono/factory";
 
 import { container } from "tsyringe";
 
-const ROUTE = "/api/auth/verified/users" as const;
+export const ROUTE = "/api/auth/verified/users" as const;
 
 export const userContainerMiddleware = createMiddleware(async (c, next) => {
   container.register("IUser", {

@@ -24,9 +24,13 @@ import {
 import {
   ankiSession,
   ankiSessionContainerMiddleware,
+  ROUTE as USER_ROUTE,
 } from "@/features/ankiSession/routes/server/ankiSession/ankiSession.controller";
 import { verifySignupMiddleware } from "@/lib/middleware";
-import { userContainerMiddleware } from "@/features/misc/routes/server/user/user.controller";
+import {
+  user,
+  userContainerMiddleware,
+} from "@/features/misc/routes/server/user/user.controller";
 import { transactionContainerMiddleware } from "@/lib/transaction";
 import { ROUTE as ANKI_SESSION_ROUTE } from "@/features/ankiSession/routes/server/ankiSession/ankiSession.controller";
 import { logger } from "hono/logger";
@@ -71,6 +75,9 @@ app.route("/", ankiSession);
 
 app.use(`${PURCHASE_ROUTE}/*`, purchaseContainerMiddleware);
 app.route("/", purchase);
+
+app.use(`${USER_ROUTE}/*`, userContainerMiddleware);
+app.route("/", user);
 
 function getAuthConfig(c: Context): AuthConfig {
   const {
